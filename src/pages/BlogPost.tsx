@@ -162,13 +162,33 @@ export default function BlogPost() {
           prose-p:text-on-surface-variant prose-p:leading-relaxed
           prose-a:text-primary prose-a:no-underline hover:prose-a:underline
           prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-white
-          prose-img:rounded-xl prose-img:border prose-img:border-white/10 prose-img:shadow-2xl
           prose-hr:border-white/10 prose-hr:my-12
           prose-table:border-collapse prose-table:w-full
           prose-th:bg-surface-container-high prose-th:p-4 prose-th:text-left prose-th:border prose-th:border-white/10
           prose-td:p-4 prose-td:border prose-td:border-white/10
         ">
-          <Markdown remarkPlugins={[remarkGfm]}>
+          <Markdown 
+            remarkPlugins={[remarkGfm]}
+            components={{
+              img: ({node, ...props}) => (
+                <figure className="my-10">
+                  <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-surface-container-low group">
+                    <img 
+                      {...props} 
+                      loading="lazy"
+                      className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 m-0" 
+                    />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none"></div>
+                  </div>
+                  {props.alt && (
+                    <figcaption className="text-center text-sm text-on-surface-variant mt-4 font-medium px-4">
+                      {props.alt}
+                    </figcaption>
+                  )}
+                </figure>
+              )
+            }}
+          >
             {displayContent}
           </Markdown>
         </div>

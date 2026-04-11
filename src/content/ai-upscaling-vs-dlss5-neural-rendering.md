@@ -30,9 +30,7 @@ DLSS 5 operates **inside the game engine** during the rendering pipeline. It is 
 *   **The Limitation:** Because it must run in milliseconds, it is heavily constrained by your GPU's processing power and cannot spend seconds analyzing a single frame for perfect accuracy (which sometimes leads to the "AI Slop" artifacts).
 
 ## 2. AI Image Upscaling (Post-Processing, Static)
-
-<img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1600" alt="AI Image Upscaling Example" referrerPolicy="no-referrer" className="w-full rounded-xl my-6 shadow-2xl border border-white/10" />
-<p className="text-sm text-center text-on-surface-variant mt-2 mb-8">AI upscaling tools can take seconds to process a single static image, resulting in pristine, artifact-free high-resolution outputs.</p>
+![AI upscaling tools can take seconds to process a single static image, resulting in pristine, artifact-free high-resolution outputs.](https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1600)
 
 Web-based AI upscaling tools operate on **static 2D images** (like JPEGs or PNGs) after they have already been rendered, captured, or downloaded.
 
@@ -73,9 +71,7 @@ DLSS 5 在**游戏引擎内部**的渲染管线中运行。这是一个实时过
 *   **技术局限：** 因为它必须在几毫秒内完成计算，所以它受到 GPU 处理能力的严重制约，无法花费几秒钟的时间来分析单帧画面以追求完美的准确性（这有时会导致“AI Slop”等视觉瑕疵）。
 
 ## 2. AI 图像超分（后期处理，静态）
-
-<img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1600" alt="AI 图像超分示例" referrerPolicy="no-referrer" className="w-full rounded-xl my-6 shadow-2xl border border-white/10" />
-<p className="text-sm text-center text-on-surface-variant mt-2 mb-8">AI 超分工具可以花费数秒来处理单张静态图像，从而产生纯净、无瑕疵的高分辨率输出。</p>
+![AI 超分工具可以花费数秒来处理单张静态图像，从而产生纯净、无瑕疵的高分辨率输出。](https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1600)
 
 基于 Web 的 AI 超分工具处理的是**静态 2D 图像**（如 JPEG 或 PNG），这些图像是已经渲染、截图或下载好的。
 

@@ -20,9 +20,7 @@ schema_type: "Article"
 The leap from NVIDIA's DLSS 4 to DLSS 5 isn't just about pushing more frames per second; it represents a fundamental shift in how computer graphics are rendered. If you are wondering, "should I upgrade for DLSS 5?", you need to understand the core differences between these two technologies.
 
 ## The Core Difference: Frame Generation vs. Neural Rendering
-
-<img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1600" alt="DLSS 5 vs DLSS 4 Scene Comparison" referrerPolicy="no-referrer" className="w-full rounded-xl my-6 shadow-2xl border border-white/10" />
-<p className="text-sm text-center text-on-surface-variant mt-2 mb-8">A visual representation of the leap in lighting and texture detail possible with Neural Rendering.</p>
+![A visual representation of the leap in lighting and texture detail possible with Neural Rendering.](https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1600)
 
 **DLSS 4** perfected the art of **Frame Generation**. It uses AI to analyze sequential frames and motion vectors to generate entirely new intermediate frames, massively boosting performance and smoothness, especially in CPU-limited scenarios.
 
@@ -62,9 +60,7 @@ The biggest point of contention in the **DLSS 5 vs DLSS 4** debate is hardware l
 从 NVIDIA 的 DLSS 4 到 DLSS 5 的跨越，不仅仅是为了追求更高的帧率（FPS）；它代表了计算机图形渲染方式的根本性转变。如果你正在犹豫“为了 DLSS 5 升级显卡值得吗？”，你需要深入了解这两项技术的核心差异。
 
 ## 核心差异：帧生成 vs 神经渲染
-
-<img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1600" alt="DLSS 5 vs DLSS 4 场景对比" referrerPolicy="no-referrer" className="w-full rounded-xl my-6 shadow-2xl border border-white/10" />
-<p className="text-sm text-center text-on-surface-variant mt-2 mb-8">神经渲染技术在光照和纹理细节上带来的飞跃性视觉表现。</p>
+![神经渲染技术在光照和纹理细节上带来的飞跃性视觉表现。](https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1600)
 
 **DLSS 4** 将**帧生成（Frame Generation）**技术推向了极致。它利用 AI 分析连续的帧和运动向量，生成全新的中间帧，从而大幅提升性能和流畅度，尤其是在 CPU 瓶颈的场景下。
 
