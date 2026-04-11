@@ -170,6 +170,15 @@ export default function BlogPost() {
           <Markdown 
             remarkPlugins={[remarkGfm]}
             components={{
+              p: ({node, children, ...props}) => {
+                const hasImage = node?.children?.some(
+                  (child: any) => child.type === 'element' && child.tagName === 'img'
+                );
+                if (hasImage) {
+                  return <div className="my-6">{children}</div>;
+                }
+                return <p {...props}>{children}</p>;
+              },
               img: ({node, ...props}) => (
                 <figure className="my-10">
                   <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-surface-container-low group">
