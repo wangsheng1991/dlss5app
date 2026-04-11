@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { 
   Menu, Search, Cpu, Check, Globe, Terminal, ChevronDown, ArrowRight
 } from 'lucide-react';
@@ -15,21 +16,23 @@ import BlogPost from './pages/BlogPost';
 
 export default function App() {
   return (
-    <Router>
-      <div className="selection:bg-primary selection:text-on-primary min-h-screen flex flex-col">
-        <Banner />
-        <Header />
-        <div className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/blog" element={<BlogList />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/games" element={<div className="pt-32 text-center text-white">Games List Coming Soon</div>} />
-          </Routes>
+    <HelmetProvider>
+      <Router>
+        <div className="selection:bg-primary selection:text-on-primary min-h-screen flex flex-col">
+          <Banner />
+          <Header />
+          <div className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/blog" element={<BlogList />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/games" element={<div className="pt-32 text-center text-white">Games List Coming Soon</div>} />
+            </Routes>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-    </Router>
+      </Router>
+    </HelmetProvider>
   );
 }
 

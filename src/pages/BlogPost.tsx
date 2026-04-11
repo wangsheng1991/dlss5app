@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
 
 // Import all markdown files as raw strings
@@ -107,9 +108,18 @@ export default function BlogPost() {
 
   const { metadata, content: displayContent } = parseMarkdown(content);
   const title = isZh && metadata.title_cn ? metadata.title_cn : metadata.title;
+  const description = isZh && metadata.description_cn ? metadata.description_cn : metadata.description;
 
   return (
     <article className="pb-32">
+      <Helmet>
+        <title>{title} | Neural Architect</title>
+        {description && <meta name="description" content={description} />}
+        <meta property="og:title" content={`${title} | Neural Architect`} />
+        {description && <meta property="og:description" content={description} />}
+        <meta property="og:type" content="article" />
+        {metadata.og_image && <meta property="og:image" content={metadata.og_image} />}
+      </Helmet>
       {/* Header */}
       <header className="relative pt-32 pb-20 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-20">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { 
   Menu, Search, Cpu, CheckCircle2, Check, Star, Zap, 
   ChevronDown, Globe, Terminal, X, ArrowRight
@@ -8,8 +9,16 @@ import { Link } from 'react-router-dom';
 import { gpuData } from '../data';
 
 export default function Home() {
+  const { t } = useTranslation();
   return (
     <main className="pt-16">
+      <Helmet>
+        <title>DLSS 5 GPU Checker & Feature Matrix | Neural Architect</title>
+        <meta name="description" content="Instantly verify if your hardware architecture is ready for NVIDIA's next-generation Neural Texture Reconstruction and Frame Synthesis 3.0." />
+        <meta property="og:title" content="DLSS 5 GPU Checker & Feature Matrix | Neural Architect" />
+        <meta property="og:description" content="Instantly verify if your hardware architecture is ready for NVIDIA's next-generation Neural Texture Reconstruction and Frame Synthesis 3.0." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <HeroSection />
       <AboutSection />
       <CompatibilitySection />
