@@ -201,7 +201,7 @@ function HeroSection() {
                   className={`px-6 py-4 cursor-pointer flex justify-between items-center border-b border-white/5 last:border-0 transition-colors ${focusedIndex === index ? 'bg-primary/20 text-primary' : 'hover:bg-white/5'}`}
                 >
                   <span className={`font-bold ${focusedIndex === index ? 'text-primary' : 'text-white'}`}>{gpu.name}</span>
-                  <span className="text-sm text-on-surface-variant">{gpu.vram_gb}GB</span>
+                  <span className="text-sm text-on-surface-variant">{gpu.vram_gb}</span>
                 </div>
               ))}
             </div>
@@ -214,7 +214,7 @@ function HeroSection() {
               <div>
                 <h3 className="text-2xl font-headline font-bold text-white">NVIDIA GeForce {result.name}</h3>
                 <p className="text-on-surface-variant text-sm mt-1">
-                  {gpuData.gpu_series.find(s => s.id === result.series)?.architecture} {t('hero.arch')} • {result.vram_gb}GB {t('hero.vram')}
+                  {gpuData.gpu_series.find(s => s.id === result.series)?.architecture} {t('hero.arch')} • {result.vram_gb} {t('hero.vram')}
                 </p>
               </div>
               <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wider ${getStatusBadge(result.dlss5_status).color}`}>
@@ -354,7 +354,7 @@ function CompatibilitySection() {
                 <tr key={gpu.id} className={`${index % 2 !== 0 ? 'bg-surface-container-low/50' : ''} hover:bg-white/5 transition-colors`}>
                   <td className="px-8 py-6 font-bold text-white">{gpu.name}</td>
                   <td className="px-8 py-6 text-on-surface-variant">{gpuData.gpu_series.find(s => s.id === gpu.series)?.architecture}</td>
-                  <td className="px-8 py-6 text-on-surface-variant">{gpu.vram_gb}GB</td>
+                  <td className="px-8 py-6 text-on-surface-variant">{gpu.vram_gb}</td>
                   <td className="px-8 py-6 text-right">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] tracking-wider font-bold ${getStatusBadge(gpu.dlss5_status).color}`}>
                       {t(getStatusBadge(gpu.dlss5_status).key)}
