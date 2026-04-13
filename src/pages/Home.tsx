@@ -273,15 +273,15 @@ function AboutSection() {
             <li className="flex items-start gap-3">
               <CheckCircle2 className="text-primary mt-1 w-5 h-5 shrink-0" />
               <div>
-                <span className="font-bold block text-white">Blackwell Architecture Optimization</span>
-                <span className="text-sm text-on-surface-variant">Specifically designed to leverage 5th Gen Tensor Cores.</span>
+                <h3 className="font-bold block text-white text-lg m-0">{t('about.f1_title')}</h3>
+                <span className="text-sm text-on-surface-variant">{t('about.f1_desc')}</span>
               </div>
             </li>
             <li className="flex items-start gap-3">
               <CheckCircle2 className="text-primary mt-1 w-5 h-5 shrink-0" />
               <div>
-                <span className="font-bold block text-white">Neural Texture Compression</span>
-                <span className="text-sm text-on-surface-variant">Reduces VRAM usage by up to 40% while increasing detail.</span>
+                <h3 className="font-bold block text-white text-lg m-0">{t('about.f2_title')}</h3>
+                <span className="text-sm text-on-surface-variant">{t('about.f2_desc')}</span>
               </div>
             </li>
           </ul>
@@ -448,7 +448,7 @@ function FAQSection() {
     <section id="faq" className="py-24 px-6 max-w-3xl mx-auto">
       <h2 className="text-4xl font-headline font-bold text-center mb-16">{t('faq.title1')} <span className="text-primary">{t('faq.title2')}</span></h2>
       <div className="space-y-4">
-        {gpuData.faq.map((faq, index) => (
+        {[1, 2, 3, 4, 5, 6, 7].map((num, index) => (
           <div 
             key={index} 
             className="bg-surface-container rounded-xl border border-outline-variant/10 overflow-hidden transition-all duration-300"
@@ -457,7 +457,7 @@ function FAQSection() {
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
               className="w-full flex justify-between items-center px-8 py-6 text-left focus:outline-none"
             >
-              <span className="font-bold text-white">{faq.q}</span>
+              <h3 className="font-bold text-white text-base m-0">{t(`faq.q${num}`)}</h3>
               <ChevronDown className={`text-on-surface-variant transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`} />
             </button>
             <div 
@@ -466,7 +466,7 @@ function FAQSection() {
               }`}
             >
               <p className="text-on-surface-variant leading-relaxed">
-                {faq.a}
+                {t(`faq.a${num}`)}
               </p>
             </div>
           </div>

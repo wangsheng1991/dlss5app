@@ -87,71 +87,71 @@ export const resources = {
         link: "阅读全文"
       },
       hero: {
-        badge: "神经渲染的演进",
+        badge: "NVIDIA DLSS 神经渲染的演进",
         title1: "DLSS 5 显卡支持",
-        title2: "与 GPU 兼容性检测",
-        desc: "一键验证您的硬件架构，确认是否支持 NVIDIA 新一代神经纹理重建与帧生成 3.0 技术。",
+        title2: "与 GeForce GPU 检测",
+        desc: "一键验证您的硬件架构，确认是否支持 NVIDIA 新一代 DLSS 5 神经纹理重建与帧生成 3.0 技术。",
         placeholder: "输入 GPU 型号 (例如: RTX 5090)",
-        btn: "检查兼容性",
+        btn: "检查 DLSS 5 兼容性",
         notFound: "未找到匹配的 GPU",
-        notFoundDesc: "我们的数据库中未能找到 \"{{query}}\"。请尝试搜索其他型号，例如 \"RTX 5090\" 或 \"RTX 4080\"。",
+        notFoundDesc: "我们的数据库中未能找到 \"{{query}}\"。请尝试搜索其他 NVIDIA GeForce 型号，例如 \"RTX 5090\" 或 \"RTX 4080\"。",
         arch: "架构",
         vram: "显存",
-        supported: "已确认全面支持 DLSS 5 神经渲染。",
-        unsupported: "此 GPU 不支持 DLSS 5 神经渲染。"
+        supported: "已确认全面支持 NVIDIA DLSS 5 神经渲染。",
+        unsupported: "此 GPU 不支持 NVIDIA DLSS 5 神经渲染。"
       },
       stats: {
-        s1_val: "4.2x", s1_lbl: "性能飞跃",
-        s2_val: "神经", s2_lbl: "纹理重建",
+        s1_val: "4.2x", s1_lbl: "DLSS 性能飞跃",
+        s2_val: "神经", s2_lbl: "DLSS 纹理重建",
         s3_val: "延迟", s3_lbl: "大幅降低 60%"
       },
       about: {
-        title1: "什么是", title2: "DLSS 5?",
-        p1: "DLSS 5 是 NVIDIA 在 AI 驱动渲染领域的巅峰之作。它不仅超越了传统的帧生成技术，更引入了革命性的神经场景合成 (Neural Scene Synthesis)。",
-        p2: "与以往依赖运动矢量和时域数据的版本不同，DLSS 5 充分利用了 Blackwell 架构中全新的专用硬件模块——神经流加速器 (Neural Flow Accelerator)，能够在 4K 分辨率下以像素级精度实时预测光照和纹理细节。",
-        f1_title: "Blackwell 架构专属优化",
-        f1_desc: "专为充分发挥第五代 Tensor Core 潜能而设计。",
-        f2_title: "神经纹理压缩",
-        f2_desc: "在提升画面细节的同时，最高可降低 40% 的显存占用。"
+        title1: "什么是", title2: "NVIDIA DLSS 5?",
+        p1: "NVIDIA DLSS 5 是 NVIDIA 在 AI 驱动渲染领域的巅峰之作。它不仅超越了传统的 DLSS 帧生成技术，更引入了革命性的 DLSS 5 神经场景合成 (Neural Scene Synthesis)。",
+        p2: "与以往依赖运动矢量和时域数据的 DLSS 版本不同，NVIDIA DLSS 5 充分利用了 GeForce RTX 50 系列 Blackwell 架构中全新的专用硬件模块——神经流加速器 (Neural Flow Accelerator)，能够在 4K 分辨率下以像素级精度实时预测光照和纹理细节。",
+        f1_title: "NVIDIA Blackwell 架构专属优化",
+        f1_desc: "专为充分发挥 GeForce RTX 50 系列第五代 Tensor Core 潜能而设计。",
+        f2_title: "DLSS 5 神经纹理压缩",
+        f2_desc: "在提升画面细节的同时，最高可降低 GeForce RTX 显卡 40% 的显存占用。"
       },
       checker: {
-        title1: "支持的", title2: "显卡",
-        desc: "实时追踪当前及未来硬件的兼容性状态。",
-        col1: "GPU 型号", col2: "架构", col3: "显存", col4: "DLSS 5 状态"
+        title1: "DLSS 5 支持的", title2: "NVIDIA 显卡",
+        desc: "实时追踪当前及未来 NVIDIA GeForce RTX 硬件的 DLSS 5 兼容性状态。",
+        col1: "GeForce GPU 型号", col2: "架构", col3: "显存", col4: "DLSS 5 状态"
       },
       matrix: {
-        title1: "硬件", title2: "特性矩阵",
-        col1: "特性", col2: "RTX 30 系列", col3: "RTX 40 系列", col4: "RTX 50 系列",
-        badge: "下一代",
+        title1: "NVIDIA 硬件", title2: "DLSS 特性矩阵",
+        col1: "DLSS 特性", col2: "GeForce RTX 30 系列", col3: "GeForce RTX 40 系列", col4: "GeForce RTX 50 系列",
+        badge: "下一代 DLSS",
         features: {
           nr: "DLSS 5 神经渲染",
           mfg: "DLSS 4.5 动态多帧生成",
           fg4: "DLSS 4 多帧生成",
           fg3: "DLSS 3 帧生成",
-          rr: "光线重建",
+          rr: "DLSS 3.5 光线重建",
           sr: "DLSS 超分辨率",
           fp8: "FP8 精度"
         }
       },
       faq: {
-        title1: "常见", title2: "问题解答",
-        q1: "DLSS 5 需要新的显卡吗？",
-        a1: "是的。DLSS 5 神经渲染目前已确认由 RTX 50 系列（Blackwell 架构）独占。NVIDIA 尚未确认是否支持 RTX 40 系列。",
-        q2: "DLSS 5 什么时候发布？",
-        a2: "NVIDIA 宣布将于 2026 年秋季发布。目前尚未公布具体日期。",
+        title1: "DLSS 5 常见", title2: "问题解答",
+        q1: "DLSS 5 需要新的 NVIDIA 显卡吗？",
+        a1: "是的。DLSS 5 神经渲染目前已确认由 NVIDIA GeForce RTX 50 系列（Blackwell 架构）独占。NVIDIA 尚未确认是否支持 RTX 40 系列。",
+        q2: "NVIDIA DLSS 5 什么时候发布？",
+        a2: "NVIDIA 宣布 DLSS 5 将于 2026 年秋季发布。目前尚未公布具体日期。",
         q3: "什么是 DLSS 5 神经渲染？",
-        a3: "DLSS 5 将每一帧的颜色数据和运动矢量作为输入，然后使用 AI 模型在高达 4K 的分辨率下实时添加逼真的光照、阴影和材质属性。黄仁勋称之为“图形领域的 GPT 时刻”。",
-        q4: "RTX 3080 或 RTX 4090 可以使用 DLSS 5 吗？",
-        a4: "尚未确认。NVIDIA 关于 DLSS 5 的公告完全集中在 RTX 50 系列硬件上。RTX 40 系列的支持尚未确认；RTX 30 及更早版本将不支持。",
+        a3: "DLSS 5 将每一帧的颜色数据和运动矢量作为输入，然后使用 AI 模型在高达 4K 的分辨率下实时添加逼真的光照、阴影和材质属性。黄仁勋称 DLSS 5 为“图形领域的 GPT 时刻”。",
+        q4: "GeForce RTX 3080 或 RTX 4090 可以使用 DLSS 5 吗？",
+        a4: "尚未确认。NVIDIA 关于 DLSS 5 的公告完全集中在 GeForce RTX 50 系列硬件上。RTX 40 系列的 DLSS 5 支持尚未确认；RTX 30 及更早版本将不支持 DLSS 5。",
         q5: "DLSS 5 和 DLSS 4 有什么区别？",
-        a5: "两者的设计目标完全不同。DLSS 4 侧重于性能提升（通过帧生成获得更高的帧率），而 DLSS 5 则专注于视觉保真度（提供更逼真的光照和材质）。在 RTX 50 系列显卡上，您可以同时开启这两项技术。",
+        a5: "两者的设计目标完全不同。DLSS 4 侧重于性能提升（通过 DLSS 帧生成获得更高的帧率），而 DLSS 5 则专注于视觉保真度（提供更逼真的光照和材质）。在 GeForce RTX 50 系列显卡上，您可以同时开启这两项 DLSS 技术。",
         q6: "哪些游戏将支持 DLSS 5？",
-        a6: "首发已确认支持 15 款以上游戏，包括《星空》、《霍格沃茨之遗》、《刺客信条：影》、《生化危机：安魂曲》等。完整游戏列表请参阅上方信息。",
-        q7: "为什么 DLSS 5 演示需要两张 RTX 5090？",
-        a7: "GTC 2026 上的演示使用的是早期预览版，并非最终发售版本。当时使用了一张 GPU 运行游戏，另一张专门运行 DLSS 5 模型。NVIDIA 已确认最终的正式版本只需单张 GPU 即可流畅运行。"
+        a6: "首发已确认支持 15 款以上 DLSS 5 游戏，包括《星空》、《霍格沃茨之遗》、《刺客信条：影》、《生化危机：安魂曲》等。完整 DLSS 5 游戏列表请参阅上方信息。",
+        q7: "为什么 DLSS 5 演示需要两张 GeForce RTX 5090？",
+        a7: "GTC 2026 上的 DLSS 5 演示使用的是早期预览版，并非最终发售版本。当时使用了一张 RTX 5090 运行游戏，另一张专门运行 DLSS 5 模型。NVIDIA 已确认最终的正式版本只需单张 GeForce RTX GPU 即可流畅运行 DLSS 5。"
       },
       footer: {
-        copyright: "© 2026 NEURAL ARCHITECT. POWERED BY DLSS 5.",
+        copyright: "© 2026 NEURAL ARCHITECT. POWERED BY NVIDIA DLSS 5.",
         links: { arch: "架构", bench: "基准测试", comp: "兼容性", support: "技术支持", privacy: "隐私政策" }
       },
       status: {
