@@ -5,19 +5,45 @@ import {
   ChevronDown, Globe, Terminal, X, ArrowRight
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { gpuData } from '../data';
 
 export default function Home() {
   const { t } = useTranslation();
+  const { lang } = useParams<{ lang: string }>();
+  const currentLang = lang || 'en';
   return (
     <main className="pt-16">
       <Helmet>
         <title>DLSS 5 GPU Checker & Feature Matrix | Neural Architect</title>
         <meta name="description" content="Instantly verify if your hardware architecture is ready for NVIDIA's next-generation Neural Texture Reconstruction and Frame Synthesis 3.0." />
+        <link rel="canonical" href={`https://dlss5.app/${currentLang}`} />
+        
+        {/* Open Graph */}
         <meta property="og:title" content="DLSS 5 GPU Checker & Feature Matrix | Neural Architect" />
         <meta property="og:description" content="Instantly verify if your hardware architecture is ready for NVIDIA's next-generation Neural Texture Reconstruction and Frame Synthesis 3.0." />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://dlss5.app/${currentLang}`} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="DLSS 5 GPU Checker & Feature Matrix | Neural Architect" />
+        <meta name="twitter:description" content="Instantly verify if your hardware architecture is ready for NVIDIA's next-generation Neural Texture Reconstruction and Frame Synthesis 3.0." />
+        
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Neural Architect",
+            "url": "https://dlss5.app/",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://dlss5.app/?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
       </Helmet>
       <HeroSection />
       <AboutSection />

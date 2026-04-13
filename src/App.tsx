@@ -4,8 +4,8 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate, useParams, useNavigate, Outlet } from 'react-router-dom';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { 
   Menu, Search, Cpu, Check, Globe, Terminal, ChevronDown, ArrowRight
 } from 'lucide-react';
@@ -18,42 +18,97 @@ export default function App() {
   return (
     <HelmetProvider>
       <Router>
-        <div className="selection:bg-primary selection:text-on-primary min-h-screen flex flex-col">
-          <Banner />
-          <Header />
-          <div className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/blog" element={<BlogList />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/games" element={<div className="pt-32 text-center text-white">Games List Coming Soon</div>} />
-            </Routes>
-          </div>
-          <Footer />
-        </div>
+        <Routes>
+          <Route path="/:lang" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="blog" element={<BlogList />} />
+            <Route path="blog/:slug" element={<BlogPost />} />
+            <Route path="games" element={<div className="pt-32 text-center text-white">Games List Coming Soon</div>} />
+          </Route>
+          <Route path="*" element={<LanguageRedirect />} />
+        </Routes>
       </Router>
     </HelmetProvider>
   );
 }
 
-function Banner() {
+function LanguageRedirect() {
+  const { i18n } = useTranslation();
+  const location = useLocation();
+  const lang = i18n.language || 'en';
+  const supportedLangs = ['en', 'zh-CN', 'zh-TW', 'zh-HK', 'ko', 'ja', 'es', 'fr', 'de', 'fi', 'zh'];
+  const pathLang = location.pathname.split('/')[1];
+  
+  if (supportedLangs.includes(pathLang)) {
+    return <Navigate to={`/${pathLang}`} replace />;
+  }
+  
+  return <Navigate to={`/${lang}${location.pathname}`} replace />;
+}
+
+function SEOHead() {
+  const location = useLocation();
+  const { lang } = useParams<{ lang: string }>();
+  const basePath = location.pathname.replace(new RegExp(`^/${lang}`), '') || '';
+  const languages = ['en', 'zh-CN', 'zh-TW', 'zh-HK', 'ko', 'ja', 'es', 'fr', 'de', 'fi'];
+
+  return (
+    <Helmet>
+      <link rel="alternate" hrefLang="x-default" href={`https://dlss5.app/en${basePath}`} />
+      {languages.map(code => (
+        <link key={code} rel="alternate" hrefLang={code} href={`https://dlss5.app/${code}${basePath}`} />
+      ))}
+    </Helmet>
+  );
+}
+
+function Layout() {
+  const { lang } = useParams<{ lang: string }>();
+  const { i18n } = useTranslation();
+  const supportedLangs = ['en', 'zh-CN', 'zh-TW', 'zh-HK', 'ko', 'ja', 'es', 'fr', 'de', 'fi', 'zh'];
+  
+  useEffect(() => {
+    if (lang && supportedLangs.includes(lang) && i18n.language !== lang) {
+      i18n.changeLanguage(lang);
+    }
+  }, [lang, i18n]);
+
+  if (lang && !supportedLangs.includes(lang)) {
+    return <Navigate to={`/en`} replace />;
+  }
+
+  return (
+    <div className="selection:bg-primary selection:text-on-primary min-h-screen flex flex-col">
+      <SEOHead />
+      <Banner lang={lang || 'en'} />
+      <Header lang={lang || 'en'} />
+      <div className="flex-grow">
+        <Outlet />
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+function Banner({ lang }: { lang: string }) {
   const { t } = useTranslation();
   return (
     <div className="bg-primary text-on-primary px-4 py-2 text-center text-sm font-headline font-bold flex flex-wrap items-center justify-center gap-2 z-[60] relative">
       <span>{t('banner.text')}</span>
-      <Link to="/blog/dlss5-ai-slop-controversy" className="inline-flex items-center gap-1 underline decoration-on-primary/50 hover:decoration-on-primary transition-all">
+      <Link to={`/${lang}/blog/dlss5-ai-slop-controversy`} className="inline-flex items-center gap-1 underline decoration-on-primary/50 hover:decoration-on-primary transition-all">
         {t('banner.link')} <ArrowRight className="w-3 h-3" />
       </Link>
     </div>
   );
 }
 
-function Header() {
+function Header({ lang }: { lang: string }) {
   const { t, i18n } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const languages = [
     { code: 'en', label: 'EN', full: 'English' },
@@ -81,11 +136,13 @@ function Header() {
   }, [langMenuRef]);
 
   const changeLanguage = (code: string) => {
-    i18n.changeLanguage(code);
+    const currentPath = location.pathname;
+    const newPath = currentPath.replace(new RegExp(`^/${lang}`), `/${code}`);
+    navigate(newPath);
     setIsLangMenuOpen(false);
   };
 
-  const isHome = location.pathname === '/';
+  const isHome = location.pathname === `/${lang}` || location.pathname === `/${lang}/`;
 
   return (
     <header className="sticky top-0 w-full z-50 bg-[#131313]/90 backdrop-blur-md border-b border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
@@ -95,7 +152,7 @@ function Header() {
             className="text-primary cursor-pointer active:scale-95 transition-transform md:hidden" 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           />
-          <Link to="/" className="text-xl font-bold tracking-tighter text-primary font-headline">NEURAL ARCHITECT</Link>
+          <Link to={`/${lang}`} className="text-xl font-bold tracking-tighter text-primary font-headline">NEURAL ARCHITECT</Link>
         </div>
         <div className="hidden md:flex items-center gap-8 text-white/70 font-headline text-sm font-medium">
           {isHome ? (
@@ -106,10 +163,10 @@ function Header() {
               <a href="#faq" className="hover:text-primary transition-colors duration-300">{t('nav.faq')}</a>
             </>
           ) : (
-            <Link to="/" className="hover:text-primary transition-colors duration-300">{t('nav.home')}</Link>
+            <Link to={`/${lang}`} className="hover:text-primary transition-colors duration-300">{t('nav.home')}</Link>
           )}
-          <Link to="/blog" className="hover:text-primary transition-colors duration-300">{t('nav.blog')}</Link>
-          <Link to="/games" className="hover:text-primary transition-colors duration-300">{t('nav.games')}</Link>
+          <Link to={`/${lang}/blog`} className="hover:text-primary transition-colors duration-300">{t('nav.blog')}</Link>
+          <Link to={`/${lang}/games`} className="hover:text-primary transition-colors duration-300">{t('nav.games')}</Link>
         </div>
         <div className="flex items-center gap-6">
           <div className="relative" ref={langMenuRef}>
@@ -125,18 +182,18 @@ function Header() {
             {isLangMenuOpen && (
               <div className="absolute right-0 mt-3 w-[320px] bg-[#131313]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden animate-in fade-in slide-in-from-top-2 z-50">
                 <div className="p-3 grid grid-cols-2 gap-1.5">
-                  {languages.map((lang) => (
+                  {languages.map((l) => (
                     <button
-                      key={lang.code}
-                      onClick={() => changeLanguage(lang.code)}
+                      key={l.code}
+                      onClick={() => changeLanguage(l.code)}
                       className={`w-full text-left px-4 py-3 text-sm font-headline rounded-xl transition-all duration-200 flex items-center justify-between group ${
-                        i18n.language === lang.code 
+                        i18n.language === l.code 
                           ? 'text-primary bg-primary/10 font-bold shadow-[inset_0_0_0_1px_rgba(75,226,119,0.2)]' 
                           : 'text-white/70 hover:bg-white/10 hover:text-white'
                       }`}
                     >
-                      <span className="group-hover:translate-x-1 transition-transform duration-200">{lang.full}</span>
-                      {i18n.language === lang.code && <Check className="w-4 h-4" />}
+                      <span className="group-hover:translate-x-1 transition-transform duration-200">{l.full}</span>
+                      {i18n.language === l.code && <Check className="w-4 h-4" />}
                     </button>
                   ))}
                 </div>
@@ -150,9 +207,9 @@ function Header() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-[#131313]/95 backdrop-blur-xl border-b border-white/10 flex flex-col p-6 gap-4 font-headline text-sm font-medium shadow-2xl animate-in slide-in-from-top-2">
-          <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.home')}</Link>
-          <Link to="/blog" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.blog')}</Link>
-          <Link to="/games" onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.games')}</Link>
+          <Link to={`/${lang}`} onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.home')}</Link>
+          <Link to={`/${lang}/blog`} onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.blog')}</Link>
+          <Link to={`/${lang}/games`} onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.games')}</Link>
         </div>
       )}
     </header>

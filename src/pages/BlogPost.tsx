@@ -10,9 +10,10 @@ import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
 const markdownFiles = import.meta.glob('../content/*.md', { query: '?raw', import: 'default' });
 
 export default function BlogPost() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug, lang } = useParams<{ slug: string, lang: string }>();
   const { i18n } = useTranslation();
   const isZh = i18n.language.startsWith('zh');
+  const currentLang = lang || 'en';
   
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -99,7 +100,7 @@ export default function BlogPost() {
       <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6">
         <h1 className="text-4xl font-headline font-bold mb-4">Post Not Found</h1>
         <p className="text-on-surface-variant mb-8">The article you're looking for doesn't exist or hasn't been published yet.</p>
-        <Link to="/blog" className="px-6 py-3 rounded-full bg-primary text-on-primary font-bold hover:bg-primary/90 transition-colors">
+        <Link to={`/${currentLang}/blog`} className="px-6 py-3 rounded-full bg-primary text-on-primary font-bold hover:bg-primary/90 transition-colors">
           Back to Blog
         </Link>
       </div>
@@ -115,10 +116,37 @@ export default function BlogPost() {
       <Helmet>
         <title>{title} | Neural Architect</title>
         {description && <meta name="description" content={description} />}
+        <link rel="canonical" href={`https://dlss5.app/${currentLang}/blog/${slug}`} />
+        
+        {/* Open Graph */}
         <meta property="og:title" content={`${title} | Neural Architect`} />
         {description && <meta property="og:description" content={description} />}
         <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://dlss5.app/${currentLang}/blog/${slug}`} />
         {metadata.og_image && <meta property="og:image" content={metadata.og_image} />}
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${title} | Neural Architect`} />
+        {description && <meta name="twitter:description" content={description} />}
+        {metadata.og_image && <meta name="twitter:image" content={metadata.og_image} />}
+        
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": title,
+            "image": metadata.og_image ? [metadata.og_image] : [],
+            "datePublished": metadata.date ? new Date(metadata.date).toISOString() : undefined,
+            "dateModified": metadata.date ? new Date(metadata.date).toISOString() : undefined,
+            "author": [{
+                "@type": "Organization",
+                "name": "Neural Architect",
+                "url": "https://dlss5.app"
+            }]
+          })}
+        </script>
       </Helmet>
       {/* Header */}
       <header className="relative pt-32 pb-20 px-6 overflow-hidden">
@@ -127,7 +155,7 @@ export default function BlogPost() {
         </div>
         
         <div className="max-w-3xl mx-auto relative z-10">
-          <Link to="/blog" className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-8 font-headline text-sm font-bold tracking-wider uppercase">
+          <Link to={`/${currentLang}/blog`} className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-8 font-headline text-sm font-bold tracking-wider uppercase">
             <ArrowLeft className="w-4 h-4" />
             {isZh ? '返回博客' : 'Back to Blog'}
           </Link>

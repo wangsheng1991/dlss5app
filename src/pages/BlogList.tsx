@@ -1,57 +1,87 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { ArrowRight, Calendar } from 'lucide-react';
 
 const blogPosts = [
   {
-    slug: 'dlss5-ai-slop-controversy',
+    slug: 'what-is-dlss-5-neural-rendering-guide',
     title: {
-      en: "DLSS 5 'AI Slop' Controversy: Everything That Happened",
-      zh: "DLSS 5「AI Slop」争议全记录：一场关于游戏灵魂的战争"
+      en: "What Is DLSS 5? The Complete Technical Guide to Neural Rendering (2026)",
+      zh: "DLSS 5 是什么？神经渲染完全技术指南（2026）"
     },
     description: {
-      en: "NVIDIA's DLSS 5 was supposed to be the 'GPT moment for graphics.' Instead, it sparked one of gaming's biggest AI controversies. Here's the full timeline.",
-      zh: "NVIDIA 的 DLSS 5 本该是「图形界的 GPT 时刻」。结果它引发了游戏史上最大的 AI 争议之一。以下是完整时间线。"
+      en: "A complete technical guide to NVIDIA's DLSS 5 neural rendering technology, explaining how it differs from previous versions and what it means for the future of gaming.",
+      zh: "NVIDIA DLSS 5 神经渲染技术的完全技术指南，解释它与以前版本的不同之处以及它对游戏未来的意义。"
     },
-    date: '2026-04-10',
-    image: 'https://www.nvidia.com/content/nvidiaGDC/us/en_US/geforce/news/dlss5-breakthrough-in-visual-fidelity-for-games/jcr:content/root/responsivegrid/nv_container_392921705/header/nv_image.coreimg.100.1070.jpeg/1742147200424/dlss5-blog-social-share.jpeg',
+    date: '2026-04-11',
+    image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1600',
     featured: true
   },
   {
-    slug: 'dlss5-vs-dlss4-comparison',
+    slug: 'dlss5-vs-dlss4-vs-fsr4-comparison-2026',
     title: {
-      en: "DLSS 5 vs DLSS 4: Complete Comparison",
-      zh: "DLSS 5 vs DLSS 4 完整对比"
+      en: "DLSS 5 vs DLSS 4 vs FSR 4: The 2026 Upscaling War, Explained",
+      zh: "DLSS 5 vs DLSS 4 vs FSR 4：2026 超分辨率大战完全解析"
     },
     description: {
-      en: "Should you upgrade for DLSS 5? A detailed breakdown of the differences, performance metrics, and visual quality.",
-      zh: "为了 DLSS 5 升级显卡值得吗？详细解析差异、性能指标和视觉质量。"
+      en: "A detailed comparison of DLSS 5, DLSS 4, and FSR 4. Should you upgrade your GPU for DLSS 5? We break down the differences.",
+      zh: "DLSS 5、DLSS 4 和 FSR 4 的详细对比。你应该为了 DLSS 5 升级显卡吗？我们为你解析差异。"
     },
-    date: '2026-04-15',
+    date: '2026-04-11',
     image: 'https://images.unsplash.com/photo-1655823769188-1234567890?auto=format&fit=crop&q=80&w=1600',
     featured: false
   },
   {
-    slug: 'ai-upscaling-vs-dlss5-neural-rendering',
+    slug: 'crimson-desert-pc-optimization-dlss-fsr-guide-2026',
     title: {
-      en: "AI Upscaling vs DLSS 5 Neural Rendering: What's the Difference?",
-      zh: "AI 超分 vs DLSS 5 Neural Rendering：有什么不同"
+      en: "Crimson Desert PC Optimization Guide: DLSS 4.5, FSR 4, and Getting 60fps at 4K (2026)",
+      zh: "绯红荒漠 PC 性能优化指南：DLSS 4.5、FSR 4 设置，4K 60fps 完整教程（2026）"
     },
     description: {
-      en: "Understanding the relationship between post-processing AI upscaling and in-engine neural rendering.",
-      zh: "理解后期 AI 超分与游戏内神经渲染之间的关系。"
+      en: "How to optimize Crimson Desert on PC for 4K 60fps using DLSS 4.5 and FSR 4. Best settings for RTX 50, RTX 40, and AMD GPUs.",
+      zh: "如何使用 DLSS 4.5 和 FSR 4 在 PC 上优化绯红荒漠以实现 4K 60fps。RTX 50、RTX 40 和 AMD 显卡的最佳设置。"
     },
-    date: '2026-04-20',
-    image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1600',
+    date: '2026-04-11',
+    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1600',
+    featured: false
+  },
+  {
+    slug: 'best-ai-image-upscaler-2026-comparison',
+    title: {
+      en: "AI Image Upscaling in 2026: Which Tool Is Actually Best?",
+      zh: "2026 年 AI 图片超分辨率工具横评：哪个最好用？"
+    },
+    description: {
+      en: "A comprehensive comparison of the best AI image upscaling tools in 2026, including free, open-source, and premium options.",
+      zh: "2026 年最佳 AI 图片超分辨率工具的全面横评，包括免费、开源和高级付费选项。"
+    },
+    date: '2026-04-11',
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1600',
+    featured: false
+  },
+  {
+    slug: 'dlss5-artistic-vision-debate-honest-assessment',
+    title: {
+      en: "Will DLSS 5 Kill Artistic Vision in Games? An Honest Assessment",
+      zh: "DLSS 5 会杀死游戏的艺术灵魂吗？一次诚实的评估"
+    },
+    description: {
+      en: "A deep dive into the debate surrounding DLSS 5 and its impact on artistic vision and creative control in video games.",
+      zh: "深入探讨围绕 DLSS 5 及其对视频游戏艺术愿景和创意控制影响的争论。"
+    },
+    date: '2026-04-11',
+    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1600',
     featured: false
   }
 ];
 
 export default function BlogList() {
   const { i18n } = useTranslation();
+  const { lang } = useParams<{ lang: string }>();
   const isZh = i18n.language.startsWith('zh');
+  const currentLang = lang || 'en';
 
   const featuredPost = blogPosts.find(p => p.featured);
   const regularPosts = blogPosts.filter(p => !p.featured);
@@ -61,9 +91,18 @@ export default function BlogList() {
       <Helmet>
         <title>{isZh ? 'DLSS 5 博客与新闻 | Neural Architect' : 'DLSS 5 Blog & News | Neural Architect'}</title>
         <meta name="description" content={isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
+        <link rel="canonical" href={`https://dlss5.app/${currentLang}/blog`} />
+        
+        {/* Open Graph */}
         <meta property="og:title" content={isZh ? 'DLSS 5 博客与新闻 | Neural Architect' : 'DLSS 5 Blog & News | Neural Architect'} />
         <meta property="og:description" content={isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://dlss5.app/${currentLang}/blog`} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={isZh ? 'DLSS 5 博客与新闻 | Neural Architect' : 'DLSS 5 Blog & News | Neural Architect'} />
+        <meta name="twitter:description" content={isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
       </Helmet>
       <div className="mb-16 text-center">
         <h1 className="text-4xl md:text-5xl font-headline font-bold mb-4">Neural Architect <span className="text-primary">Blog</span></h1>
@@ -74,7 +113,7 @@ export default function BlogList() {
 
       {featuredPost && (
         <div className="mb-16">
-          <Link to={`/blog/${featuredPost.slug}`} className="group block relative rounded-3xl overflow-hidden border border-white/10 bg-surface-container hover:border-primary/50 transition-all duration-500">
+          <Link to={`/${currentLang}/blog/${featuredPost.slug}`} className="group block relative rounded-3xl overflow-hidden border border-white/10 bg-surface-container hover:border-primary/50 transition-all duration-500">
             <div className="grid md:grid-cols-2 gap-0">
               <div className="relative aspect-video md:aspect-auto overflow-hidden">
                 <img 
@@ -112,7 +151,7 @@ export default function BlogList() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {regularPosts.map(post => (
-          <Link key={post.slug} to={`/blog/${post.slug}`} className="group block rounded-2xl overflow-hidden border border-white/10 bg-surface-container hover:border-primary/30 transition-all duration-300 flex flex-col h-full">
+          <Link key={post.slug} to={`/${currentLang}/blog/${post.slug}`} className="group block rounded-2xl overflow-hidden border border-white/10 bg-surface-container hover:border-primary/30 transition-all duration-300 flex flex-col h-full">
             <div className="relative aspect-video overflow-hidden">
               <img 
                 src={post.image} 
