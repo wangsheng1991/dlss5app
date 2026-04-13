@@ -1,8 +1,8 @@
 ---
 title: "What Is DLSS 5? The Complete Technical Guide to Neural Rendering (2026)"
 title_cn: "DLSS 5 是什么？神经渲染完全技术指南（2026）"
-description: "A complete technical guide to NVIDIA's DLSS 5 neural rendering technology, explaining how it differs from previous versions and what it means for the future of gaming."
-description_cn: "NVIDIA DLSS 5 神经渲染技术的完全技术指南，解释它与以前版本的不同之处以及它对游戏未来的意义。"
+description: "What GPUs support DLSS 5? RTX 5090, 5080, and 5070 Ti confirmed. Check the full list of DLSS 5 supported cards and see if your RTX 40-series made the cut."
+description_cn: "哪些显卡支持 DLSS 5？RTX 5090/5080/5070 已确认。查看完整的 DLSS 5 supported cards 列表，确认你的 RTX 40 系显卡是否支持。"
 date: "2026-04-11"
 og_image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1600"
 tags: ["dlss5", "neural rendering", "nvidia", "what is dlss 5", "技术原理"]
@@ -87,13 +87,22 @@ NVIDIA has been emphatic that developers are not passive recipients of DLSS 5's 
 
 ---
 
-## Hardware Requirements
+## DLSS 5 Supported Cards: Which GPUs Will Work?
 
-DLSS 5 is currently confirmed exclusively for **NVIDIA RTX 50 Series (Blackwell architecture)** GPUs: the RTX 5060, 5060 Ti, 5070, 5070 Ti, 5080, and 5090.
+If you are wondering about the official **DLSS 5 supported cards**, the answer is currently very strict. DLSS 5 is confirmed exclusively for **NVIDIA RTX 50 Series (Blackwell architecture)** GPUs. 
+
+The full list of officially **DLSS 5 supported cards** includes:
+- NVIDIA GeForce RTX 5090
+- NVIDIA GeForce RTX 5080
+- NVIDIA GeForce RTX 5070 Ti
+- NVIDIA GeForce RTX 5070
+- NVIDIA GeForce RTX 5060 Ti
+- NVIDIA GeForce RTX 5060
 
 The GTC 2026 demo ran on two RTX 5090 GPUs — one for the game, one for the DLSS 5 model. NVIDIA has confirmed that the shipping version will run on a single GPU, with full hardware specifications to be announced closer to the Fall 2026 launch.
 
-RTX 40 series support has **not been confirmed**. RTX 30 series and older will not support DLSS 5.
+**Will older GPUs be supported?**
+RTX 40 series support has **not been confirmed**. RTX 30 series and older will definitely not be on the list of DLSS 5 supported cards due to hardware limitations in their Tensor Cores.
 
 ---
 
@@ -187,11 +196,22 @@ NVIDIA 强调开发者有三个主要控制项：**强度**（神经模型增强
 
 ---
 
-## 硬件要求
+## DLSS 5 Supported Cards (支持的显卡列表)：哪些 GPU 可以运行？
 
-DLSS 5 目前确认仅支持 **NVIDIA RTX 50 系列（Blackwell 架构）** GPU：RTX 5060、5060 Ti、5070、5070 Ti、5080、5090。
+如果您正在寻找官方的 **DLSS 5 supported cards (DLSS 5 支持的显卡)**，目前的答案非常严格。DLSS 5 已确认仅独占支持 **NVIDIA RTX 50 系列（Blackwell 架构）** GPU。
 
-GTC 2026 演示使用了两张 RTX 5090——一张跑游戏，一张跑 DLSS 5 模型。NVIDIA 确认正式版将在单 GPU 上运行。RTX 40 系列支持**尚未确认**，RTX 30 系列及更早不支持。
+完整的官方 **DLSS 5 supported cards** 列表包括：
+- NVIDIA GeForce RTX 5090
+- NVIDIA GeForce RTX 5080
+- NVIDIA GeForce RTX 5070 Ti
+- NVIDIA GeForce RTX 5070
+- NVIDIA GeForce RTX 5060 Ti
+- NVIDIA GeForce RTX 5060
+
+GTC 2026 演示使用了两张 RTX 5090——一张跑游戏，一张跑 DLSS 5 模型。NVIDIA 确认正式版将在单 GPU 上运行，完整的硬件规格将在 2026 年秋季发布前公布。
+
+**旧款显卡会支持吗？**
+RTX 40 系列是否支持**尚未确认**。由于 Tensor Core 的硬件限制，RTX 30 系列及更早的显卡绝对不会出现在 DLSS 5 supported cards 列表中。
 
 ---
 
