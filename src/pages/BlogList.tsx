@@ -6,6 +6,20 @@ import { ArrowRight, Calendar } from 'lucide-react';
 
 const blogPosts = [
   {
+    slug: 'dlss-5-architecture-explained-blackwell-neural-rendering',
+    title: {
+      en: "DLSS 5 Architecture Explained: How Blackwell Powers Neural Rendering",
+      zh: "DLSS 5 架构深度解析：Blackwell 如何驱动神经渲染"
+    },
+    description: {
+      en: "A deep dive into the DLSS 5 architecture, explaining why neural rendering requires RTX 50 series Blackwell GPUs, Tensor Cores, and FP8 precision.",
+      zh: "深入解析 DLSS 5 架构，揭秘为什么神经渲染需要 RTX 50 系列 Blackwell 显卡、Tensor Core 和 FP8 精度。"
+    },
+    date: '2026-04-13',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1600',
+    featured: true
+  },
+  {
     slug: 'what-is-dlss-5-neural-rendering-guide',
     title: {
       en: "What Is DLSS 5? The Complete Technical Guide to Neural Rendering (2026)",
@@ -17,7 +31,7 @@ const blogPosts = [
     },
     date: '2026-04-11',
     image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1600',
-    featured: true
+    featured: false
   },
   {
     slug: 'dlss5-vs-dlss4-vs-fsr4-comparison-2026',
