@@ -1,0 +1,18 @@
+# Neural Architect / DLSS 5 Checker
+
+Neural Architect is an independent, free DLSS 5 GPU compatibility checker. It explains what is confirmed by NVIDIA, what remains unconfirmed, and how DLSS 5 relates to DLSS 4 and FSR 4. It is not affiliated with NVIDIA.
+
+## Primary pages
+- English checker: https://dlss5.app/en
+- 简体中文检测器: https://dlss5.app/zh-CN
+- Traditional Chinese checker: https://dlss5.app/zh-TW
+- English technical guides: https://dlss5.app/en/blog
+- Chinese technical guides: https://dlss5.app/zh-CN/blog
+- Official NVIDIA DLSS information: https://www.nvidia.com/en-us/geforce/technologies/dlss/
+- Free visual conversion tool: https://dlss5nvidia.com
+
+## Data policy
+- RTX 50 / Blackwell DLSS 5 support is marked confirmed when backed by official NVIDIA material.
+- RTX 40 support is shown as unconfirmed unless NVIDIA publishes a compatible list.
+- RTX 30 and RTX 20 are described against the current official compatibility information; the checker does not infer support from community claims.
+- Last content review: 2026-10-10.

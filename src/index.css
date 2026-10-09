@@ -47,3 +47,44 @@
     backdrop-filter: blur(16px);
   }
 }
+
+/* Crawlable shell styles. React replaces this markup after hydration, while
+   search bots and no-JS visitors still get a readable page immediately. */
+.seo-shell {
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 7rem;
+  color: var(--color-on-background);
+}
+.seo-shell header { max-width: 54rem; margin-bottom: 3rem; }
+.seo-shell h1, .seo-shell h2, .seo-shell h3 { font-family: var(--font-headline); color: #fff; line-height: 1.15; }
+.seo-shell h1 { font-size: clamp(2.25rem, 5vw, 4.5rem); letter-spacing: -0.04em; margin: 0.5rem 0 1.25rem; }
+.seo-shell h2 { font-size: clamp(1.6rem, 3vw, 2.5rem); margin: 3rem 0 1rem; }
+.seo-shell h3 { font-size: 1.15rem; margin: 1.5rem 0 0.5rem; }
+.seo-shell p { color: var(--color-on-surface-variant); line-height: 1.75; }
+.seo-shell .lede { font-size: 1.2rem; max-width: 48rem; }
+.seo-shell .eyebrow { color: var(--color-primary); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+.seo-shell a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 0.2em; }
+.seo-shell form { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: end; margin-top: 2rem; }
+.seo-shell label { width: 100%; color: var(--color-on-surface-variant); font-size: 0.875rem; }
+.seo-shell input { flex: 1 1 15rem; min-height: 3rem; border: 1px solid var(--color-outline-variant); border-radius: 0.6rem; background: var(--color-surface-container); color: #fff; padding: 0 1rem; }
+.seo-shell button { min-height: 3rem; border: 0; border-radius: 0.6rem; background: var(--color-primary); color: var(--color-on-primary); font-weight: 700; padding: 0 1.25rem; cursor: pointer; }
+.seo-shell table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 0.75rem; background: var(--color-surface-container); }
+.seo-shell th, .seo-shell td { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 1rem; text-align: left; }
+.seo-shell th { color: #fff; font-weight: 700; }
+.seo-shell td { color: var(--color-on-surface-variant); }
+.seo-shell .source-note { margin-top: 1rem; font-size: 0.875rem; }
+.seo-shell section { margin-top: 3rem; }
+.seo-shell .article-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; }
+.seo-shell .article-list article { border: 1px solid rgba(255,255,255,0.1); border-radius: 0.9rem; padding: 1.5rem; background: var(--color-surface-container); }
+.seo-shell .article-list h2 { font-size: 1.35rem; margin: 0 0 0.75rem; }
+.seo-shell time { color: var(--color-on-surface-variant); font-size: 0.875rem; }
+.seo-shell.article-shell { max-width: 52rem; }
+.seo-shell .article-content { margin-top: 2.5rem; }
+.seo-shell .article-content h2 { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+.seo-shell .article-content img { max-width: 100%; height: auto; border-radius: 0.75rem; }
+.seo-shell blockquote { border-left: 3px solid var(--color-primary); margin: 1.5rem 0; padding: 0.5rem 1rem; background: rgba(75,226,119,0.06); }
+@media (max-width: 640px) {
+  .seo-shell { padding: 3.5rem 1rem 5rem; }
+  .seo-shell th, .seo-shell td { padding: 0.75rem 0.5rem; font-size: 0.875rem; }
+}
