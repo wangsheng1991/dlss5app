@@ -2,6 +2,7 @@ import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import OpenCC from 'opencc-js';
 import { gpuData } from '../src/data';
+import { getGpuDetailContent } from '../src/gpuDetailContent';
 
 const root = resolve(new URL('..', import.meta.url).pathname);
 const dist = join(root, 'dist');
@@ -179,15 +180,11 @@ function gpuDetailBody(lang: Lang, id: string): string {
   const gpu = gpuEntries.find(entry => entry.id === id);
   if (!gpu) return `<main class="seo-shell"><h1>Not found</h1><p><a href="/${lang}">Back to the checker</a></p></main>`;
   const series = gpuData.gpu_series.find(entry => entry.id === gpu.series);
-  const isEnglish = lang === 'en';
-  const isTraditional = lang === 'zh-TW';
-  const title = isEnglish ? `${gpu.name} DLSS 5 support and VRAM evidence` : isTraditional ? `${gpu.name} DLSS 5 支援與顯存證據` : `${gpu.name} DLSS 5 支持与显存证据`;
-  const status = localizedStatus(lang, gpu.dlss5_status);
-  const sourceLabel = isEnglish ? 'Evidence source' : isTraditional ? '證據來源' : '证据来源';
-  const noteLabel = isEnglish ? 'Model note' : isTraditional ? '型號備註' : '型号备注';
-  const back = isEnglish ? 'Back to all GPU models' : isTraditional ? '返回全部顯示卡型號' : '返回全部显卡型号';
-  const disclaimer = isEnglish ? 'This is an independent evidence page, not an NVIDIA compatibility guarantee.' : isTraditional ? '這是獨立證據頁，不是 NVIDIA 的相容性保證。' : '这是独立证据页，不是 NVIDIA 的兼容性保证。';
-  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'GPU EVIDENCE DETAIL' : isTraditional ? 'GPU 證據詳情' : 'GPU 证据详情'}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(gpu.name)} · ${escapeHtml(series?.architecture || '')} · ${escapeHtml(String(gpu.vram_gb))} GB VRAM</p></header><section><h2>${isEnglish ? 'Current DLSS 5 status' : isTraditional ? '目前 DLSS 5 狀態' : '当前 DLSS 5 状态'}</h2><p><strong>${escapeHtml(status)}</strong></p><p>${escapeHtml(noteLabel)}：${escapeHtml(gpu.note)}</p><p>${escapeHtml(sourceLabel)}：<a href="${officialDlssSource}">${officialDlssSource}</a></p><p class="source-note">${disclaimer}</p></section><p><a href="/${lang}">← ${back}</a> · <a href="/${lang}/studio">DLSS 5 Studio</a> · <a href="/${lang}/blog">${isEnglish ? 'Technical guides' : isTraditional ? '技術指南' : '技术指南'}</a></p></main>`;
+  const copy = getGpuDetailContent(lang, gpu, series);
+  const paragraphs = (values: string[]) => values.map(value => `<p>${escapeHtml(value)}</p>`).join('');
+  const steps = copy.nextSteps.map(step => `<li>${escapeHtml(step)}</li>`).join('');
+  const faq = copy.faq.map(item => `<div><h3>${escapeHtml(item.question)}</h3><p>${escapeHtml(item.answer)}</p></div>`).join('');
+  return `<main class="seo-shell"><header><p class="eyebrow">${escapeHtml(copy.eyebrow)}</p><h1>${escapeHtml(copy.title)}</h1><p class="lede">${escapeHtml(gpu.name)} · ${escapeHtml(series?.architecture || '')} · ${escapeHtml(String(gpu.vram_gb))} GB VRAM</p></header><section><h2>${escapeHtml(copy.statusHeading)}</h2><p><strong>${escapeHtml(copy.status)}</strong></p><p>${escapeHtml(copy.modelNoteLabel)}：${escapeHtml(gpu.note)}</p><p>${escapeHtml(copy.sourceLabel)}：<a href="${officialDlssSource}">${officialDlssSource}</a></p><p>${escapeHtml(copy.statusExplanation)}</p><p class="source-note">${escapeHtml(copy.disclaimer)}</p></section><section><h2>${escapeHtml(copy.evidenceHeading)}</h2>${paragraphs(copy.evidenceParagraphs)}</section><section><h2>${escapeHtml(copy.hardwareHeading)}</h2>${paragraphs(copy.hardwareParagraphs)}</section><section><h2>${escapeHtml(copy.studioHeading)}</h2>${paragraphs(copy.studioParagraphs)}</section><section><h2>${escapeHtml(copy.nextHeading)}</h2><ol>${steps}</ol></section><section><h2>${escapeHtml(copy.faqHeading)}</h2>${faq}</section><p><a href="/${lang}">← ${escapeHtml(copy.back)}</a> · <a href="/${lang}/studio">${escapeHtml(copy.studioLink)}</a> · <a href="/${lang}/blog">${escapeHtml(copy.guidesLink)}</a></p></main>`;
 }
 
 function studioBody(lang: Lang): string {
