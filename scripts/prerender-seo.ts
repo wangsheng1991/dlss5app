@@ -223,6 +223,20 @@ function writeRoute(route: string, html: string): void {
   writeFileSync(file, html);
 }
 
+function writeNotFoundPage(): void {
+  const template = readFileSync(join(dist, 'index.html'), 'utf8');
+  const title = 'Page not found | Neural Architect';
+  const description = 'The requested Neural Architect page could not be found.';
+  const body = '<main class="seo-shell"><header><p class="eyebrow">NEURAL ARCHITECT</p><h1>Page not found</h1><p class="lede">The page you requested does not exist or may have moved.</p></header><p><a href="/en">Go to the home page</a> · <a href="/zh-CN">返回中文首页</a></p></main>';
+  const head = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"/><meta name="robots" content="noindex,follow"/>`;
+  const html = template
+    .replace(/<html lang="[^"]*"/, '<html lang="en"')
+    .replace(/<title>[\s\S]*?<\/title>/, '')
+    .replace('</head>', `${head}</head>`)
+    .replace('<div id="root"></div>', `<div id="root">${body}</div>`);
+  writeFileSync(join(dist, '404.html'), html);
+}
+
 for (const lang of Object.keys(copy) as Lang[]) {
   const c = copy[lang];
   const homeRoute = `/${lang}`;
@@ -249,6 +263,7 @@ for (const lang of Object.keys(copy) as Lang[]) {
 // Keep the root response useful for crawlers that discover the bare domain first.
 const rootCopy = copy.en;
 writeRoute('/', documentFor('/', 'en', rootCopy.title, rootCopy.description, homeBody('en'), 'website', { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Neural Architect', url: baseUrl }));
+writeNotFoundPage();
 
 function sitemapXml(): string {
   const date = '2026-10-10';
