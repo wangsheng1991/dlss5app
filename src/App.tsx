@@ -17,6 +17,7 @@ import Studio from './pages/Studio';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 import SiteInfo from './pages/SiteInfo';
+import Updates from './pages/Updates';
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="supported-cards" element={<SupportedCards />} />
             <Route path="blog" element={<BlogList />} />
             <Route path="blog/:slug" element={<BlogPost />} />
+            <Route path="updates" element={<Updates />} />
             <Route path="about" element={<SiteInfo slug="about" />} />
             <Route path="editorial-policy" element={<SiteInfo slug="editorial-policy" />} />
             <Route path="contact" element={<SiteInfo slug="contact" />} />
@@ -64,7 +66,8 @@ function SEOHead() {
   // Only advertise routes that have a matching pre-rendered, localized document.
   // The language picker still exposes the runtime translations, but we avoid
   // publishing hreflang links to routes that are not in the sitemap.
-  const languages = ['en', 'zh-CN', 'zh-TW'];
+  const sampleRoute = basePath === '' || basePath === '/supported-cards';
+  const languages = sampleRoute ? ['en', 'zh-CN', 'zh-TW', 'ja', 'ko'] : ['en', 'zh-CN', 'zh-TW'];
 
   return (
     <Helmet>
@@ -240,6 +243,7 @@ function Footer({ lang }: { lang: string }) {
     [isEnglish ? 'Supported cards' : isTraditional ? '支援顯示卡' : '支持显卡', `/${lang}/supported-cards`],
     [isEnglish ? 'Studio requirements' : isTraditional ? 'Studio 要求' : 'Studio 要求', `/${lang}/studio`],
     [isEnglish ? 'Technical guides' : isTraditional ? '技術指南' : '技术指南', `/${lang}/blog`],
+    [isEnglish ? 'Updates' : isTraditional ? '更新紀錄' : '更新记录', `/${lang}/updates`],
     [isEnglish ? 'About' : isTraditional ? '關於本站' : '关于本站', `/${lang}/about`],
     [isEnglish ? 'Editorial policy' : isTraditional ? '編輯政策' : '编辑政策', `/${lang}/editorial-policy`],
     [isEnglish ? 'Contact' : isTraditional ? '聯絡我們' : '联系我们', `/${lang}/contact`],

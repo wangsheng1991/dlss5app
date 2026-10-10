@@ -91,6 +91,20 @@ export const blogPosts = [
     date: '2026-04-11',
     image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1600',
     featured: false
+  },
+  {
+    slug: 'can-i-run-dlss-5-on-my-gpu',
+    title: {
+      en: 'Can I Run DLSS 5 on My GPU? A Source-Checked Guide',
+      zh: '我的显卡能运行 DLSS 5 吗？一份有来源的判断指南'
+    },
+    description: {
+      en: 'A source-checked guide to RTX 50 confirmation, RTX 40 uncertainty, older RTX and AMD scope, and the regular Studio path.',
+      zh: '从来源出发判断 RTX 50、RTX 40、旧款 RTX 与 AMD 的范围，并说明 DLSS 5 Studio 的正规路径。'
+    },
+    date: '2026-10-10',
+    image: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&q=80&w=1600',
+    featured: false
   }
 ];
 

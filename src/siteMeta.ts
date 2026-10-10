@@ -16,8 +16,8 @@ export const TRUST_PAGE_SLUGS = ['about', 'editorial-policy', 'contact', 'privac
 
 export type TrustSlug = typeof TRUST_PAGE_SLUGS[number];
 
-/** 每种语言下的路由数：首页 + studio + supported-cards + blog 索引 + 文章 + 型号页 + 四个站点信息页。 */
-export const routesPerLanguage = (articleCount: number): number => 4 + articleCount + gpuData.gpus.length + TRUST_PAGE_SLUGS.length;
+/** 每种语言下的路由数：首页 + studio + supported-cards + blog 索引 + updates + 文章 + 型号页 + 四个站点信息页。 */
+export const routesPerLanguage = (articleCount: number): number => 5 + articleCount + gpuData.gpus.length + TRUST_PAGE_SLUGS.length;
 
 /** sitemap 与页面里写的总页数，三个语言一起算。 */
 export const totalPageCount = (articleCount: number): number => 3 * routesPerLanguage(articleCount);

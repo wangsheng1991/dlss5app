@@ -122,6 +122,36 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/blog" />
   </url>
   <url>
+    <loc>https://www.dlss5.app/en/updates</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/updates" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/updates" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/updates" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/updates" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-CN/updates</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/updates" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/updates" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/updates" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/updates" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-TW/updates</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/updates" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/updates" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/updates" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/updates" />
+  </url>
+  <url>
     <loc>https://www.dlss5.app/en/blog/best-ai-image-upscaler-2026-comparison</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
@@ -150,6 +180,36 @@
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/blog/best-ai-image-upscaler-2026-comparison" />
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/blog/best-ai-image-upscaler-2026-comparison" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/blog/best-ai-image-upscaler-2026-comparison" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/en/blog/can-i-run-dlss-5-on-my-gpu</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/blog/can-i-run-dlss-5-on-my-gpu" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-CN/blog/can-i-run-dlss-5-on-my-gpu</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/blog/can-i-run-dlss-5-on-my-gpu" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-TW/blog/can-i-run-dlss-5-on-my-gpu</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/blog/can-i-run-dlss-5-on-my-gpu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/blog/can-i-run-dlss-5-on-my-gpu" />
   </url>
   <url>
     <loc>https://www.dlss5.app/en/blog/crimson-desert-pc-optimization-dlss-fsr-guide-2026</loc>
@@ -1350,5 +1410,53 @@
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/privacy" />
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/privacy" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/privacy" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/ja</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.dlss5.app/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.dlss5.app/ko" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/ja/supported-cards</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.dlss5.app/ja/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.dlss5.app/ko/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/supported-cards" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/ko</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.dlss5.app/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.dlss5.app/ko" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/ko/supported-cards</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.dlss5.app/ja/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.dlss5.app/ko/supported-cards" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/supported-cards" />
   </url>
 </urlset>

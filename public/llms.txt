@@ -1,6 +1,6 @@
 # Neural Architect — DLSS 5 GPU Checker
 
-> Independent, free DLSS 5 GPU compatibility checker for 31 GeForce RTX models, with source-linked status and a separate Studio evidence track.
+> Independent, free DLSS 5 GPU compatibility checker for 31 GeForce RTX models, with source-linked status and a separate Studio evidence track. The current sitemap contains 145 URLs, including four Japanese/Korean sample routes.
 
 ## Checker
 - [DLSS 5 GPU evidence checker (English)](https://www.dlss5.app/en): Search 31 GeForce RTX models by VRAM, architecture, status and the NVIDIA source behind each conclusion.
@@ -8,6 +8,7 @@
 - [DLSS 5 GPU 檢測器（繁體中文）](https://www.dlss5.app/zh-TW): 繁體中文入口，展示同一份型号级证据表与 FAQ。
 - [Supported cards overview](https://www.dlss5.app/en/supported-cards): Series-level scope, architecture notes and the evidence boundary for upgrade decisions.
 - [DLSS 5 technical guide](https://www.dlss5.app/en/blog/what-is-dlss-5-neural-rendering-guide): Explains neural rendering, the announced hardware scope and the limits of public evidence.
+- [Updates](https://www.dlss5.app/en/updates): Dated record of substantive checker and evidence-page changes.
 
 ## GPU evidence pages
 - [RTX 5090 DLSS 5 status](https://www.dlss5.app/en/gpu/rtx5090): Confirmed-scope example with 32 GB VRAM, Blackwell context and source-linked caveats.
@@ -28,6 +29,13 @@
 - [AI image upscaler comparison](https://www.dlss5.app/en/blog/best-ai-image-upscaler-2026-comparison): Compares online, open-source and premium image-upscaling workflows.
 - [DLSS 5 artistic-vision debate](https://www.dlss5.app/en/blog/dlss5-artistic-vision-debate-honest-assessment): Discusses neural rendering, creative control and before/after transparency.
 - [Technical guides index](https://www.dlss5.app/en/blog): Index of the site's DLSS 5 hardware and rendering explainers.
+- [Can I run DLSS 5 on my GPU?](https://www.dlss5.app/en/blog/can-i-run-dlss-5-on-my-gpu): Source-checked guide to RTX 50 confirmation, RTX 40 uncertainty and the regular Studio path.
+
+## Japanese and Korean samples
+- [日本語 checker sample](https://www.dlss5.app/ja): Limited Japanese homepage sample; the full site has not been rolled out in Japanese.
+- [日本語 supported cards sample](https://www.dlss5.app/ja/supported-cards): Limited Japanese model table sample.
+- [한국어 checker sample](https://www.dlss5.app/ko): Limited Korean homepage sample; the full site has not been rolled out in Korean.
+- [한국어 supported cards sample](https://www.dlss5.app/ko/supported-cards): Limited Korean model table sample.
 
 ## Site information
 - [About this site](https://www.dlss5.app/en/about): Who publishes the DLSS 5 GPU evidence checker, what it does and does not claim, and how it relates to dlss5nvidia.com.
@@ -39,7 +47,7 @@
 - Site: Neural Architect at https://www.dlss5.app; independent and not affiliated with NVIDIA.
 - Scope: 31 GeForce RTX models; RTX 50 / Blackwell is the confirmed scope in the current evidence set, RTX 40 is unconfirmed, and RTX 30/20 remain outside the current official list.
 - Evidence rule: community claims are not promoted to a support guarantee without an official NVIDIA source.
-- Machine-readable page list: https://www.dlss5.app/sitemap.xml (135 URLs across en, zh-CN and zh-TW).
+- Machine-readable page list: https://www.dlss5.app/sitemap.xml (145 URLs: 141 standard en/zh-CN/zh-TW pages plus four ja/ko sample routes).
 
 ## Related sites
 - [DLSS5NVIDIA visual conversion tools](https://www.dlss5nvidia.com/download): Product and tool workflows for free online conversion and the local Studio request path; use this when the user wants to process an image or video.

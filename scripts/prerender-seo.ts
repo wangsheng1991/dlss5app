@@ -52,8 +52,8 @@ const statusCounts = {
   outOfScope: gpuEntries.filter(gpu => gpu.dlss5_status === 'no').length,
 };
 const languageCount = 3;
-/** 每种语言下的路由数：首页 + studio + supported-cards + blog 索引 + 文章 + 型号页 + 4 个站点信息页。 */
-const routesPerLanguage = 4 + articleSlugs.length + gpuEntries.length + TRUST_PAGE_SLUGS.length;
+/** 每种语言下的路由数：首页 + studio + supported-cards + blog 索引 + updates + 文章 + 型号页 + 4 个站点信息页。 */
+const routesPerLanguage = 5 + articleSlugs.length + gpuEntries.length + TRUST_PAGE_SLUGS.length;
 const pageCount = languageCount * routesPerLanguage;
 
 const copy: Record<Lang, {
@@ -249,17 +249,22 @@ function crumbLabel(lang: Lang, key: 'home' | 'studio' | 'supportedCards' | 'blo
 }
 
 /** 每一页都带站点信息页的出口 —— 这些页要能被爬虫发现，不能只躺在 sitemap 里。 */
-function trustNav(lang: Lang): string {
+function trustNav(lang: string): string {
   const isEnglish = lang === 'en';
   const isTraditional = lang === 'zh-TW';
-  const labels = isEnglish
+  const labels = lang === 'ja'
+    ? ['概要', '編集方針', 'お問い合わせ', 'プライバシー']
+    : lang === 'ko'
+      ? ['소개', '편집 정책', '문의', '개인정보 보호']
+      : isEnglish
     ? ['About', 'Editorial policy', 'Contact', 'Privacy']
     : isTraditional
       ? ['關於本站', '編輯政策', '聯絡我們', '隱私']
       : ['关于本站', '编辑政策', '联系我们', '隐私'];
   const links = TRUST_PAGE_SLUGS.map((slug, index) => `<a href="/${lang}/${slug}">${escapeHtml(labels[index])}</a>`).join(' · ');
-  const llms = isEnglish ? 'Machine-readable summary' : isTraditional ? '給機器讀的摘要' : '给机器读的摘要';
-  return `<nav class="site-info" aria-label="${isEnglish ? 'Site information' : isTraditional ? '站點資訊' : '站点信息'}">${links} · <a href="/llms.txt">${escapeHtml(llms)}</a></nav>`;
+  const llms = lang === 'ja' ? '機械可読サマリー' : lang === 'ko' ? '기계 판독 요약' : isEnglish ? 'Machine-readable summary' : isTraditional ? '給機器讀的摘要' : '给机器读的摘要';
+  const aria = lang === 'ja' ? 'サイト情報' : lang === 'ko' ? '사이트 정보' : isEnglish ? 'Site information' : isTraditional ? '站點資訊' : '站点信息';
+  return `<nav class="site-info" aria-label="${aria}">${links} · <a href="/llms.txt">${escapeHtml(llms)}</a></nav>`;
 }
 
 function gpuRows(lang: Lang): string {
@@ -550,16 +555,116 @@ function articleBody(lang: Lang, slug: string): { body: string; meta: Record<str
   return { meta: { ...parsed.meta, title, description }, body: `<main class="seo-shell article-shell"><article><p class="eyebrow">${eyebrow}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(description)}</p>${reviewedHtml}<div class="article-content">${body}</div>${counterpart}<p><a href="/${lang}/blog">← ${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a></p></article></main>` };
 }
 
-function documentFor(route: string, lang: Lang, title: string, description: string, body: string, type: 'website' | 'article', jsonLd: unknown, robots = 'index,follow', image = defaultOgImage): string {
+type SampleLang = 'ja' | 'ko';
+
+const updatesCopy: Record<Lang, { title: string; description: string; heading: string; intro: string; items: Array<[string, string, string, string]> }> = {
+  en: {
+    title: 'DLSS 5 checker updates | Neural Architect',
+    description: 'A dated record of substantive changes to the DLSS 5 evidence checker and its source-linked pages.',
+    heading: 'Updates',
+    intro: 'This page records substantive changes when they are made. It is not a promise of daily updates.',
+    items: [
+      ['2026-10-10', 'GPU evidence pages now expose model-level launch, CUDA, bus-width and board-power facts with source links.', '/en/supported-cards', 'Open supported cards'],
+      ['2026-10-10', 'The supported-cards landing page and site-information pages now carry review dates and clear evidence boundaries.', '/en/editorial-policy', 'Read the editorial policy'],
+      ['2026-10-10', 'Home, model and article answer sections were made self-contained so readers can verify a claim before following a source.', '/en', 'Open the checker home'],
+    ],
+  },
+  'zh-CN': {
+    title: 'DLSS 5 检测器更新记录 | Neural Architect',
+    description: '记录 DLSS 5 证据检测器及其来源页面的实质性变更，并标明受影响页面。',
+    heading: '更新记录',
+    intro: '本页只记录已经发生的实质性变更，不承诺每天更新。',
+    items: [
+      ['2026-10-10', '显卡证据页现在展示型号级发布时间、CUDA、位宽和板卡功耗，并附上来源链接。', '/zh-CN/supported-cards', '查看支持显卡'],
+      ['2026-10-10', '支持显卡页和站点信息页加入复审日期，并明确证据边界。', '/zh-CN/editorial-policy', '阅读编辑政策'],
+      ['2026-10-10', '首页、型号页和文章的回答段改为自足内容，读者可先核对主张再打开来源。', '/zh-CN', '打开检测器首页'],
+    ],
+  },
+  'zh-TW': {
+    title: 'DLSS 5 檢查器更新紀錄 | Neural Architect',
+    description: '記錄 DLSS 5 證據檢查器與來源頁面的實質變更，並標明受影響頁面。',
+    heading: '更新紀錄',
+    intro: '本頁只記錄已經發生的實質變更，不承諾每日更新。',
+    items: [
+      ['2026-10-10', '顯示卡證據頁現在展示型號級發布時間、CUDA、位寬與板卡功耗，並附上來源連結。', '/zh-TW/supported-cards', '查看支援顯示卡'],
+      ['2026-10-10', '支援顯示卡頁與站點資訊頁加入複審日期，並明確標示證據邊界。', '/zh-TW/editorial-policy', '閱讀編輯政策'],
+      ['2026-10-10', '首頁、型號頁與文章的回答段改為自足內容，讀者可先核對主張再開啟來源。', '/zh-TW', '開啟檢查器首頁'],
+    ],
+  },
+};
+
+function updatesBody(lang: Lang): string {
+  const c = updatesCopy[lang];
+  const items = c.items.map(([date, text, href, label]) => `<article><time datetime="${date}">${date}</time><p>${escapeHtml(text)}</p><p><a href="${href}">${escapeHtml(label)} →</a></p></article>`).join('');
+  const note = lang === 'en'
+    ? 'A date here means that a substantive page, data, or evidence-boundary change was reviewed. It does not mean that the underlying hardware status changed on that day. Model pages remain the place to read the current status and its source.'
+    : lang === 'zh-TW'
+      ? '這裡的日期代表頁面、資料或證據邊界完成了一次實質複審，不代表硬體狀態在當天改變。型號頁仍是閱讀最新狀態與來源的地方。'
+      : '这里的日期代表页面、资料或证据边界完成了一次实质复审，不代表硬件状态在当天改变。型号页仍是阅读最新状态与来源的地方。';
+  const scope = lang === 'en'
+    ? 'The checker keeps the game-internal status separate from the local Studio track. The update links above point to the page that owns each explanation, so a reader can verify the scope without treating this log as a compatibility table.'
+    : lang === 'zh-TW'
+      ? '檢查器把遊戲內狀態與本機 Studio 路線分開。上面的更新連結會指向負責該說明的頁面，讀者可以在不把這份紀錄當成相容性表格的情況下核對範圍。'
+      : '检测器把游戏内状态与本地 Studio 路线分开。上面的更新链接会指向负责该说明的页面，读者可以在不把这份记录当成兼容性表格的情况下核对范围。';
+  return `<main class="seo-shell"><header><p class="eyebrow">NEURAL ARCHITECT</p><h1>${escapeHtml(c.heading)}</h1><p class="lede">${escapeHtml(c.intro)}</p></header><section class="article-list">${items}</section><section><h2>${lang === 'en' ? 'How to use this log' : lang === 'zh-TW' ? '如何閱讀這份紀錄' : '如何阅读这份记录'}</h2><p>${escapeHtml(note)}</p><p>${escapeHtml(scope)}</p><p>${lang === 'en' ? 'For a correction, use the public contact page and include the affected URL and the source you checked.' : lang === 'zh-TW' ? '如果需要更正，請使用公開聯絡頁，附上受影響的網址與你核對過的來源。' : '如果需要更正，请使用公开联系页面，并附上受影响的网址与你核对过的来源。'}</p><p><a href="/${lang}/contact">${lang === 'en' ? 'Contact the evidence desk →' : lang === 'zh-TW' ? '聯絡資料頁 →' : '联系资料页 →'}</a></p></section><p><a href="/${lang}">${lang === 'en' ? 'Back to the checker home' : lang === 'zh-TW' ? '返回檢查器首頁' : '返回检测器首页'}</a></p></main>`;
+}
+
+const sampleFaq: Record<SampleLang, Array<[string, string]>> = {
+  ja: [
+    ['DLSS 5 の対応状況はどこで確認できますか？', 'モデル名を検索し、各モデルの証拠ページとリンクされた NVIDIA の情報を確認してください。'],
+    ['RTX 40 シリーズは確認済みですか？', 'このサイトが追跡している公開情報では、RTX 40 シリーズのモデル単位の確認は未確定です。'],
+    ['このページは NVIDIA の公式ツールですか？', 'いいえ。公開情報にリンクする独立した資料ページで、パソコンをスキャンしません。'],
+    ['更新日は何を意味しますか？', '表示された日付は、このページのデータと文章を最後に確認した日です。'],
+  ],
+  ko: [
+    ['DLSS 5 지원 상태는 어디에서 확인하나요?', '모델명을 검색한 뒤 해당 모델의 근거 페이지와 연결된 NVIDIA 정보를 확인하세요.'],
+    ['RTX 40 시리즈는 확인되었나요?', '이 사이트가 추적하는 공개 정보에서는 RTX 40 시리즈의 모델별 지원이 아직 확인되지 않았습니다.'],
+    ['이 페이지는 NVIDIA 공식 도구인가요?', '아니요. 공개 자료에 연결하는 독립 자료 페이지이며 컴퓨터를 스캔하지 않습니다.'],
+    ['검토 날짜는 무엇을 뜻하나요?', '표시된 날짜는 이 페이지의 데이터와 문장을 마지막으로 확인한 날짜입니다.'],
+  ],
+};
+
+function sampleStatus(lang: SampleLang, status: string): string {
+  if (lang === 'ja') return status === 'confirmed' ? '確認済み' : status === 'unconfirmed' ? '未確認' : '公開範囲外';
+  return status === 'confirmed' ? '확인됨' : status === 'unconfirmed' ? '미확인' : '공개 범위 밖';
+}
+
+function sampleRows(lang: SampleLang): string {
+  const headers = lang === 'ja' ? ['GPUモデル', 'VRAM', 'アーキテクチャ', 'DLSS 5 状態', '根拠'] : ['GPU 모델', 'VRAM', '아키텍처', 'DLSS 5 상태', '근거'];
+  const rows = gpuEntries.map(gpu => {
+    const architecture = gpuData.gpu_series.find(series => series.id === gpu.series)?.architecture || '';
+    const evidence = lang === 'ja' ? 'モデル証拠ページ' : '모델 근거 페이지';
+    return `<tr><th scope="row"><a href="/${lang}/gpu/${gpu.id}">${escapeHtml(gpu.name)}</a></th><td>${gpu.vram_gb} GB</td><td>${escapeHtml(architecture)}</td><td>${sampleStatus(lang, gpu.dlss5_status)}</td><td><a href="/${lang}/gpu/${gpu.id}">${evidence} →</a></td></tr>`;
+  }).join('');
+  return `<table><thead><tr>${headers.map(escapeHtml).map(item => `<th>${item}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function sampleHomeBody(lang: SampleLang): string {
+  const ja = lang === 'ja';
+  const questions = sampleFaq[lang].map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
+  const title = ja ? 'DLSS 5 GPU 証拠チェッカー' : 'DLSS 5 GPU 근거 검사기';
+  const intro = ja ? 'GPU モデルごとの状態、VRAM、アーキテクチャ、根拠リンクを確認できるサンプルページです。' : 'GPU 모델별 상태, VRAM, 아키텍처와 근거 링크를 확인하는 샘플 페이지입니다.';
+  const method = ja ? 'RTX 50 は公開された範囲で確認済み、RTX 40 は未確認、RTX 30/20 と AMD は現在の公開範囲外です。各結論はモデルページのリンク先で再確認してください。' : 'RTX 50은 공개된 범위에서 확인되었고 RTX 40은 미확인입니다. RTX 30/20과 AMD는 현재 공개 범위 밖입니다. 각 결론은 모델 페이지의 링크에서 다시 확인하세요.';
+  const steps = ja ? ['検査器で GPU モデルを検索', '表示された状態を読む', 'モデルの証拠ページを開く', 'ページの NVIDIA リンクで文言を確認'] : ['검사기에서 GPU 모델 검색', '표시된 상태 읽기', '모델 근거 페이지 열기', '페이지의 NVIDIA 링크에서 문구 확인'];
+  return `<main class="seo-shell"><header><p class="eyebrow">NEURAL ARCHITECT · ${ja ? '日本語サンプル' : '한국어 샘플'}</p><h1>${title}</h1><p class="lede">${intro}</p><p>${method}</p></header><section><h2>${ja ? '4 단계로 근거 읽기' : '4단계로 근거 읽기'}</h2><ol>${steps.map(escapeHtml).map(step => `<li>${step}</li>`).join('')}</ol><p><a href="/${lang}/supported-cards">${ja ? '전체 지원 카드 표 보기 →' : '전체 지원 카드 표 보기 →'}</a></p></section><section><h2>${ja ? `${gpuEntries.length}개 GPU 모델` : `${gpuEntries.length}개 GPU 모델`}</h2>${sampleRows(lang)}</section><section><h2>${ja ? 'よくある質問' : '자주 묻는 질문'}</h2>${questions}</section></main>`;
+}
+
+function sampleSupportedCardsBody(lang: SampleLang): string {
+  const ja = lang === 'ja';
+  const questions = sampleFaq[lang].map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
+  const title = ja ? 'DLSS 5 対応カードと GPU 証拠' : 'DLSS 5 지원 카드와 GPU 근거';
+  const intro = ja ? 'モデル別の VRAM、アーキテクチャ、状態、証拠ページを一覧で確認できます。' : '모델별 VRAM, 아키텍처, 상태와 근거 페이지를 한 표에서 확인할 수 있습니다.';
+  return `<main class="seo-shell"><header><p class="eyebrow">NEURAL ARCHITECT · ${ja ? '日本語サンプル' : '한국어 샘플'}</p><h1>${title}</h1><p class="lede">${intro}</p><p>${ja ? '状態は公開資料の範囲に限定しています。確認できないモデルを推測で支援扱いにはしません。' : '상태는 공개 자료의 범위로 한정합니다. 확인되지 않은 모델을 추측으로 지원한다고 쓰지 않습니다.'}</p></header><section><h2>${ja ? 'モデル一覧' : '모델 목록'}</h2>${sampleRows(lang)}</section><section><h2>${ja ? 'よくある質問' : '자주 묻는 질문'}</h2>${questions}</section></main>`;
+}
+
+function documentFor(route: string, lang: string, title: string, description: string, body: string, type: 'website' | 'article', jsonLd: unknown, robots = 'index,follow', image = defaultOgImage, alternateCodes: string[] = ['en', 'zh-CN', 'zh-TW']): string {
   const template = readFileSync(join(dist, 'index.html'), 'utf8');
   const canonical = `${baseUrl}${route === '/' ? `/${lang}` : route}`;
   const suffix = route === '/' ? '' : route.slice(`/${lang}`.length);
   const alternates = route === '/'
     ? ''
     : [
-      ['en', `${baseUrl}/en${suffix}`],
-      ['zh-CN', `${baseUrl}/zh-CN${suffix}`],
-      ['zh-TW', `${baseUrl}/zh-TW${suffix}`],
+      ...alternateCodes.map(code => [code, `${baseUrl}/${code}${suffix}`]),
       ['x-default', `${baseUrl}/en${suffix}`],
     ].map(([hreflang, href]) => `<link rel="alternate" hreflang="${hreflang}" href="${href}"/>`).join('');
   const graph = jsonLd && typeof jsonLd === 'object' && Array.isArray((jsonLd as { '@graph'?: unknown[] })['@graph'])
@@ -612,7 +717,8 @@ for (const lang of Object.keys(copy) as Lang[]) {
     '@context': 'https://schema.org',
       '@graph': [
       { '@type': 'WebSite', '@id': `${baseUrl}/#website`, name: 'Neural Architect', url: baseUrl, inLanguage: lang, publisher: { '@id': brandOrganization['@id'] } },
-      { '@type': 'WebApplication', '@id': `${baseUrl}/#application`, name: c.title, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', isAccessibleForFree: true, url: `${baseUrl}${homeRoute}`, publisher: { '@id': brandOrganization['@id'] } },
+      { '@type': 'SoftwareApplication', '@id': `${baseUrl}/#application`, name: 'Neural Architect', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', isAccessibleForFree: true, url: `${baseUrl}${homeRoute}`, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, publisher: { '@id': brandOrganization['@id'] } },
+      { '@type': 'HowTo', name: lang === 'en' ? "How to check a GPU's DLSS 5 evidence" : lang === 'zh-TW' ? '如何查核顯示卡的 DLSS 5 證據' : '如何查核显卡的 DLSS 5 证据', step: (lang === 'en' ? ['Search for your GPU model in the checker', 'Read the status shown for that card', "Open the card's evidence page", 'Open the NVIDIA source linked on that page and verify the wording'] : lang === 'zh-TW' ? ['在檢查器裡查找你的顯示卡型號', '閱讀該顯示卡顯示的狀態', '開啟該型號的證據頁', '開啟頁面上掛出的 NVIDIA 來源並核對原文'] : ['在检测器里查找你的显卡型号', '阅读该显卡显示的状态', '打开该型号的证据页', '打开页面上挂出的 NVIDIA 来源并核对原文']).map((name, index) => ({ '@type': 'HowToStep', position: index + 1, name })), },
       { '@type': 'FAQPage', mainEntity: faq[lang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) },
     ],
   };
@@ -674,6 +780,15 @@ for (const lang of Object.keys(copy) as Lang[]) {
       breadcrumbNode(lang, [[crumbLabel(lang, 'home'), ''], [crumbLabel(lang, 'blog'), '/blog']]),
     ],
   }));
+  const updatesRoute = `${homeRoute}/updates`;
+  const updates = updatesCopy[lang];
+  writeRoute(updatesRoute, documentFor(updatesRoute, lang, updates.title, updates.description, updatesBody(lang), 'website', {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'WebPage', name: updates.heading, description: updates.description, url: `${baseUrl}${updatesRoute}`, dateModified: reviewedDate },
+      breadcrumbNode(lang, [[crumbLabel(lang, 'home'), ''], [updates.heading, '/updates']]),
+    ],
+  }));
   for (const slug of articleSlugs) {
     const route = `${blogRoute}/${slug}`;
     const article = articleBody(lang, slug);
@@ -701,13 +816,41 @@ for (const lang of Object.keys(copy) as Lang[]) {
   }
 }
 
+// T4 is intentionally a small evaluation sample: only home and supported-cards
+// are emitted for Japanese and Korean, rather than expanding every route.
+for (const sampleLang of ['ja', 'ko'] as SampleLang[]) {
+  const sampleName = sampleLang === 'ja' ? '日本語' : '한국어';
+  const homeRoute = `/${sampleLang}`;
+  const homeTitle = sampleLang === 'ja' ? 'DLSS 5 GPU 証拠チェッカー | Neural Architect' : 'DLSS 5 GPU 근거 검사기 | Neural Architect';
+  const homeDescription = sampleLang === 'ja' ? 'DLSS 5 の GPU 状態、VRAM、アーキテクチャと根拠リンクを確認する日本語サンプル。' : 'DLSS 5 GPU 상태, VRAM, 아키텍처와 근거 링크를 확인하는 한국어 샘플입니다.';
+  writeRoute(homeRoute, documentFor(homeRoute, sampleLang, homeTitle, homeDescription, sampleHomeBody(sampleLang), 'website', {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'WebSite', '@id': `${baseUrl}/#website`, name: 'Neural Architect', url: baseUrl, inLanguage: sampleLang, publisher: { '@id': brandOrganization['@id'] } },
+      { '@type': 'SoftwareApplication', '@id': `${baseUrl}/#application`, name: 'Neural Architect', applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', isAccessibleForFree: true, url: `${baseUrl}${homeRoute}`, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, publisher: { '@id': brandOrganization['@id'] } },
+      { '@type': 'FAQPage', mainEntity: sampleFaq[sampleLang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) },
+    ],
+  }, 'index,follow', defaultOgImage, ['en', 'zh-CN', 'zh-TW', 'ja', 'ko']));
+  const supportedRoute = `/${sampleLang}/supported-cards`;
+  const supportedTitle = sampleLang === 'ja' ? 'DLSS 5 対応カードと GPU 証拠 | Neural Architect' : 'DLSS 5 지원 카드와 GPU 근거 | Neural Architect';
+  const supportedDescription = sampleLang === 'ja' ? 'DLSS 5 の GPU モデル別状態、VRAM、アーキテクチャと証拠ページ。' : 'DLSS 5 GPU 모델별 상태, VRAM, 아키텍처와 근거 페이지.';
+  writeRoute(supportedRoute, documentFor(supportedRoute, sampleLang, supportedTitle, supportedDescription, sampleSupportedCardsBody(sampleLang), 'website', {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'FAQPage', mainEntity: sampleFaq[sampleLang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) },
+      { '@type': 'WebPage', name: supportedTitle, description: supportedDescription, url: `${baseUrl}${supportedRoute}`, inLanguage: sampleLang },
+    ],
+  }, 'index,follow', defaultOgImage, ['en', 'zh-CN', 'zh-TW', 'ja', 'ko']));
+  console.log(`Generated ${sampleName} sample routes: ${homeRoute}, ${supportedRoute}`);
+}
+
 // Keep the root response useful for crawlers that discover the bare domain first.
 const rootCopy = copy.en;
 writeRoute('/', documentFor('/', 'en', rootCopy.title, rootCopy.description, homeBody('en'), 'website', { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Neural Architect', url: baseUrl }, 'noindex,follow'));
 
 function sitemapXml(): string {
   const date = '2026-10-10';
-  const suffixes = ['', '/studio', '/supported-cards', '/blog', ...articleSlugs.map(slug => `/blog/${slug}`), ...gpuEntries.map(gpu => `/gpu/${gpu.id}`), ...TRUST_PAGE_SLUGS.map(slug => `/${slug}`)];
+  const suffixes = ['', '/studio', '/supported-cards', '/blog', '/updates', ...articleSlugs.map(slug => `/blog/${slug}`), ...gpuEntries.map(gpu => `/gpu/${gpu.id}`), ...TRUST_PAGE_SLUGS.map(slug => `/${slug}`)];
   // 文章用自己 frontmatter 的复审日期，别和页面里的 dateModified 打架。
   const articleReviewed = new Map(articleSlugs.map(slug => [`/blog/${slug}`, parseFrontmatter(readFileSync(join(root, 'src/content', `${slug}.md`), 'utf8')).meta.reviewed || date]));
   const escapeXml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
@@ -722,6 +865,14 @@ function sitemapXml(): string {
       const priority = suffix === '' ? '1.0' : suffix === '/supported-cards' ? '0.9' : (TRUST_PAGE_SLUGS as readonly string[]).includes(suffix.slice(1)) ? '0.5' : '0.8';
       urls.push(`  <url>\n    <loc>${escapeXml(`${baseUrl}${path}`)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/en${suffix}" />\n  </url>`);
     }
+  }
+  for (const sample of [
+    { lang: 'ja', suffix: '' }, { lang: 'ja', suffix: '/supported-cards' },
+    { lang: 'ko', suffix: '' }, { lang: 'ko', suffix: '/supported-cards' },
+  ]) {
+    const path = `/${sample.lang}${sample.suffix}`;
+    const alternates = ['en', 'zh-CN', 'zh-TW', 'ja', 'ko'].map(code => `    <xhtml:link rel="alternate" hreflang="${code}" href="${baseUrl}/${code}${sample.suffix}" />`).join('\n');
+    urls.push(`  <url>\n    <loc>${escapeXml(`${baseUrl}${path}`)}</loc>\n    <lastmod>${date}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/en${sample.suffix}" />\n  </url>`);
   }
   return `<?xml version="1.0" encoding="UTF-8"?>\n<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`;
 }

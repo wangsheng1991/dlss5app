@@ -58,14 +58,25 @@ export default function Home() {
                 }
               },
               {
-                "@type": "WebApplication",
+                "@type": "SoftwareApplication",
                 "@id": "https://www.dlss5.app/#application",
-                "name": pageTitle,
+                "name": "Neural Architect",
                 "applicationCategory": "UtilitiesApplication",
                 "operatingSystem": "Web",
                 "isAccessibleForFree": true,
                 "url": `https://www.dlss5.app/${currentLang}`,
+                "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
                 "publisher": { "@id": "https://www.dlss5nvidia.com/#organization" }
+              },
+              {
+                "@type": "HowTo",
+                "name": currentLang === 'zh-TW' ? '如何查核顯示卡的 DLSS 5 證據' : currentLang === 'zh-CN' ? '如何查核显卡的 DLSS 5 证据' : "How to check a GPU's DLSS 5 evidence",
+                "step": (currentLang === 'zh-TW'
+                  ? ['在檢查器裡查找你的顯示卡型號', '閱讀該顯示卡顯示的狀態', '開啟該型號的證據頁', '開啟頁面上掛出的 NVIDIA 來源並核對原文']
+                  : currentLang === 'zh-CN'
+                    ? ['在检测器里查找你的显卡型号', '阅读该显卡显示的状态', '打开该型号的证据页', '打开页面上挂出的 NVIDIA 来源并核对原文']
+                    : ['Search for your GPU model in the checker', 'Read the status shown for that card', "Open the card's evidence page", 'Open the NVIDIA source linked on that page and verify the wording']
+                ).map((name, index) => ({ '@type': 'HowToStep', position: index + 1, name }))
               }
             ]
           })}
