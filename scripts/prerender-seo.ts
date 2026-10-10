@@ -232,6 +232,8 @@ function writeNotFoundPage(): void {
   const html = template
     .replace(/<html lang="[^"]*"/, '<html lang="en"')
     .replace(/<title>[\s\S]*?<\/title>/, '')
+    .replace(/\s*<meta name="description"[^>]*\/>/g, '')
+    .replace(/\s*<meta name="robots"[^>]*\/>/g, '')
     .replace('</head>', `${head}</head>`)
     .replace('<div id="root"></div>', `<div id="root">${body}</div>`);
   writeFileSync(join(dist, '404.html'), html);
