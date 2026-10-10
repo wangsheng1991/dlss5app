@@ -239,6 +239,10 @@ function writeNotFoundPage(): void {
   writeFileSync(join(dist, '404.html'), html);
 }
 
+// Generate this before route snapshots overwrite dist/index.html, so the 404
+// page is based on the original Vite shell rather than the English home page.
+writeNotFoundPage();
+
 for (const lang of Object.keys(copy) as Lang[]) {
   const c = copy[lang];
   const homeRoute = `/${lang}`;
@@ -265,7 +269,6 @@ for (const lang of Object.keys(copy) as Lang[]) {
 // Keep the root response useful for crawlers that discover the bare domain first.
 const rootCopy = copy.en;
 writeRoute('/', documentFor('/', 'en', rootCopy.title, rootCopy.description, homeBody('en'), 'website', { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Neural Architect', url: baseUrl }));
-writeNotFoundPage();
 
 function sitemapXml(): string {
   const date = '2026-10-10';
