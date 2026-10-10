@@ -1,9 +1,11 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import OpenCC from 'opencc-js';
 
 const root = resolve(new URL('..', import.meta.url).pathname);
 const dist = join(root, 'dist');
 const baseUrl = 'https://www.dlss5.app';
+const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
 
 type Lang = 'en' | 'zh-CN' | 'zh-TW';
 
@@ -190,29 +192,52 @@ function blogBody(lang: Lang): string {
   const isEnglish = lang === 'en';
   const items = articleSlugs.map(slug => {
     const { meta } = parseFrontmatter(readFileSync(join(root, 'src/content', `${slug}.md`), 'utf8'));
-    const title = isEnglish ? meta.title : (meta.title_cn || meta.title);
-    const description = isEnglish ? meta.description : (meta.description_cn || meta.description);
+    const title = localizedArticleMeta(meta, lang).title;
+    const description = localizedArticleMeta(meta, lang).description;
     return `<article><h2><a href="/${lang}/blog/${slug}">${escapeHtml(title)}</a></h2><p>${escapeHtml(description)}</p><time datetime="${escapeHtml(meta.date || '')}">${escapeHtml(meta.date || '')}</time></article>`;
   }).join('');
   const c = copy[lang];
   return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'NEURAL ARCHITECT' : 'NEURAL ARCHITECT'}</p><h1>${escapeHtml(c.blog)}</h1><p class="lede">${isEnglish ? 'Independent explainers on DLSS 5 hardware, neural rendering, game settings and AI image tools.' : '关于 DLSS 5 硬件、神经渲染、游戏设置和 AI 图片工具的独立解读。'}</p></header><section class="article-list">${items}</section></main>`;
 }
 
-function articleBody(lang: Lang, slug: string): { body: string; meta: Record<string, string> } {
-  const parsed = parseFrontmatter(readFileSync(join(root, 'src/content', `${slug}.md`), 'utf8'));
-  const title = lang === 'en' ? parsed.meta.title : (parsed.meta.title_cn || parsed.meta.title);
-  const description = lang === 'en' ? parsed.meta.description : (parsed.meta.description_cn || parsed.meta.description);
-  const body = markdownToHtml(languageBody(parsed.body, lang));
-  return { meta: { ...parsed.meta, title, description }, body: `<main class="seo-shell article-shell"><article><p class="eyebrow">${lang === 'en' ? 'DLSS 5 TECHNICAL GUIDE' : 'DLSS 5 技术指南'}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(description)}</p><time datetime="${escapeHtml(parsed.meta.date || '')}">${escapeHtml(parsed.meta.date || '')}</time><div class="article-content">${body}</div><p><a href="/${lang}/blog">← ${lang === 'en' ? 'Back to all guides' : '返回全部指南'}</a> · <a href="https://dlss5nvidia.com">${lang === 'en' ? 'Try the free DLSS 5 visual converter' : '试用免费的 DLSS 5 视觉转换工具'}</a></p></article></main>` };
+function localizedArticleMeta(meta: Record<string, string>, lang: Lang): { title: string; description: string } {
+  if (lang === 'en') return { title: meta.title, description: meta.description };
+  const title = meta.title_cn || meta.title;
+  const description = meta.description_cn || meta.description;
+  return lang === 'zh-TW'
+    ? { title: toTraditionalChinese(title), description: toTraditionalChinese(description) }
+    : { title, description };
 }
 
-function documentFor(route: string, lang: Lang, title: string, description: string, body: string, type: 'website' | 'article', jsonLd: unknown): string {
+function articleBody(lang: Lang, slug: string): { body: string; meta: Record<string, string> } {
+  const parsed = parseFrontmatter(readFileSync(join(root, 'src/content', `${slug}.md`), 'utf8'));
+  const { title, description } = localizedArticleMeta(parsed.meta, lang);
+  const localizedBody = lang === 'zh-TW' ? toTraditionalChinese(languageBody(parsed.body, lang)) : languageBody(parsed.body, lang);
+  const body = markdownToHtml(localizedBody);
+  const eyebrow = lang === 'en' ? 'DLSS 5 TECHNICAL GUIDE' : lang === 'zh-TW' ? 'DLSS 5 技術指南' : 'DLSS 5 技术指南';
+  const back = lang === 'en' ? 'Back to all guides' : lang === 'zh-TW' ? '返回全部指南' : '返回全部指南';
+  const converter = lang === 'en' ? 'Try the free DLSS 5 visual converter' : lang === 'zh-TW' ? '試用免費的 DLSS 5 視覺轉換工具' : '试用免费的 DLSS 5 视觉转换工具';
+  return { meta: { ...parsed.meta, title, description }, body: `<main class="seo-shell article-shell"><article><p class="eyebrow">${eyebrow}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(description)}</p><time datetime="${escapeHtml(parsed.meta.date || '')}">${escapeHtml(parsed.meta.date || '')}</time><div class="article-content">${body}</div><p><a href="/${lang}/blog">← ${back}</a> · <a href="https://dlss5nvidia.com">${converter}</a></p></article></main>` };
+}
+
+function documentFor(route: string, lang: Lang, title: string, description: string, body: string, type: 'website' | 'article', jsonLd: unknown, robots = 'index,follow'): string {
   const template = readFileSync(join(dist, 'index.html'), 'utf8');
   const canonical = `${baseUrl}${route === '/' ? `/${lang}` : route}`;
-  const head = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"/><meta name="robots" content="index,follow"/><link rel="canonical" href="${canonical}"/><meta property="og:title" content="${escapeHtml(title)}"/><meta property="og:description" content="${escapeHtml(description)}"/><meta property="og:type" content="${type}"/><meta property="og:url" content="${canonical}"/><meta name="twitter:card" content="summary_large_image"/><script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
+  const suffix = route === '/' ? '' : route.slice(`/${lang}`.length);
+  const alternates = route === '/'
+    ? ''
+    : [
+      ['en', `${baseUrl}/en${suffix}`],
+      ['zh-Hans', `${baseUrl}/zh-CN${suffix}`],
+      ['zh-Hant', `${baseUrl}/zh-TW${suffix}`],
+      ['x-default', `${baseUrl}/en${suffix}`],
+    ].map(([hreflang, href]) => `<link rel="alternate" hreflang="${hreflang}" href="${href}"/>`).join('');
+  const head = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"/><meta name="robots" content="${robots}"/><link rel="canonical" href="${canonical}"/>${alternates}<meta property="og:title" content="${escapeHtml(title)}"/><meta property="og:description" content="${escapeHtml(description)}"/><meta property="og:type" content="${type}"/><meta property="og:url" content="${canonical}"/><meta name="twitter:card" content="summary_large_image"/><script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
   return template
     .replace(/<html lang="[^"]*"/, `<html lang="${lang}"`)
     .replace(/<title>[\s\S]*?<\/title>/, '')
+    .replace(/\s*<meta name="description"[^>]*\/>/g, '')
+    .replace(/\s*<meta name="robots"[^>]*\/>/g, '')
     .replace('</head>', `${head}</head>`)
     .replace('<div id="root"></div>', `<div id="root">${body}</div>`);
 }
@@ -256,9 +281,19 @@ for (const lang of Object.keys(copy) as Lang[]) {
   };
   writeRoute(homeRoute, documentFor(homeRoute, lang, c.title, c.description, homeBody(lang), 'website', homeJsonLd));
   const supportedCardsRoute = `${homeRoute}/supported-cards`;
-  writeRoute(supportedCardsRoute, documentFor(supportedCardsRoute, lang, `${c.title} | Neural Architect`, c.description, supportedCardsBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq[lang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) }));
+  const supportedCardsDescription = lang === 'en'
+    ? 'Evidence-based DLSS 5 GPU compatibility matrix by series, architecture and official NVIDIA sources, with an FAQ for upgrade decisions.'
+    : lang === 'zh-TW'
+      ? '按系列、架構與 NVIDIA 官方來源整理的 DLSS 5 顯示卡相容性矩陣，並提供升級決策常見問題。'
+      : '按系列、架构与 NVIDIA 官方来源整理的 DLSS 5 显卡兼容性矩阵，并提供升级决策常见问题。';
+  writeRoute(supportedCardsRoute, documentFor(supportedCardsRoute, lang, `${c.title} | Neural Architect`, supportedCardsDescription, supportedCardsBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq[lang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) }));
   const blogRoute = `${homeRoute}/blog`;
-  writeRoute(blogRoute, documentFor(blogRoute, lang, `${c.blog} | Neural Architect`, c.description, blogBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'CollectionPage', name: c.blog, url: `${baseUrl}${blogRoute}` }));
+  const blogDescription = lang === 'en'
+    ? 'Independent DLSS 5 explainers covering neural rendering, supported hardware, game settings and AI image tools.'
+    : lang === 'zh-TW'
+      ? '獨立整理 DLSS 5 神經渲染、支援硬體、遊戲設定與 AI 圖像工具的技術指南。'
+      : '独立整理 DLSS 5 神经渲染、支持硬件、游戏设置与 AI 图片工具的技术指南。';
+  writeRoute(blogRoute, documentFor(blogRoute, lang, `${c.blog} | Neural Architect`, blogDescription, blogBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'CollectionPage', name: c.blog, url: `${baseUrl}${blogRoute}` }));
   for (const slug of articleSlugs) {
     const route = `${blogRoute}/${slug}`;
     const article = articleBody(lang, slug);
@@ -268,7 +303,7 @@ for (const lang of Object.keys(copy) as Lang[]) {
 
 // Keep the root response useful for crawlers that discover the bare domain first.
 const rootCopy = copy.en;
-writeRoute('/', documentFor('/', 'en', rootCopy.title, rootCopy.description, homeBody('en'), 'website', { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Neural Architect', url: baseUrl }));
+writeRoute('/', documentFor('/', 'en', rootCopy.title, rootCopy.description, homeBody('en'), 'website', { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Neural Architect', url: baseUrl }, 'noindex,follow'));
 
 function sitemapXml(): string {
   const date = '2026-10-10';
