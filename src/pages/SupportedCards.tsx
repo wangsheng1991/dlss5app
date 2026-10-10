@@ -10,11 +10,12 @@ export default function SupportedCards() {
   const { lang = 'en' } = useParams<{ lang: string }>();
   const { t } = useTranslation();
   const isChinese = lang.startsWith('zh');
+  const isTraditional = lang === 'zh-TW';
   const title = isChinese
-    ? `${t('checker.title1')} ${t('checker.title2')}｜DLSS 5 GPU 兼容性检测`
+    ? (isTraditional ? 'DLSS 5 支援顯示卡與 GPU 相容性檢查器' : `${t('checker.title1')} ${t('checker.title2')}｜DLSS 5 GPU 兼容性检测`)
     : 'DLSS 5 Supported Cards & GPU Compatibility Checker';
   const description = isChinese
-    ? '按 GPU 型号查看 DLSS 5 支持状态、架构、显存和官方证据；不确定的型号明确标注，避免把推测当成兼容性承诺。'
+    ? (isTraditional ? '按 GPU 型號查看 DLSS 5 支援狀態、架構、顯示記憶體和官方證據；未確認的型號會清楚標註。' : '按 GPU 型号查看 DLSS 5 支持状态、架构、显存和官方证据；不确定的型号明确标注，避免把推测当成兼容性承诺。')
     : 'Check DLSS 5 support by GPU model, architecture and VRAM. Unconfirmed cards stay clearly marked until NVIDIA publishes evidence.';
   const faqs = isChinese
     ? [
@@ -60,32 +61,32 @@ export default function SupportedCards() {
           <h1 className="text-4xl md:text-6xl font-headline font-bold tracking-tight">{title}</h1>
           <p className="text-on-surface-variant text-lg leading-relaxed">{description}</p>
           <p className="text-sm text-on-surface-variant/80">
-            {isChinese ? '状态分为已确认、未确认和不支持；未确认代表缺少官方原文，不代表兼容或不兼容。' : 'Statuses are confirmed, unconfirmed or unsupported. Unconfirmed means the official evidence is missing, not that compatibility has been decided.'}
+            {isChinese ? (isTraditional ? '狀態分為已確認、未確認和不支援；未確認代表缺少官方原文，不代表相容或不相容。' : '状态分为已确认、未确认和不支持；未确认代表缺少官方原文，不代表兼容或不兼容。') : 'Statuses are confirmed, unconfirmed or unsupported. Unconfirmed means the official evidence is missing, not that compatibility has been decided.'}
           </p>
         </header>
 
         <section aria-labelledby="gpu-matrix" className="space-y-5">
-          <h2 id="gpu-matrix" className="text-3xl font-headline font-bold">{isChinese ? 'DLSS 5 GPU 支持矩阵' : 'DLSS 5 GPU support matrix'}</h2>
+          <h2 id="gpu-matrix" className="text-3xl font-headline font-bold">{isChinese ? (isTraditional ? 'DLSS 5 GPU 支援矩陣' : 'DLSS 5 GPU 支持矩阵') : 'DLSS 5 GPU support matrix'}</h2>
           <div className="overflow-x-auto rounded-2xl border border-outline-variant/20 bg-surface-container-low">
             <table className="w-full min-w-[680px] text-left text-sm">
               <thead className="bg-surface-container-highest text-on-surface-variant">
-                <tr><th className="px-5 py-4">{isChinese ? 'GPU 型号' : 'GPU model'}</th><th className="px-5 py-4">{isChinese ? '架构' : 'Architecture'}</th><th className="px-5 py-4">{isChinese ? '显存' : 'VRAM'}</th><th className="px-5 py-4">{isChinese ? '状态' : 'Status'}</th></tr>
+                <tr><th className="px-5 py-4">{isChinese ? (isTraditional ? 'GPU 型號' : 'GPU 型号') : 'GPU model'}</th><th className="px-5 py-4">{isChinese ? (isTraditional ? '架構' : '架构') : 'Architecture'}</th><th className="px-5 py-4">{isChinese ? (isTraditional ? '顯示記憶體' : '显存') : 'VRAM'}</th><th className="px-5 py-4">{isChinese ? (isTraditional ? '狀態' : '状态') : 'Status'}</th></tr>
               </thead>
               <tbody>
                 {gpuData.gpus.map((gpu) => {
                   const series = gpuData.gpu_series.find(item => item.id === gpu.series);
-                  const status = gpu.dlss5_status === 'confirmed' ? (isChinese ? '已确认' : 'Confirmed') : gpu.dlss5_status === 'unconfirmed' ? (isChinese ? '未确认' : 'Unconfirmed') : (isChinese ? '不支持' : 'Unsupported');
+                  const status = gpu.dlss5_status === 'confirmed' ? (isChinese ? (isTraditional ? '已確認' : '已确认') : 'Confirmed') : gpu.dlss5_status === 'unconfirmed' ? (isChinese ? (isTraditional ? '未確認' : '未确认') : 'Unconfirmed') : (isChinese ? (isTraditional ? '不支援' : '不支持') : 'Unsupported');
                   const color = gpu.dlss5_status === 'confirmed' ? 'text-primary' : gpu.dlss5_status === 'unconfirmed' ? 'text-secondary' : 'text-error';
                   return <tr key={gpu.id} className="border-t border-outline-variant/10"><th scope="row" className="px-5 py-4 font-semibold text-white">GeForce {gpu.name}</th><td className="px-5 py-4 text-on-surface-variant">{series?.architecture}</td><td className="px-5 py-4 text-on-surface-variant">{gpu.vram_gb} GB</td><td className={`px-5 py-4 font-semibold ${color}`}>{status}</td></tr>;
                 })}
               </tbody>
             </table>
           </div>
-          <p className="text-sm text-on-surface-variant">{isChinese ? '资料来源：' : 'Sources: '}<a className="text-primary underline" href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. {isChinese ? '本站与 NVIDIA 没有隶属关系。' : 'This independent reference is not affiliated with NVIDIA.'}</p>
+          <p className="text-sm text-on-surface-variant">{isChinese ? (isTraditional ? '資料來源：' : '资料来源：') : 'Sources: '}<a className="text-primary underline" href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. {isChinese ? (isTraditional ? '本站與 NVIDIA 沒有隸屬關係。' : '本站与 NVIDIA 没有隶属关系。') : 'This independent reference is not affiliated with NVIDIA.'}</p>
         </section>
 
         <section aria-labelledby="faq" className="space-y-6">
-          <h2 id="faq" className="text-3xl font-headline font-bold">{isChinese ? '兼容性常见问题' : 'Compatibility FAQ'}</h2>
+          <h2 id="faq" className="text-3xl font-headline font-bold">{isChinese ? (isTraditional ? '相容性常見問題' : '兼容性常见问题') : 'Compatibility FAQ'}</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {faqs.map(([question, answer]) => <article key={question} className="rounded-2xl border border-outline-variant/20 bg-surface-container-low p-6"><h3 className="text-lg font-bold text-white">{question}</h3><p className="mt-3 text-on-surface-variant leading-relaxed">{answer}</p></article>)}
           </div>

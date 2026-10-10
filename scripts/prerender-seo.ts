@@ -155,6 +155,7 @@ function homeBody(lang: Lang): string {
 
 function supportedCardsBody(lang: Lang): string {
   const isEnglish = lang === 'en';
+  const isTraditional = lang === 'zh-TW';
   const questions = isEnglish
     ? [
         ['Which GPUs support DLSS 5?', 'NVIDIA has confirmed DLSS 5 for GeForce RTX 50 Series Blackwell hardware. RTX 40 support remains unconfirmed until NVIDIA publishes a compatibility statement.'],
@@ -163,18 +164,26 @@ function supportedCardsBody(lang: Lang): string {
         ['How often is the matrix updated?', 'We update entries when NVIDIA publishes verifiable driver, game or hardware information. Recheck the linked source before making an upgrade decision.'],
       ]
     : [
-        ['哪些显卡支持 DLSS 5？', '目前 NVIDIA 已确认 RTX 50 系列 Blackwell 支持 DLSS 5；RTX 40 系列需等待 NVIDIA 的兼容性公告。'],
-        ['RTX 4090 能运行 DLSS 5 吗？', '目前没有 NVIDIA 官方确认。请把 RTX 4090 视为未确认，而不是已支持或已不支持。'],
-        ['这个检测器是 NVIDIA 官方工具吗？', '不是。它是独立资料页，整理公开的 NVIDIA 公告并标注核对日期，不会扫描你的电脑。'],
-        ['显卡状态多久更新一次？', '当 NVIDIA 发布可核实的驱动、游戏或硬件信息时更新；每条结论都应回到来源核对。'],
+        [isTraditional ? '哪些顯示卡支援 DLSS 5？' : '哪些显卡支持 DLSS 5？', isTraditional ? '目前 NVIDIA 已確認 RTX 50 系列 Blackwell 支援 DLSS 5；RTX 40 系列需等待 NVIDIA 的相容性公告。' : '目前 NVIDIA 已确认 RTX 50 系列 Blackwell 支持 DLSS 5；RTX 40 系列需等待 NVIDIA 的兼容性公告。'],
+        [isTraditional ? 'RTX 4090 能執行 DLSS 5 嗎？' : 'RTX 4090 能运行 DLSS 5 吗？', isTraditional ? '目前沒有 NVIDIA 官方確認。請把 RTX 4090 視為未確認，而不是已支援或已不支援。' : '目前没有 NVIDIA 官方确认。请把 RTX 4090 视为未确认，而不是已支持或已不支持。'],
+        [isTraditional ? '這個檢查器是 NVIDIA 官方工具嗎？' : '这个检测器是 NVIDIA 官方工具吗？', isTraditional ? '不是。這是獨立資料頁，整理公開的 NVIDIA 公告並標註核對日期，不會掃描你的電腦。' : '不是。它是独立资料页，整理公开的 NVIDIA 公告并标注核对日期，不会扫描你的电脑。'],
+        [isTraditional ? '顯示卡狀態多久更新一次？' : '显卡状态多久更新一次？', isTraditional ? '當 NVIDIA 發布可核實的驅動程式、遊戲或硬體資訊時更新；每條結論都應回到來源核對。' : '当 NVIDIA 发布可核实的驱动、游戏或硬件信息时更新；每条结论都应回到来源核对。'],
       ];
   const rows = gpuSeries.map(([series, architecture, status]) => {
     const translatedStatus = isEnglish ? status : status === 'Confirmed' ? '已确认' : status === 'Not confirmed by NVIDIA' ? 'NVIDIA 尚未确认' : '当前官方列表不支持';
     return `<tr><th scope="row">${escapeHtml(isEnglish ? series : series.replace('RTX ', 'GeForce RTX '))}</th><td>${escapeHtml(architecture)}</td><td>${escapeHtml(translatedStatus)}</td></tr>`;
   }).join('');
   const questionsHtml = questions.map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
-  const title = isEnglish ? 'DLSS 5 Supported Cards & GPU Compatibility Checker' : 'DLSS 5 支持的显卡与 GPU 兼容性检测器';
-  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'EVIDENCE-BASED GPU GUIDE' : '基于证据的 GPU 指南'}</p><h1>${title}</h1><p class="lede">${isEnglish ? 'Check DLSS 5 support by GPU family, architecture and official evidence. Unknown stays unknown until NVIDIA publishes a verifiable statement.' : '按 GPU 系列、架构和官方证据查看 DLSS 5 支持状态；没有原文依据的型号会保留为未确认。'}</p></header><section><h2>${isEnglish ? 'DLSS 5 GPU support matrix' : 'DLSS 5 GPU 支持矩阵'}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${isEnglish ? 'Source: ' : '资料来源：'}<a href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. ${isEnglish ? 'Independent reference; not affiliated with NVIDIA.' : '本站与 NVIDIA 没有隶属关系。'}</p></section><section><h2>${isEnglish ? 'Compatibility FAQ' : '兼容性常见问题'}</h2>${questionsHtml}</section><p><a href="/${lang}">${isEnglish ? '← Back to the GPU checker' : '← 返回 GPU 检测器首页'}</a> · <a href="https://dlss5nvidia.com">${isEnglish ? 'Try the free visual converter' : '试用免费的视觉转换器'}</a></p></main>`;
+  const title = isEnglish ? 'DLSS 5 Supported Cards & GPU Compatibility Checker' : isTraditional ? 'DLSS 5 支援顯示卡與 GPU 相容性檢查器' : 'DLSS 5 支持的显卡与 GPU 兼容性检测器';
+  const guide = isEnglish ? 'EVIDENCE-BASED GPU GUIDE' : isTraditional ? '基於證據的 GPU 指南' : '基于证据的 GPU 指南';
+  const intro = isEnglish ? 'Check DLSS 5 support by GPU family, architecture and official evidence. Unknown stays unknown until NVIDIA publishes a verifiable statement.' : isTraditional ? '按 GPU 系列、架構和官方證據查看 DLSS 5 支援狀態；沒有原文依據的型號會保留為未確認。' : '按 GPU 系列、架构和官方证据查看 DLSS 5 支持状态；没有原文依据的型号会保留为未确认。';
+  const matrix = isEnglish ? 'DLSS 5 GPU support matrix' : isTraditional ? 'DLSS 5 GPU 支援矩陣' : 'DLSS 5 GPU 支持矩阵';
+  const source = isEnglish ? 'Source: ' : isTraditional ? '資料來源：' : '资料来源：';
+  const disclaimer = isEnglish ? 'Independent reference; not affiliated with NVIDIA.' : isTraditional ? '本站與 NVIDIA 沒有隸屬關係。' : '本站与 NVIDIA 没有隶属关系。';
+  const faqTitle = isEnglish ? 'Compatibility FAQ' : isTraditional ? '相容性常見問題' : '兼容性常见问题';
+  const back = isEnglish ? '← Back to the GPU checker' : isTraditional ? '← 返回 GPU 檢查器首頁' : '← 返回 GPU 检测器首页';
+  const converter = isEnglish ? 'Try the free visual converter' : isTraditional ? '試用免費的視覺轉換器' : '试用免费的视觉转换器';
+  return `<main class="seo-shell"><header><p class="eyebrow">${guide}</p><h1>${title}</h1><p class="lede">${intro}</p></header><section><h2>${matrix}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${source}<a href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. ${disclaimer}</p></section><section><h2>${faqTitle}</h2>${questionsHtml}</section><p><a href="/${lang}">${back}</a> · <a href="https://dlss5nvidia.com">${converter}</a></p></main>`;
 }
 
 function blogBody(lang: Lang): string {
