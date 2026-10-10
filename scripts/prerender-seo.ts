@@ -250,6 +250,10 @@ function crumbLabel(lang: Lang, key: 'home' | 'studio' | 'supportedCards' | 'blo
 
 /** 每一页都带站点信息页的出口 —— 这些页要能被爬虫发现，不能只躺在 sitemap 里。 */
 function trustNav(lang: string): string {
+  // The ja/ko sample pages are intentionally limited to two landing pages for now.
+  // Keep their trust links crawlable by pointing at the published English pages
+  // instead of emitting links to routes that do not exist yet.
+  const linkLang = lang === 'ja' || lang === 'ko' ? 'en' : lang;
   const isEnglish = lang === 'en';
   const isTraditional = lang === 'zh-TW';
   const labels = lang === 'ja'
@@ -261,7 +265,7 @@ function trustNav(lang: string): string {
     : isTraditional
       ? ['關於本站', '編輯政策', '聯絡我們', '隱私']
       : ['关于本站', '编辑政策', '联系我们', '隐私'];
-  const links = TRUST_PAGE_SLUGS.map((slug, index) => `<a href="/${lang}/${slug}">${escapeHtml(labels[index])}</a>`).join(' · ');
+  const links = TRUST_PAGE_SLUGS.map((slug, index) => `<a href="/${linkLang}/${slug}">${escapeHtml(labels[index])}</a>`).join(' · ');
   const llms = lang === 'ja' ? '機械可読サマリー' : lang === 'ko' ? '기계 판독 요약' : isEnglish ? 'Machine-readable summary' : isTraditional ? '給機器讀的摘要' : '给机器读的摘要';
   const aria = lang === 'ja' ? 'サイト情報' : lang === 'ko' ? '사이트 정보' : isEnglish ? 'Site information' : isTraditional ? '站點資訊' : '站点信息';
   return `<nav class="site-info" aria-label="${aria}">${links} · <a href="/llms.txt">${escapeHtml(llms)}</a></nav>`;
@@ -630,11 +634,12 @@ function sampleStatus(lang: SampleLang, status: string): string {
 }
 
 function sampleRows(lang: SampleLang): string {
+  const linkLang = lang === 'ja' || lang === 'ko' ? 'en' : lang;
   const headers = lang === 'ja' ? ['GPUモデル', 'VRAM', 'アーキテクチャ', 'DLSS 5 状態', '根拠'] : ['GPU 모델', 'VRAM', '아키텍처', 'DLSS 5 상태', '근거'];
   const rows = gpuEntries.map(gpu => {
     const architecture = gpuData.gpu_series.find(series => series.id === gpu.series)?.architecture || '';
     const evidence = lang === 'ja' ? 'モデル証拠ページ' : '모델 근거 페이지';
-    return `<tr><th scope="row"><a href="/${lang}/gpu/${gpu.id}">${escapeHtml(gpu.name)}</a></th><td>${gpu.vram_gb} GB</td><td>${escapeHtml(architecture)}</td><td>${sampleStatus(lang, gpu.dlss5_status)}</td><td><a href="/${lang}/gpu/${gpu.id}">${evidence} →</a></td></tr>`;
+    return `<tr><th scope="row"><a href="/${linkLang}/gpu/${gpu.id}">${escapeHtml(gpu.name)}</a></th><td>${gpu.vram_gb} GB</td><td>${escapeHtml(architecture)}</td><td>${sampleStatus(lang, gpu.dlss5_status)}</td><td><a href="/${linkLang}/gpu/${gpu.id}">${evidence} →</a></td></tr>`;
   }).join('');
   return `<table><thead><tr>${headers.map(escapeHtml).map(item => `<th>${item}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
 }
