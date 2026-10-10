@@ -101,7 +101,7 @@ DLSS 5 is not out yet — it launches in Fall 2026. Studios have to approve and 
 
 If you're taking screenshots in Crimson Desert — and with Black Space Engine's visuals, you absolutely should be — you can push them further with AI image upscaling tools. Our online tool can take your in-game captures and enhance their detail, lighting, and sharpness using the same diffusion-based AI principles that power DLSS 5's neural rendering. No RTX 5090 required.
 
-→ **[Enhance your Crimson Desert screenshots — try free](/tool)**
+→ **[Enhance your Crimson Desert screenshots — try free](/__studio__)**
 
 <!-- ============================================================
      CHINESE VERSION (中文版)
@@ -176,4 +176,4 @@ DLSS 5 要到 2026 年秋季才发布，《绯红荒漠》目前不在已确认�
 
 如果你在《绯红荒漠》中截图——凭借 Black Space Engine 的画面，你绝对应该截——可以用 AI 图像超分工具进一步提升细节、光照和清晰度。我们的在线工具使用与 DLSS 5 神经渲染同样原理的扩散模型 AI，不需要 RTX 5090。
 
-→ **[免费增强你的绯红荒漠截图](/tool)**
+→ **[免费增强你的绯红荒漠截图](/__studio__)**

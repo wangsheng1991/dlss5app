@@ -3,6 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { ArrowRight, Calendar } from 'lucide-react';
+import OpenCC from 'opencc-js';
+
+const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
 
 const blogPosts = [
   {
@@ -95,7 +98,9 @@ export default function BlogList() {
   const { i18n } = useTranslation();
   const { lang } = useParams<{ lang: string }>();
   const isZh = i18n.language.startsWith('zh');
+  const isTraditional = lang === 'zh-TW';
   const currentLang = lang || 'en';
+  const localizeChinese = (value: string) => isTraditional ? toTraditionalChinese(value) : value;
 
   const featuredPost = blogPosts.find(p => p.featured);
   const regularPosts = blogPosts.filter(p => !p.featured);
@@ -103,25 +108,25 @@ export default function BlogList() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 md:py-24">
       <Helmet>
-        <title>{isZh ? 'DLSS 5 博客与新闻 | Neural Architect' : 'DLSS 5 Blog & News | Neural Architect'}</title>
-        <meta name="description" content={isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
+        <title>{isZh ? (isTraditional ? 'DLSS 5 網誌與新聞 | Neural Architect' : 'DLSS 5 博客与新闻 | Neural Architect') : 'DLSS 5 Blog & News | Neural Architect'}</title>
+        <meta name="description" content={isZh ? (isTraditional ? '探索 DLSS 5 的最新動態、技術分析與產業爭議。' : '探索 DLSS 5 的最新动态、技术分析和行业争议。') : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
         <link rel="canonical" href={`https://www.dlss5.app/${currentLang}/blog`} />
         
         {/* Open Graph */}
-        <meta property="og:title" content={isZh ? 'DLSS 5 博客与新闻 | Neural Architect' : 'DLSS 5 Blog & News | Neural Architect'} />
-        <meta property="og:description" content={isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
+        <meta property="og:title" content={isZh ? (isTraditional ? 'DLSS 5 網誌與新聞 | Neural Architect' : 'DLSS 5 博客与新闻 | Neural Architect') : 'DLSS 5 Blog & News | Neural Architect'} />
+        <meta property="og:description" content={isZh ? (isTraditional ? '探索 DLSS 5 的最新動態、技術分析與產業爭議。' : '探索 DLSS 5 的最新动态、技术分析和行业争议。') : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://www.dlss5.app/${currentLang}/blog`} />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={isZh ? 'DLSS 5 博客与新闻 | Neural Architect' : 'DLSS 5 Blog & News | Neural Architect'} />
-        <meta name="twitter:description" content={isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
+        <meta name="twitter:title" content={isZh ? (isTraditional ? 'DLSS 5 網誌與新聞 | Neural Architect' : 'DLSS 5 博客与新闻 | Neural Architect') : 'DLSS 5 Blog & News | Neural Architect'} />
+        <meta name="twitter:description" content={isZh ? (isTraditional ? '探索 DLSS 5 的最新動態、技術分析與產業爭議。' : '探索 DLSS 5 的最新动态、技术分析和行业争议。') : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
       </Helmet>
       <div className="mb-16 text-center">
         <h1 className="text-4xl md:text-5xl font-headline font-bold mb-4">Neural Architect <span className="text-primary">Blog</span></h1>
         <p className="text-on-surface-variant text-lg max-w-2xl mx-auto">
-          {isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'}
+          {isZh ? (isTraditional ? '探索 DLSS 5 的最新動態、技術分析與產業爭議。' : '探索 DLSS 5 的最新动态、技术分析和行业争议。') : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'}
         </p>
       </div>
 
@@ -132,7 +137,7 @@ export default function BlogList() {
               <div className="relative aspect-video md:aspect-auto overflow-hidden">
                 <img 
                   src={featuredPost.image} 
-                  alt={isZh ? featuredPost.title.zh : featuredPost.title.en}
+                  alt={isZh ? localizeChinese(featuredPost.title.zh) : featuredPost.title.en}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"
                 />
@@ -143,10 +148,10 @@ export default function BlogList() {
                   {isZh ? '热门文章' : 'Featured'}
                 </div>
                 <h2 className="text-3xl md:text-4xl font-headline font-bold mb-4 group-hover:text-primary transition-colors">
-                  {isZh ? featuredPost.title.zh : featuredPost.title.en}
+                  {isZh ? localizeChinese(featuredPost.title.zh) : featuredPost.title.en}
                 </h2>
                 <p className="text-on-surface-variant text-lg mb-8 line-clamp-3">
-                  {isZh ? featuredPost.description.zh : featuredPost.description.en}
+                  {isZh ? localizeChinese(featuredPost.description.zh) : featuredPost.description.en}
                 </p>
                 <div className="flex items-center justify-between mt-auto">
                   <div className="flex items-center gap-2 text-sm text-on-surface-variant">
@@ -169,7 +174,7 @@ export default function BlogList() {
             <div className="relative aspect-video overflow-hidden">
               <img 
                 src={post.image} 
-                alt={isZh ? post.title.zh : post.title.en}
+                alt={isZh ? localizeChinese(post.title.zh) : post.title.en}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
@@ -180,10 +185,10 @@ export default function BlogList() {
                 <span>{post.date}</span>
               </div>
               <h3 className="text-xl font-headline font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                {isZh ? post.title.zh : post.title.en}
+                {isZh ? localizeChinese(post.title.zh) : post.title.en}
               </h3>
               <p className="text-on-surface-variant text-sm mb-6 line-clamp-3 flex-grow">
-                {isZh ? post.description.zh : post.description.en}
+                {isZh ? localizeChinese(post.description.zh) : post.description.en}
               </p>
               <span className="inline-flex items-center gap-1 text-primary text-sm font-bold group-hover:gap-2 transition-all">
                 {isZh ? '阅读全文' : 'Read Article'} <ArrowRight className="w-4 h-4" />

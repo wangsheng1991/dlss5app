@@ -57,7 +57,7 @@ export default function SupportedCards() {
 
       <div className="mx-auto max-w-6xl space-y-14">
         <header className="max-w-3xl space-y-5">
-          <p className="text-primary text-xs font-bold tracking-[0.2em] uppercase">{isChinese ? '独立兼容性资料' : 'INDEPENDENT COMPATIBILITY REFERENCE'}</p>
+          <p className="text-primary text-xs font-bold tracking-[0.2em] uppercase">{isChinese ? (isTraditional ? '獨立相容性資料' : '独立兼容性资料') : 'INDEPENDENT COMPATIBILITY REFERENCE'}</p>
           <h1 className="text-4xl md:text-6xl font-headline font-bold tracking-tight">{title}</h1>
           <p className="text-on-surface-variant text-lg leading-relaxed">{description}</p>
           <p className="text-sm text-on-surface-variant/80">
@@ -95,7 +95,7 @@ export default function SupportedCards() {
         <nav className="flex flex-wrap gap-4 text-sm" aria-label="Related pages">
           <Link className="text-primary underline" to={`/${lang}`}>{isChinese ? '返回检测器首页' : 'Back to the GPU checker'}</Link>
           <Link className="text-primary underline" to={`/${lang}/blog`}>{isChinese ? '阅读 DLSS 5 技术指南' : 'Read DLSS 5 technical guides'}</Link>
-          <a className="text-primary underline" href="https://dlss5nvidia.com">{isChinese ? '试用免费视觉转换器' : 'Try the free visual converter'}</a>
+          <a className="text-primary underline" href="https://www.dlss5nvidia.com/download">{isChinese ? (isTraditional ? '試用免費視覺轉換器' : '试用免费视觉转换器') : 'Try the free visual converter'}</a>
         </nav>
       </div>
     </main>

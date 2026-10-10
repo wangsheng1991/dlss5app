@@ -118,7 +118,7 @@ DLSS 5 is a real-time, in-game technology tied to specific hardware. But the und
 
 The AI upscaling tools you can use online today, including ours, operate on similar principles: analyze what's in the image, understand the scene semantics, and generate detail that wasn't in the original. The difference is that we work on any image, from any source, on any device — no RTX 5090 required.
 
-→ **[Try it yourself — upload any image and see the difference](/tool)**
+→ **[Try it yourself — upload any image and see the difference](/__studio__)**
 
 ---
 
@@ -221,4 +221,4 @@ DLSS 5 是绑定特定硬件的实时游戏内技术。但它的底层逻辑—�
 
 你现在能在线使用的 AI 超分工具，包括我们的，遵循类似原理：分析图像内容，理解场景语义，生成原图中没有的细节。区别在于我们能处理任何图片、来自任何来源、在任何设备上——不需要 RTX 5090。
 
-→ **[立即体验——上传任意图片看看效果](/tool)**
+→ **[立即体验——上传任意图片看看效果](/__studio__)**

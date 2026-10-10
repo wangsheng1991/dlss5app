@@ -5,6 +5,9 @@ import remarkGfm from 'remark-gfm';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
+import OpenCC from 'opencc-js';
+
+const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
 
 // Import all markdown files as raw strings
 const markdownFiles = import.meta.glob('../content/*.md', { query: '?raw', import: 'default' });
@@ -84,7 +87,7 @@ export default function BlogPost() {
       }
     }
 
-    return { metadata, content: displayContent };
+    return { metadata, content: currentLang === 'zh-TW' ? toTraditionalChinese(displayContent) : displayContent };
   };
 
   if (loading) {
@@ -107,7 +110,8 @@ export default function BlogPost() {
     );
   }
 
-  const { metadata, content: displayContent } = parseMarkdown(content);
+  const { metadata, content: parsedContent } = parseMarkdown(content);
+  const displayContent = parsedContent.replace(/\]\(\/(?:tool|__studio__)\)/g, `](/${currentLang}/studio)`);
   const title = isZh && metadata.title_cn ? metadata.title_cn : metadata.title;
   const description = isZh && metadata.description_cn ? metadata.description_cn : metadata.description;
 
@@ -238,7 +242,7 @@ export default function BlogPost() {
             {isZh ? '想看看没有 AI slop 的图片增强效果？' : 'Want to see image enhancement without AI slop?'}
           </p>
           <a 
-            href="https://dlss5nvidia.com" 
+            href="https://www.dlss5nvidia.com/download"
             target="_blank" 
             rel="noopener noreferrer"
             className="primary-gradient text-on-primary font-headline font-bold px-6 py-2.5 rounded-full text-sm whitespace-nowrap hover:shadow-[0_0_20px_rgba(75,226,119,0.4)] transition-all active:scale-95"

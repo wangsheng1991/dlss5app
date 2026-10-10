@@ -1,18 +1,44 @@
-# Neural Architect / DLSS 5 Checker
+# Neural Architect — DLSS 5 GPU Checker
 
-Neural Architect is an independent, free DLSS 5 GPU compatibility checker. It explains what is confirmed by NVIDIA, what remains unconfirmed, and how DLSS 5 relates to DLSS 4 and FSR 4. It is not affiliated with NVIDIA.
+> Independent, free DLSS 5 GPU compatibility checker for 31 GeForce RTX models, with source-linked status and a separate Studio evidence track.
 
-## Primary pages
-- English checker: https://www.dlss5.app/en
-- 简体中文检测器: https://www.dlss5.app/zh-CN
-- Traditional Chinese checker: https://www.dlss5.app/zh-TW
-- English technical guides: https://www.dlss5.app/en/blog
-- Chinese technical guides: https://www.dlss5.app/zh-CN/blog
-- Official NVIDIA DLSS information: https://www.nvidia.com/en-us/geforce/technologies/dlss/
-- Free visual conversion tool: https://dlss5nvidia.com
+## Checker
+- [DLSS 5 GPU evidence checker (English)](https://www.dlss5.app/en): Search 31 GeForce RTX models by VRAM, architecture, status and the NVIDIA source behind each conclusion.
+- [DLSS 5 GPU 检测器（简体中文）](https://www.dlss5.app/zh-CN): 简体中文入口，展示同一份型号级证据表与 FAQ。
+- [DLSS 5 GPU 檢測器（繁體中文）](https://www.dlss5.app/zh-TW): 繁體中文入口，展示同一份型号级证据表与 FAQ。
+- [Supported cards overview](https://www.dlss5.app/en/supported-cards): Series-level scope, architecture notes and the evidence boundary for upgrade decisions.
+- [DLSS 5 technical guide](https://www.dlss5.app/en/blog/what-is-dlss-5-neural-rendering-guide): Explains neural rendering, the announced hardware scope and the limits of public evidence.
 
-## Data policy
-- RTX 50 / Blackwell DLSS 5 support is marked confirmed when backed by official NVIDIA material.
-- RTX 40 support is shown as unconfirmed unless NVIDIA publishes a compatible list.
-- RTX 30 and RTX 20 are described against the current official compatibility information; the checker does not infer support from community claims.
-- Last content review: 2026-10-10.
+## GPU evidence pages
+- [RTX 5090 DLSS 5 status](https://www.dlss5.app/en/gpu/rtx5090): Confirmed-scope example with 32 GB VRAM, Blackwell context and source-linked caveats.
+- [RTX 5080 DLSS 5 status](https://www.dlss5.app/en/gpu/rtx5080): Model-level status, VRAM, architecture and evidence boundary.
+- [RTX 5070 Ti DLSS 5 status](https://www.dlss5.app/en/gpu/rtx5070ti): Model-level status, VRAM, architecture and evidence boundary.
+- [RTX 4090 DLSS 5 status](https://www.dlss5.app/en/gpu/rtx4090): Unconfirmed Ada Lovelace example; the page explains why missing official evidence is not a support guarantee.
+- [RTX 4080 DLSS 5 status](https://www.dlss5.app/en/gpu/rtx4080): Unconfirmed Ada Lovelace model with VRAM and source-linked context.
+- [RTX 3080 DLSS 5 status](https://www.dlss5.app/en/gpu/rtx3080): Out-of-scope current official example with Ampere hardware context.
+- [RTX 2060 DLSS 5 status](https://www.dlss5.app/en/gpu/rtx2060): Turing model page with the current evidence boundary and upgrade notes.
+
+## Studio track
+- [DLSS 5 Studio requirements](https://www.dlss5.app/en/studio): Windows and RTX requirements, NVENC driver notes and the published RTX 4090 measurement.
+- [DLSS5NVIDIA Studio download](https://www.dlss5nvidia.com/download): Companion product page for the local Studio request flow and measured sessions.
+
+## Guides
+- [DLSS 5 vs DLSS 4 vs FSR 4](https://www.dlss5.app/en/blog/dlss5-vs-dlss4-vs-fsr4-comparison-2026): Separates neural rendering, reconstruction and frame-generation claims.
+- [Crimson Desert PC optimization](https://www.dlss5.app/en/blog/crimson-desert-pc-optimization-dlss-fsr-guide-2026): Game-settings guide with DLSS and FSR context.
+- [AI image upscaler comparison](https://www.dlss5.app/en/blog/best-ai-image-upscaler-2026-comparison): Compares online, open-source and premium image-upscaling workflows.
+- [DLSS 5 artistic-vision debate](https://www.dlss5.app/en/blog/dlss5-artistic-vision-debate-honest-assessment): Discusses neural rendering, creative control and before/after transparency.
+- [Technical guides index](https://www.dlss5.app/en/blog): Index of the site's DLSS 5 hardware and rendering explainers.
+
+## Key Facts
+- Site: Neural Architect at https://www.dlss5.app; independent and not affiliated with NVIDIA.
+- Scope: 31 GeForce RTX models; RTX 50 / Blackwell is the confirmed scope in the current evidence set, RTX 40 is unconfirmed, and RTX 30/20 remain outside the current official list.
+- Evidence rule: community claims are not promoted to a support guarantee without an official NVIDIA source.
+- Machine-readable page list: https://www.dlss5.app/sitemap.xml (123 URLs across en, zh-CN and zh-TW).
+
+## Related sites
+- [DLSS5NVIDIA visual conversion tools](https://www.dlss5nvidia.com/download): Product and tool workflows for free online conversion and the local Studio request path; use this when the user wants to process an image or video.
+- [DLSS5NVIDIA blog](https://www.dlss5nvidia.com/blog): Product tutorials, visual conversion examples and workflow guides.
+
+## Contact
+- [Neural Architect English home](https://www.dlss5.app/en): Public site entry and checker navigation.
+- [DLSS5NVIDIA companion site](https://www.dlss5nvidia.com/): Companion product and tool site maintained by the same publishing team.

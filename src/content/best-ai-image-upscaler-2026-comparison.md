@@ -92,7 +92,7 @@ The core AI approaches overlap: both analyze scene semantics, both use neural ne
 
 The practical difference is access: DLSS 5 requires a $600+ GPU and a supported game launching in Fall 2026. A good AI image upscaler is free online, right now.
 
-→ **[Try free AI image upscaling — no GPU, no install needed](/tool)**
+→ **[Try free AI image upscaling — no GPU, no install needed](/__studio__)**
 
 <!-- ============================================================
      CHINESE VERSION (中文版)
@@ -163,4 +163,4 @@ Windows/Mac/Linux 全平台，界面友好，零成本，质量出色。本质�
 | 追求最高质量不考虑成本 | SwinIR（本地部署） |
 | 游戏截图增强 | 在线工具或 Real-ESRGAN |
 
-→ **[免费试用 AI 图片超分——无需 GPU，无需安装](/tool)**
+→ **[免费试用 AI 图片超分——无需 GPU，无需安装](/__studio__)**

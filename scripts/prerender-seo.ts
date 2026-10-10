@@ -215,7 +215,13 @@ function supportedCardsBody(lang: Lang): string {
         [isTraditional ? '顯示卡狀態多久更新一次？' : '显卡状态多久更新一次？', isTraditional ? '當 NVIDIA 發布可核實的驅動程式、遊戲或硬體資訊時更新；每條結論都應回到來源核對。' : '当 NVIDIA 发布可核实的驱动、游戏或硬件信息时更新；每条结论都应回到来源核对。'],
       ];
   const rows = gpuSeries.map(([series, architecture, status]) => {
-    const translatedStatus = isEnglish ? status : status === 'Confirmed' ? '已确认' : status === 'Not confirmed by NVIDIA' ? 'NVIDIA 尚未确认' : '当前官方列表不支持';
+    const translatedStatus = isEnglish
+      ? status
+      : status === 'Confirmed'
+        ? (isTraditional ? '已確認' : '已确认')
+        : status === 'Not confirmed by NVIDIA'
+          ? (isTraditional ? 'NVIDIA 尚未確認' : 'NVIDIA 尚未确认')
+          : (isTraditional ? '目前官方清單不支援' : '当前官方列表不支持');
     return `<tr><th scope="row">${escapeHtml(isEnglish ? series : series.replace('RTX ', 'GeForce RTX '))}</th><td>${escapeHtml(architecture)}</td><td>${escapeHtml(translatedStatus)}</td></tr>`;
   }).join('');
   const questionsHtml = questions.map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
@@ -228,7 +234,7 @@ function supportedCardsBody(lang: Lang): string {
   const faqTitle = isEnglish ? 'Compatibility FAQ' : isTraditional ? '相容性常見問題' : '兼容性常见问题';
   const back = isEnglish ? '← Back to the GPU checker' : isTraditional ? '← 返回 GPU 檢查器首頁' : '← 返回 GPU 检测器首页';
   const converter = isEnglish ? 'Try the free visual converter' : isTraditional ? '試用免費的視覺轉換器' : '试用免费的视觉转换器';
-  return `<main class="seo-shell"><header><p class="eyebrow">${guide}</p><h1>${title}</h1><p class="lede">${intro}</p></header><section><h2>${matrix}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${source}<a href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. ${disclaimer}</p></section><section><h2>${faqTitle}</h2>${questionsHtml}</section><p><a href="/${lang}">${back}</a> · <a href="https://dlss5nvidia.com">${converter}</a></p></main>`;
+  return `<main class="seo-shell"><header><p class="eyebrow">${guide}</p><h1>${title}</h1><p class="lede">${intro}</p></header><section><h2>${matrix}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${source}<a href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. ${disclaimer}</p></section><section><h2>${faqTitle}</h2>${questionsHtml}</section><p><a href="/${lang}">${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a></p></main>`;
 }
 
 function blogBody(lang: Lang): string {
@@ -240,7 +246,12 @@ function blogBody(lang: Lang): string {
     return `<article><h2><a href="/${lang}/blog/${slug}">${escapeHtml(title)}</a></h2><p>${escapeHtml(description)}</p><time datetime="${escapeHtml(meta.date || '')}">${escapeHtml(meta.date || '')}</time></article>`;
   }).join('');
   const c = copy[lang];
-  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'NEURAL ARCHITECT' : 'NEURAL ARCHITECT'}</p><h1>${escapeHtml(c.blog)}</h1><p class="lede">${isEnglish ? 'Independent explainers on DLSS 5 hardware, neural rendering, game settings and AI image tools.' : '关于 DLSS 5 硬件、神经渲染、游戏设置和 AI 图片工具的独立解读。'}</p></header><section class="article-list">${items}</section></main>`;
+  const intro = isEnglish
+    ? 'Independent explainers on DLSS 5 hardware, neural rendering, game settings and AI image tools.'
+    : lang === 'zh-TW'
+      ? '獨立整理 DLSS 5 硬體、神經渲染、遊戲設定與 AI 圖像工具的技術解讀。'
+      : '关于 DLSS 5 硬件、神经渲染、游戏设置和 AI 图片工具的独立解读。';
+  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'NEURAL ARCHITECT' : 'NEURAL ARCHITECT'}</p><h1>${escapeHtml(c.blog)}</h1><p class="lede">${intro}</p></header><section class="article-list">${items}</section></main>`;
 }
 
 function localizedArticleMeta(meta: Record<string, string>, lang: Lang): { title: string; description: string } {
@@ -256,11 +267,11 @@ function articleBody(lang: Lang, slug: string): { body: string; meta: Record<str
   const parsed = parseFrontmatter(readFileSync(join(root, 'src/content', `${slug}.md`), 'utf8'));
   const { title, description } = localizedArticleMeta(parsed.meta, lang);
   const localizedBody = lang === 'zh-TW' ? toTraditionalChinese(languageBody(parsed.body, lang)) : languageBody(parsed.body, lang);
-  const body = markdownToHtml(localizedBody);
+  const body = markdownToHtml(localizedBody.replace(/\]\(\/(?:tool|__studio__)\)/g, `](/${lang}/studio)`));
   const eyebrow = lang === 'en' ? 'DLSS 5 TECHNICAL GUIDE' : lang === 'zh-TW' ? 'DLSS 5 技術指南' : 'DLSS 5 技术指南';
   const back = lang === 'en' ? 'Back to all guides' : lang === 'zh-TW' ? '返回全部指南' : '返回全部指南';
   const converter = lang === 'en' ? 'Try the free DLSS 5 visual converter' : lang === 'zh-TW' ? '試用免費的 DLSS 5 視覺轉換工具' : '试用免费的 DLSS 5 视觉转换工具';
-  return { meta: { ...parsed.meta, title, description }, body: `<main class="seo-shell article-shell"><article><p class="eyebrow">${eyebrow}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(description)}</p><time datetime="${escapeHtml(parsed.meta.date || '')}">${escapeHtml(parsed.meta.date || '')}</time><div class="article-content">${body}</div><p><a href="/${lang}/blog">← ${back}</a> · <a href="https://dlss5nvidia.com">${converter}</a></p></article></main>` };
+  return { meta: { ...parsed.meta, title, description }, body: `<main class="seo-shell article-shell"><article><p class="eyebrow">${eyebrow}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(description)}</p><time datetime="${escapeHtml(parsed.meta.date || '')}">${escapeHtml(parsed.meta.date || '')}</time><div class="article-content">${body}</div><p><a href="/${lang}/blog">← ${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a></p></article></main>` };
 }
 
 function documentFor(route: string, lang: Lang, title: string, description: string, body: string, type: 'website' | 'article', jsonLd: unknown, robots = 'index,follow', image = defaultOgImage): string {
@@ -271,8 +282,8 @@ function documentFor(route: string, lang: Lang, title: string, description: stri
     ? ''
     : [
       ['en', `${baseUrl}/en${suffix}`],
-      ['zh-Hans', `${baseUrl}/zh-CN${suffix}`],
-      ['zh-Hant', `${baseUrl}/zh-TW${suffix}`],
+      ['zh-CN', `${baseUrl}/zh-CN${suffix}`],
+      ['zh-TW', `${baseUrl}/zh-TW${suffix}`],
       ['x-default', `${baseUrl}/en${suffix}`],
     ].map(([hreflang, href]) => `<link rel="alternate" hreflang="${hreflang}" href="${href}"/>`).join('');
   const head = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"/><meta name="robots" content="${robots}"/><link rel="canonical" href="${canonical}"/>${alternates}<meta property="og:title" content="${escapeHtml(title)}"/><meta property="og:description" content="${escapeHtml(description)}"/><meta property="og:type" content="${type}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${escapeHtml(image)}"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:image" content="${escapeHtml(image)}"/><script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
@@ -331,7 +342,15 @@ for (const lang of Object.keys(copy) as Lang[]) {
     const gpuRoute = `${homeRoute}/gpu/${gpu.id}`;
     const gpuTitle = lang === 'en' ? `${gpu.name} DLSS 5 support and VRAM evidence | Neural Architect` : lang === 'zh-TW' ? `${gpu.name} DLSS 5 支援與顯存證據 | Neural Architect` : `${gpu.name} DLSS 5 支持与显存证据 | Neural Architect`;
     const gpuDescription = lang === 'en' ? `${gpu.name}: ${localizedStatus(lang, gpu.dlss5_status)}, ${gpu.vram_gb} GB VRAM, architecture and source-linked evidence.` : lang === 'zh-TW' ? `${gpu.name}：${localizedStatus(lang, gpu.dlss5_status)}、${gpu.vram_gb} GB 顯存、架構與來源證據。` : `${gpu.name}：${localizedStatus(lang, gpu.dlss5_status)}、${gpu.vram_gb} GB 显存、架构与来源证据。`;
-    writeRoute(gpuRoute, documentFor(gpuRoute, lang, gpuTitle, gpuDescription, gpuDetailBody(lang, gpu.id), 'article', { '@context': 'https://schema.org', '@type': 'TechArticle', headline: gpuTitle, description: gpuDescription, author: { '@type': 'Organization', name: 'Neural Architect', url: baseUrl }, mainEntityOfPage: `${baseUrl}${gpuRoute}` }));
+    const gpuContent = getGpuDetailContent(lang, gpu, gpuData.gpu_series.find(series => series.id === gpu.series));
+    const gpuSchema = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        { '@type': 'TechArticle', headline: gpuTitle, description: gpuDescription, author: { '@type': 'Organization', name: 'Neural Architect', url: baseUrl }, publisher: { '@id': 'https://www.dlss5nvidia.com/#organization' }, datePublished: '2026-10-10', dateModified: '2026-10-10', mainEntityOfPage: `${baseUrl}${gpuRoute}` },
+        { '@type': 'FAQPage', mainEntity: gpuContent.faq.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) },
+      ],
+    };
+    writeRoute(gpuRoute, documentFor(gpuRoute, lang, gpuTitle, gpuDescription, gpuDetailBody(lang, gpu.id), 'article', gpuSchema));
   }
   const supportedCardsRoute = `${homeRoute}/supported-cards`;
   const supportedCardsDescription = lang === 'en'

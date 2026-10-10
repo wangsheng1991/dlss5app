@@ -93,7 +93,7 @@ For the average gamer, DLSS 5 is a nice-to-have. For people working with AI imag
 
 That same principle applies to online AI image enhancement. Our tool uses diffusion-based upscaling that, like DLSS 5, analyzes scene semantics before generating detail. Unlike DLSS 5, it works on any image, from any source, right now — no RTX 5090 required.
 
-→ **[Try free AI image upscaling — no GPU needed](/tool)**
+→ **[Try free AI image upscaling — no GPU needed](/__studio__)**
 
 <!-- ============================================================
      CHINESE VERSION (中文版)

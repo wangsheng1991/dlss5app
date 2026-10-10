@@ -92,7 +92,7 @@ Our answer has been: show users exactly what changed, let them adjust intensity,
 
 That's a design philosophy, not just a feature. We think it's the right one — and DLSS 5's controversy is a good reason why.
 
-→ **[Experience AI image enhancement with full transparency and control](/tool)**
+→ **[Experience AI image enhancement with full transparency and control](/__studio__)**
 
 <!-- ============================================================
      CHINESE VERSION (中文版)
@@ -173,4 +173,4 @@ DLSS 5 不是从定义上威胁艺术灵魂。它是在默认配置、当前实�
 
 这是一种设计哲学，不只是功能特性。我们认为这是正确的——DLSS 5 的争议是一个很好的理由。
 
-→ **[体验完全透明可控的 AI 图像增强](/tool)**
+→ **[体验完全透明可控的 AI 图像增强](/__studio__)**
