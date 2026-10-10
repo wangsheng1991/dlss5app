@@ -271,7 +271,12 @@ function blogBody(lang: Lang): string {
     : lang === 'zh-TW'
       ? '獨立整理 DLSS 5 硬體、神經渲染、遊戲設定與 AI 圖像工具的技術解讀。'
       : '关于 DLSS 5 硬件、神经渲染、游戏设置和 AI 图片工具的独立解读。';
-  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'NEURAL ARCHITECT' : 'NEURAL ARCHITECT'}</p><h1>${escapeHtml(c.blog)}</h1><p class="lede">${intro}</p></header><section class="article-list">${items}</section></main>`;
+  const workflow = isEnglish
+    ? 'Looking for the workflow side of these conclusions? <a href="https://www.dlss5nvidia.com/blog">Open the DLSS5NVIDIA workflow guides →</a>'
+    : lang === 'zh-TW'
+      ? '想知道怎麼把這些結論用在圖片與影片上？<a href="https://www.dlss5nvidia.com/blog">前往 DLSS5NVIDIA 工作流程指南 →</a>'
+      : '想知道怎么把这些结论用在图片和视频上？<a href="https://www.dlss5nvidia.com/blog">前往 DLSS5NVIDIA 工作流指南 →</a>';
+  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'NEURAL ARCHITECT' : 'NEURAL ARCHITECT'}</p><h1>${escapeHtml(c.blog)}</h1><p class="lede">${intro}</p><p>${workflow}</p></header><section class="article-list">${items}</section></main>`;
 }
 
 function localizedArticleMeta(meta: Record<string, string>, lang: Lang): { title: string; description: string } {

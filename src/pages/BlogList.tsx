@@ -128,6 +128,16 @@ export default function BlogList() {
         <p className="text-on-surface-variant text-lg max-w-2xl mx-auto">
           {isZh ? (isTraditional ? '探索 DLSS 5 的最新動態、技術分析與產業爭議。' : '探索 DLSS 5 的最新动态、技术分析和行业争议。') : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'}
         </p>
+        <p className="text-on-surface-variant text-sm max-w-2xl mx-auto mt-4">
+          {isZh
+            ? (isTraditional ? '想知道怎麼把這些結論用在圖片與影片上？' : '想知道怎么把这些结论用在图片和视频上？')
+            : 'Looking for the workflow side of these conclusions?'}{' '}
+          <a className="text-primary underline" href="https://www.dlss5nvidia.com/blog">
+            {isZh
+              ? (isTraditional ? '前往 DLSS5NVIDIA 工作流程指南 →' : '前往 DLSS5NVIDIA 工作流指南 →')
+              : 'Open the DLSS5NVIDIA workflow guides →'}
+          </a>
+        </p>
       </div>
 
       {featuredPost && (
