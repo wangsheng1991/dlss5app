@@ -8,6 +8,7 @@
     "build": "vite build && tsx scripts/prerender-seo.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist",
+    "check:consistency": "node scripts/check-two-site-gpu-consistency.mjs",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
