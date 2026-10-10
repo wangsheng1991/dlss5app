@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Home from './pages/Home';
+import SupportedCards from './pages/SupportedCards';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 
@@ -21,6 +22,7 @@ export default function App() {
         <Routes>
           <Route path="/:lang" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="supported-cards" element={<SupportedCards />} />
             <Route path="blog" element={<BlogList />} />
             <Route path="blog/:slug" element={<BlogPost />} />
             <Route path="games" element={<div className="pt-32 text-center text-white">Games List Coming Soon</div>} />
@@ -50,7 +52,10 @@ function SEOHead() {
   const location = useLocation();
   const { lang } = useParams<{ lang: string }>();
   const basePath = location.pathname.replace(new RegExp(`^/${lang}`), '') || '';
-  const languages = ['en', 'zh-CN', 'zh-TW', 'zh-HK', 'ko', 'ja', 'es', 'fr', 'de', 'fi'];
+  // Only advertise routes that have a matching pre-rendered, localized document.
+  // The language picker still exposes the runtime translations, but we avoid
+  // publishing hreflang links to routes that are not in the sitemap.
+  const languages = ['en', 'zh-CN', 'zh-TW'];
 
   return (
     <Helmet>
@@ -158,13 +163,14 @@ function Header({ lang }: { lang: string }) {
           {isHome ? (
             <>
               <a href="#hero" className="hover:text-primary transition-colors duration-300">{t('nav.home')}</a>
-              <a href="#checker" className="hover:text-primary transition-colors duration-300">{t('nav.checker')}</a>
+              <Link to={`/${lang}/supported-cards`} className="hover:text-primary transition-colors duration-300">{t('nav.checker')}</Link>
               <a href="#matrix" className="hover:text-primary transition-colors duration-300">{t('nav.matrix')}</a>
               <a href="#faq" className="hover:text-primary transition-colors duration-300">{t('nav.faq')}</a>
             </>
           ) : (
             <Link to={`/${lang}`} className="hover:text-primary transition-colors duration-300">{t('nav.home')}</Link>
           )}
+          {!isHome && <Link to={`/${lang}/supported-cards`} className="hover:text-primary transition-colors duration-300">{t('nav.checker')}</Link>}
           <Link to={`/${lang}/blog`} className="hover:text-primary transition-colors duration-300">{t('nav.blog')}</Link>
           <Link to={`/${lang}/games`} className="hover:text-primary transition-colors duration-300">{t('nav.games')}</Link>
         </div>
@@ -208,6 +214,7 @@ function Header({ lang }: { lang: string }) {
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 w-full bg-[#131313]/95 backdrop-blur-xl border-b border-white/10 flex flex-col p-6 gap-4 font-headline text-sm font-medium shadow-2xl animate-in slide-in-from-top-2">
           <Link to={`/${lang}`} onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.home')}</Link>
+          <Link to={`/${lang}/supported-cards`} onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.checker')}</Link>
           <Link to={`/${lang}/blog`} onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.blog')}</Link>
           <Link to={`/${lang}/games`} onClick={() => setIsMobileMenuOpen(false)} className="text-white hover:text-primary py-2">{t('nav.games')}</Link>
         </div>

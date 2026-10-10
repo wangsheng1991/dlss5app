@@ -150,7 +150,31 @@ function homeBody(lang: Lang): string {
   }).join('');
   const questionsHtml = questions.map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
   const isEnglish = lang === 'en';
-  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'FREE GPU COMPATIBILITY CHECKER' : '免费 GPU 兼容性检测器'}</p><h1>${escapeHtml(c.h1)}</h1><p class="lede">${escapeHtml(c.intro)}</p><form action="/${lang}" method="get"><label for="gpu-query">${isEnglish ? 'GPU model' : 'GPU 型号'}</label><input id="gpu-query" name="gpu" placeholder="RTX 5090" /><button type="submit">${isEnglish ? 'Check compatibility' : '检查兼容性'}</button></form></header><section><h2>${escapeHtml(c.checker)}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${escapeHtml(c.sourceNote)}</p></section><section><h2>${escapeHtml(c.matrix)}</h2><p>${isEnglish ? 'Compare the neural rendering, frame generation and super resolution paths across NVIDIA GPU generations before you upgrade.' : '在升级前比较不同 NVIDIA GPU 世代的神经渲染、帧生成与超分辨率路径。'}</p><p><a href="https://www.nvidia.com/en-us/geforce/technologies/dlss/">${isEnglish ? 'Read NVIDIA’s official DLSS information' : '阅读 NVIDIA 官方 DLSS 信息'}</a> · <a href="https://dlss5nvidia.com">${isEnglish ? 'Try the free visual converter' : '试用免费的视觉转换工具'}</a></p></section><section><h2>${escapeHtml(c.faq)}</h2>${questionsHtml}</section><section><h2>${escapeHtml(c.blog)}</h2><p><a href="/${lang}/blog">${isEnglish ? 'Browse all technical guides and comparisons →' : '浏览全部技术指南与对比文章 →'}</a></p></section></main>`;
+  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'FREE GPU COMPATIBILITY CHECKER' : '免费 GPU 兼容性检测器'}</p><h1>${escapeHtml(c.h1)}</h1><p class="lede">${escapeHtml(c.intro)}</p><form action="/${lang}" method="get"><label for="gpu-query">${isEnglish ? 'GPU model' : 'GPU 型号'}</label><input id="gpu-query" name="gpu" placeholder="RTX 5090" /><button type="submit">${isEnglish ? 'Check compatibility' : '检查兼容性'}</button></form></header><section><h2>${escapeHtml(c.checker)}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${escapeHtml(c.sourceNote)}</p><p><a href="/${lang}/supported-cards">${isEnglish ? 'Open the full supported-cards matrix →' : '查看完整的显卡支持矩阵 →'}</a></p></section><section><h2>${escapeHtml(c.matrix)}</h2><p>${isEnglish ? 'Compare the neural rendering, frame generation and super resolution paths across NVIDIA GPU generations before you upgrade.' : '在升级前比较不同 NVIDIA GPU 世代的神经渲染、帧生成与超分辨率路径。'}</p><p><a href="https://www.nvidia.com/en-us/geforce/technologies/dlss/">${isEnglish ? 'Read NVIDIA’s official DLSS information' : '阅读 NVIDIA 官方 DLSS 信息'}</a> · <a href="https://dlss5nvidia.com">${isEnglish ? 'Try the free visual converter' : '试用免费的视觉转换工具'}</a></p></section><section><h2>${escapeHtml(c.faq)}</h2>${questionsHtml}</section><section><h2>${escapeHtml(c.blog)}</h2><p><a href="/${lang}/blog">${isEnglish ? 'Browse all technical guides and comparisons →' : '浏览全部技术指南与对比文章 →'}</a></p></section></main>`;
+}
+
+function supportedCardsBody(lang: Lang): string {
+  const isEnglish = lang === 'en';
+  const questions = isEnglish
+    ? [
+        ['Which GPUs support DLSS 5?', 'NVIDIA has confirmed DLSS 5 for GeForce RTX 50 Series Blackwell hardware. RTX 40 support remains unconfirmed until NVIDIA publishes a compatibility statement.'],
+        ['Can an RTX 4090 run DLSS 5?', 'No official NVIDIA confirmation is available yet. Treat the RTX 4090 as unconfirmed rather than assuming support or rejection.'],
+        ['Is this an official NVIDIA checker?', 'No. This is an independent reference that links each status to public NVIDIA information and does not scan your computer.'],
+        ['How often is the matrix updated?', 'We update entries when NVIDIA publishes verifiable driver, game or hardware information. Recheck the linked source before making an upgrade decision.'],
+      ]
+    : [
+        ['哪些显卡支持 DLSS 5？', '目前 NVIDIA 已确认 RTX 50 系列 Blackwell 支持 DLSS 5；RTX 40 系列需等待 NVIDIA 的兼容性公告。'],
+        ['RTX 4090 能运行 DLSS 5 吗？', '目前没有 NVIDIA 官方确认。请把 RTX 4090 视为未确认，而不是已支持或已不支持。'],
+        ['这个检测器是 NVIDIA 官方工具吗？', '不是。它是独立资料页，整理公开的 NVIDIA 公告并标注核对日期，不会扫描你的电脑。'],
+        ['显卡状态多久更新一次？', '当 NVIDIA 发布可核实的驱动、游戏或硬件信息时更新；每条结论都应回到来源核对。'],
+      ];
+  const rows = gpuSeries.map(([series, architecture, status]) => {
+    const translatedStatus = isEnglish ? status : status === 'Confirmed' ? '已确认' : status === 'Not confirmed by NVIDIA' ? 'NVIDIA 尚未确认' : '当前官方列表不支持';
+    return `<tr><th scope="row">${escapeHtml(isEnglish ? series : series.replace('RTX ', 'GeForce RTX '))}</th><td>${escapeHtml(architecture)}</td><td>${escapeHtml(translatedStatus)}</td></tr>`;
+  }).join('');
+  const questionsHtml = questions.map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
+  const title = isEnglish ? 'DLSS 5 Supported Cards & GPU Compatibility Checker' : 'DLSS 5 支持的显卡与 GPU 兼容性检测器';
+  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'EVIDENCE-BASED GPU GUIDE' : '基于证据的 GPU 指南'}</p><h1>${title}</h1><p class="lede">${isEnglish ? 'Check DLSS 5 support by GPU family, architecture and official evidence. Unknown stays unknown until NVIDIA publishes a verifiable statement.' : '按 GPU 系列、架构和官方证据查看 DLSS 5 支持状态；没有原文依据的型号会保留为未确认。'}</p></header><section><h2>${isEnglish ? 'DLSS 5 GPU support matrix' : 'DLSS 5 GPU 支持矩阵'}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${isEnglish ? 'Source: ' : '资料来源：'}<a href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. ${isEnglish ? 'Independent reference; not affiliated with NVIDIA.' : '本站与 NVIDIA 没有隶属关系。'}</p></section><section><h2>${isEnglish ? 'Compatibility FAQ' : '兼容性常见问题'}</h2>${questionsHtml}</section><p><a href="/${lang}">${isEnglish ? '← Back to the GPU checker' : '← 返回 GPU 检测器首页'}</a> · <a href="https://dlss5nvidia.com">${isEnglish ? 'Try the free visual converter' : '试用免费的视觉转换器'}</a></p></main>`;
 }
 
 function blogBody(lang: Lang): string {
@@ -202,6 +226,8 @@ for (const lang of Object.keys(copy) as Lang[]) {
     ],
   };
   writeRoute(homeRoute, documentFor(homeRoute, lang, c.title, c.description, homeBody(lang), 'website', homeJsonLd));
+  const supportedCardsRoute = `${homeRoute}/supported-cards`;
+  writeRoute(supportedCardsRoute, documentFor(supportedCardsRoute, lang, `${c.title} | Neural Architect`, c.description, supportedCardsBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq[lang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) }));
   const blogRoute = `${homeRoute}/blog`;
   writeRoute(blogRoute, documentFor(blogRoute, lang, `${c.blog} | Neural Architect`, c.description, blogBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'CollectionPage', name: c.blog, url: `${baseUrl}${blogRoute}` }));
   for (const slug of articleSlugs) {
@@ -215,4 +241,21 @@ for (const lang of Object.keys(copy) as Lang[]) {
 const rootCopy = copy.en;
 writeRoute('/', documentFor('/', 'en', rootCopy.title, rootCopy.description, homeBody('en'), 'website', { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Neural Architect', url: baseUrl }));
 
-console.log(`Pre-rendered ${Object.keys(copy).length} languages, ${articleSlugs.length} articles and static FAQ/checker content.`);
+function sitemapXml(): string {
+  const date = '2026-10-10';
+  const suffixes = ['', '/supported-cards', '/blog', ...articleSlugs.map(slug => `/blog/${slug}`)];
+  const escapeXml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  const urls: string[] = [];
+  for (const suffix of suffixes) {
+    for (const lang of Object.keys(copy) as Lang[]) {
+      const path = `/${lang}${suffix}`;
+      const alternates = (Object.keys(copy) as Lang[]).map(code => `    <xhtml:link rel="alternate" hreflang="${code}" href="${baseUrl}/${code}${suffix}" />`).join('\n');
+      urls.push(`  <url>\n    <loc>${escapeXml(`${baseUrl}${path}`)}</loc>\n    <lastmod>${date}</lastmod>\n    <changefreq>${suffix.startsWith('/blog/') ? 'weekly' : 'daily'}</changefreq>\n    <priority>${suffix === '' ? '1.0' : suffix === '/supported-cards' ? '0.9' : '0.8'}</priority>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/en${suffix}" />\n  </url>`);
+    }
+  }
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`;
+}
+
+writeFileSync(join(root, 'public/sitemap.xml'), sitemapXml());
+
+console.log(`Pre-rendered ${Object.keys(copy).length} languages, ${articleSlugs.length} articles, supported-cards landing pages and static FAQ/checker content.`);
