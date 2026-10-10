@@ -4,6 +4,7 @@ title_cn: "绯红荒漠 PC 设置：4K 60fps 怎么调，截图怎么再放大�
 description: "Crimson Desert settings by GPU tier for 4K 60fps, the Kastone stutter fix, and how to upscale the screenshots you capture with Black Space Engine."
 description_cn: "按显卡档位给出的绯红荒漠 4K 60fps 设置、卡斯通卡顿修复，以及怎么把 Black Space Engine 里截的图再放大。"
 date: "2026-04-11"
+reviewed: "2026-10-10"
 og_image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1600"
 tags: ["crimson desert", "crimson desert dlss", "crimson desert performance", "dlss 4.5", "绯红荒漠优化"]
 counterpart: "https://www.dlss5nvidia.com/blog/crimson-desert-pc-optimization-dlss-fsr-guide-2026"
@@ -11,9 +12,8 @@ counterpart: "https://www.dlss5nvidia.com/blog/crimson-desert-pc-optimization-dl
 <!-- ============================================================
      ENGLISH VERSION
      ============================================================ -->
-# Crimson Desert PC Settings for 4K 60fps — and Upscaling Your Screenshots
 
-*6 min read · Updated April 2026*
+*6 min read*
 
 ---
 
@@ -107,9 +107,8 @@ If you're taking screenshots in Crimson Desert — and with Black Space Engine's
 <!-- ============================================================
      CHINESE VERSION (中文版)
      ============================================================ -->
-# 绯红荒漠 PC 设置：4K 60fps 与截图的二次放大
 
-*阅读约6分钟 · 2026年4月更新*
+*阅读约6分钟*
 
 ---
 

@@ -43,10 +43,10 @@ export default function GpuDetail() {
 
       <section className="mt-12 rounded-2xl border border-white/10 bg-white/5 p-8 space-y-5">
         <h2 className="text-2xl font-bold">{copy.statusHeading}</h2>
+        <p className="text-white/75 leading-8">{copy.statusExplanation}</p>
         <p className="text-2xl text-primary font-bold">{copy.status}</p>
         <p className="text-white/80">{copy.modelNoteLabel}：{gpu.note}</p>
         <p className="text-white/70">{copy.sourceLabel}：<a className="text-primary underline" href={source}>{source}</a></p>
-        <p className="text-white/70">{copy.statusExplanation}</p>
         <p className="text-white/50 text-sm">{copy.disclaimer}</p>
       </section>
 

@@ -4,6 +4,7 @@ title_cn: "2026 年免费与付费 AI 图片放大工具横评：Real-ESRGAN、U
 description: "A tool-by-tool comparison of free, open-source and paid AI upscalers in 2026: what each one costs, where it runs, and which one fits which job."
 description_cn: "2026 年免费、开源与付费 AI 放大工具逐个对比：各自的成本、运行环境和适用场景。"
 date: "2026-04-11"
+reviewed: "2026-10-10"
 og_image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1600"
 tags: ["ai image upscaling", "real-esrgan", "topaz gigapixel", "free image upscaler 2026", "图片放大工具"]
 counterpart: "https://www.dlss5nvidia.com/blog/best-ai-image-upscaler-2026-comparison"
@@ -11,9 +12,8 @@ counterpart: "https://www.dlss5nvidia.com/blog/best-ai-image-upscaler-2026-compa
 <!-- ============================================================
      ENGLISH VERSION
      ============================================================ -->
-# Free vs Paid AI Image Upscalers in 2026
 
-*7 min read · Updated April 2026*
+*7 min read*
 
 ---
 
@@ -98,7 +98,6 @@ The practical difference is access: DLSS 5 requires a $600+ GPU and a supported 
 <!-- ============================================================
      CHINESE VERSION (中文版)
      ============================================================ -->
-# 2026 年免费与付费 AI 图片放大工具横评
 
 *阅读约7分钟 · 2026年4月*
 

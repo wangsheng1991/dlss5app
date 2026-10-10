@@ -4,7 +4,7 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Share2, RefreshCw } from 'lucide-react';
 import OpenCC from 'opencc-js';
 
 const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
@@ -163,7 +163,7 @@ export default function BlogPost() {
                 "headline": title,
                 "image": metadata.og_image ? [metadata.og_image] : [],
                 "datePublished": metadata.date ? new Date(metadata.date).toISOString() : undefined,
-                "dateModified": metadata.date ? new Date(metadata.date).toISOString() : undefined,
+                "dateModified": new Date(metadata.reviewed || metadata.date || Date.now()).toISOString(),
                 "author": [{ "@type": "Organization", "@id": "https://www.dlss5nvidia.com/#organization" }],
                 "publisher": { "@id": "https://www.dlss5nvidia.com/#organization" }
               }
@@ -192,6 +192,12 @@ export default function BlogPost() {
               <Calendar className="w-4 h-4" />
               <span>{metadata.date}</span>
             </div>
+            {metadata.reviewed && (
+              <div className="flex items-center gap-2">
+                <RefreshCw className="w-4 h-4" />
+                <span>{isZh ? `内容复审 ${metadata.reviewed}` : `Last reviewed ${metadata.reviewed}`}</span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
               <span>{isZh ? '8 分钟阅读' : '8 min read'}</span>

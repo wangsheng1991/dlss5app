@@ -74,6 +74,10 @@
 .seo-shell th { color: #fff; font-weight: 700; }
 .seo-shell td { color: var(--color-on-surface-variant); }
 .seo-shell .source-note { margin-top: 1rem; font-size: 0.875rem; }
+/* 自足段：首页「这是什么站」与型号页状态答案段，读起来是和 lede 同一层的事实说明。 */
+.seo-shell .key-facts { margin-top: 0.75rem; font-size: 1rem; max-width: 52rem; }
+.seo-shell .article-meta { display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 0.875rem; color: var(--color-on-surface-variant); border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0.75rem 0; }
+.seo-shell .article-meta time { color: var(--color-on-surface-variant); }
 .seo-shell section { margin-top: 3rem; }
 .seo-shell .article-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; }
 .seo-shell .article-list article { border: 1px solid rgba(255,255,255,0.1); border-radius: 0.9rem; padding: 1.5rem; background: var(--color-surface-container); }

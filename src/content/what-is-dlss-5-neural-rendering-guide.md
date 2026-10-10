@@ -4,6 +4,7 @@ title_cn: "DLSS 5 深度解读：神经渲染原理与目前确认支持的显�
 description: "How DLSS 5 neural rendering works, plus the hardware question that decides it: the RTX 50 cards NVIDIA has confirmed, what stays unconfirmed on RTX 40, and why the older Tensor Cores are out of scope."
 description_cn: "DLSS 5 神经渲染的原理，以及决定它的硬件问题：NVIDIA 已确认的 RTX 50 型号、RTX 40 的未确认状态，以及更早的 Tensor Core 为什么不在范围内。"
 date: "2026-04-11"
+reviewed: "2026-10-10"
 og_image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1600"
 tags: ["dlss5", "neural rendering", "nvidia", "what is dlss 5", "技术原理"]
 counterpart: "https://www.dlss5nvidia.com/blog/what-is-dlss-5-neural-rendering-guide"
@@ -11,9 +12,8 @@ counterpart: "https://www.dlss5nvidia.com/blog/what-is-dlss-5-neural-rendering-g
 <!-- ============================================================
      ENGLISH VERSION
      ============================================================ -->
-# DLSS 5 Explained: Neural Rendering, and Which GPUs Are Confirmed to Run It
 
-*8 min read · Last updated April 2026*
+*8 min read*
 
 ---
 
@@ -130,9 +130,8 @@ The AI upscaling tools you can use online today, including ours, operate on simi
 <!-- ============================================================
      CHINESE VERSION (中文版)
      ============================================================ -->
-# DLSS 5 深度解读：神经渲染与已确认支持的显卡
 
-*阅读约8分钟 · 2026年4月更新*
+*阅读约8分钟*
 
 ---
 

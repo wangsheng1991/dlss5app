@@ -4,13 +4,13 @@ title_cn: "DLSS 5 架构深度解析：Blackwell 如何驱动神经渲染"
 description: "A deep dive into the DLSS 5 architecture, explaining why neural rendering requires RTX 50 series Blackwell GPUs, Tensor Cores, and FP8 precision."
 description_cn: "深入解析 DLSS 5 架构，揭秘为什么神经渲染需要 RTX 50 系列 Blackwell 显卡、Tensor Core 和 FP8 精度。"
 date: "2026-04-13"
+reviewed: "2026-10-10"
 og_image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1600"
 tags: ["dlss 5 architecture", "neural rendering", "blackwell", "rtx 5090", "tensor cores"]
 ---
 <!-- ============================================================
      ENGLISH VERSION
      ============================================================ -->
-# DLSS 5 Architecture Explained: How Blackwell Powers Neural Rendering
 
 When NVIDIA announced DLSS 5, the gaming and tech communities were stunned by the claim that it represents "the GPT moment for graphics." But what exactly makes the **DLSS 5 architecture** so revolutionary? Why does it require the new RTX 50 series Blackwell GPUs? 
 
@@ -67,7 +67,6 @@ For gamers and creators, understanding the **DLSS 5 architecture** is key to und
 <!-- ============================================================
      CHINESE VERSION (中文版)
      ============================================================ -->
-# DLSS 5 架构深度解析：Blackwell 如何驱动神经渲染
 
 当 NVIDIA 宣布 DLSS 5 时，游戏和科技界都对其被称为“图形领域的 GPT 时刻”这一说法感到震惊。但究竟是什么让 **DLSS 5 架构**如此具有革命性？为什么它必须依赖全新的 RTX 50 系列 Blackwell 显卡？
 

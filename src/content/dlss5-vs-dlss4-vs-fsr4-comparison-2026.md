@@ -4,16 +4,16 @@ title_cn: "DLSS 5 vs DLSS 4 vs FSR 4：2026 年到底该不该升级显卡？"
 description: "A GPU-side decision guide to DLSS 5, DLSS 4 and FSR 4: the hardware each one needs, what your current card already does, and when an upgrade actually pays off."
 description_cn: "从显卡角度做决定：DLSS 5、DLSS 4 与 FSR 4 各自需要什么硬件、你现在的卡已经能做什么，以及什么时候升级才真的划算。"
 date: "2026-04-11"
-og_image: "https://images.unsplash.com/photo-1655823769188-1234567890?auto=format&fit=crop&q=80&w=1600"
+reviewed: "2026-10-10"
+og_image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&q=80&w=1600"
 tags: ["dlss5 vs dlss4", "fsr4", "upscaling comparison", "nvidia vs amd 2026"]
 counterpart: "https://www.dlss5nvidia.com/blog/dlss5-vs-dlss4-vs-fsr4-comparison-2026"
 ---
 <!-- ============================================================
      ENGLISH VERSION
      ============================================================ -->
-# DLSS 5 vs DLSS 4 vs FSR 4: Should You Upgrade Your GPU?
 
-*7 min read · Last updated April 2026*
+*7 min read*
 
 ---
 
@@ -99,7 +99,6 @@ That same principle applies to online AI image enhancement. Our tool uses diffus
 <!-- ============================================================
      CHINESE VERSION (中文版)
      ============================================================ -->
-# DLSS 5 vs DLSS 4 vs FSR 4：该不该升级显卡
 
 *阅读约7分钟 · 2026年4月*
 

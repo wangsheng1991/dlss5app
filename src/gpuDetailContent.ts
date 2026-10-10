@@ -110,6 +110,46 @@ function formatLaunchDate(iso: string, lang: GpuDetailLanguage): string {
   return `${year} 年 ${month} 月${day ? ` ${day} 日` : ''}`;
 }
 
+/**
+ * 「目前 DLSS 5 狀態」一節的答案段。
+ * 開句就點名主體與結論，並帶上該卡可核對的硬體事實，讓這一段脫離整頁也能被單獨引用。
+ */
+function statusAnswer(lang: GpuDetailLanguage, gpu: GpuRecord, architecture: string): string {
+  const traditional = lang === 'zh-TW';
+  const chinese = lang !== 'en';
+  const spec = gpu.spec;
+  const reviewed = '2026-10-10';
+  const record = spec
+    ? (lang === 'en'
+      ? `${gpu.vram_gb} GB of VRAM, ${spec.cores.toLocaleString('en-US')} CUDA cores, a ${spec.bus}-bit memory bus, ${spec.tdp} W board power, launched ${formatLaunchDate(spec.launch, 'en')}`
+      : (traditional
+        ? `${gpu.vram_gb} GB 顯存、${spec.cores.toLocaleString('en-US')} 個 CUDA 核心、${spec.bus}-bit 顯存位寬、${spec.tdp} W 整卡功耗，${formatLaunchDate(spec.launch, lang)} 發佈`
+        : `${gpu.vram_gb} GB 显存、${spec.cores.toLocaleString('en-US')} 个 CUDA 核心、${spec.bus}-bit 显存位宽、${spec.tdp} W 整卡功耗，${formatLaunchDate(spec.launch, lang)} 发布`))
+    : (chinese
+      ? (traditional ? `${gpu.vram_gb} GB 顯存（${architecture} 架構）` : `${gpu.vram_gb} GB 显存（${architecture} 架构）`)
+      : `${gpu.vram_gb} GB of VRAM on the ${architecture} architecture`);
+
+  if (gpu.dlss5_status === 'confirmed') {
+    return lang === 'en'
+      ? `${gpu.name} is recorded as confirmed for DLSS 5: NVIDIA's published scope names the RTX 50 series, and ${gpu.name} is a Blackwell part. Card record: ${record}. Confirmed is a hardware-scope statement, not a promise that every game already ships DLSS 5 — titles pick the feature up through game updates and drivers.`
+      : (traditional
+        ? `NVIDIA 已公佈的 DLSS 5 範圍點名 RTX 50 系列，${gpu.name} 屬於 Blackwell，因此本頁記為已確認。硬體紀錄：${record}。已確認是硬體範圍結論，不代表每款遊戲現在都已上線 DLSS 5——遊戲要靠更新與驅動才能用上。`
+        : `NVIDIA 已公布的 DLSS 5 范围点名 RTX 50 系列，${gpu.name} 属于 Blackwell，因此本页记为已确认。硬件记录：${record}。已确认是硬件范围结论，不代表每款游戏现在都已上线 DLSS 5——游戏要靠更新与驱动才能用上。`);
+  }
+  if (gpu.dlss5_status === 'no') {
+    return lang === 'en'
+      ? `${gpu.name} sits outside the DLSS 5 hardware scope NVIDIA has published so far, so this record reads "not supported in the current official list". That scope names RTX 50-series Blackwell parts; ${architecture} is not part of it. Card record: ${record}. The conclusion covers DLSS 5 Neural Rendering only and leaves the older DLSS features this card already has unchanged.`
+      : (traditional
+        ? `${gpu.name} 落在 NVIDIA 目前已公佈的 DLSS 5 硬體範圍之外，因此本頁記為「目前官方清單不支援」。已公佈範圍點名 RTX 50 系列 Blackwell，${architecture} 不在其中。硬體紀錄：${record}。這條結論只針對 DLSS 5 神經渲染，不改變這張卡上已有的舊版 DLSS 功能。`
+        : `${gpu.name} 落在 NVIDIA 目前已公布的 DLSS 5 硬件范围之外，因此本页记为「当前官方列表不支持」。已公布范围点名 RTX 50 系列 Blackwell，${architecture} 不在其中。硬件记录：${record}。这条结论只针对 DLSS 5 神经渲染，不改变这张卡上已有的旧版 DLSS 功能。`);
+  }
+  return lang === 'en'
+    ? `${gpu.name} DLSS 5 support is unconfirmed as of ${reviewed}. NVIDIA has published no model-specific statement covering ${architecture}, so this record stays unconfirmed rather than supported; the announced scope names RTX 50-series Blackwell parts. Card record: ${record}. Unconfirmed is not a rejection: it means waiting for NVIDIA's own model list, because in-game availability also depends on drivers and per-title implementations.`
+    : (traditional
+      ? `截至 ${reviewed}，${gpu.name} 的 DLSS 5 支援狀態為尚未確認：NVIDIA 沒有發佈針對 ${architecture} 的型號級聲明，本頁因此記為尚未確認，而不是已支援；已公佈的範圍點名 RTX 50 系列 Blackwell。硬體紀錄：${record}。尚未確認不等於不能執行——它表示要等 NVIDIA 自己的型號清單，因為遊戲內能不能用還取決於驅動與逐款遊戲的實作。`
+      : `截至 ${reviewed}，${gpu.name} 的 DLSS 5 支持状态为未确认：NVIDIA 没有发布针对 ${architecture} 的型号级声明，本页因此记为未确认，而不是已支持；已公布的范围点名 RTX 50 系列 Blackwell。硬件记录：${record}。未确认不等于不能运行——它表示要等 NVIDIA 自己的型号清单，因为游戏内能不能用还取决于驱动与逐款游戏的实现。`);
+}
+
 /** 每張卡的硬體規格列 —— 只在資料集有 spec 時產生。 */
 function specRows(seriesName: string, spec: GpuSpec, lang: GpuDetailLanguage): Array<{ label: string; value: string }> {
   const traditional = lang === 'zh-TW';
@@ -314,11 +354,7 @@ export function getGpuDetailContent(
         : `${gpu.name}: ${status}, ${gpu.vram_gb} GB VRAM, ${architecture} architecture, local Studio readiness and source-linked evidence.`,
       status,
       statusHeading: 'Current DLSS 5 status',
-      statusExplanation: gpu.dlss5_status === 'confirmed'
-        ? `NVIDIA’s published DLSS 5 scope covers the RTX 50 series, which is why ${gpu.name} is recorded as confirmed. That is a hardware-scope statement, not a promise that every game already ships DLSS 5.`
-        : gpu.dlss5_status === 'no'
-          ? `${gpu.name} sits outside the DLSS 5 hardware scope NVIDIA has published so far. Older DLSS features on this card are a separate question and are not changed by this record.`
-          : `No NVIDIA statement covers ${gpu.name} specifically, so this record stays unconfirmed. We do not turn a plausible claim into a support guarantee.`,
+      statusExplanation: statusAnswer('en', gpu, architecture),
       modelNoteLabel: 'Model note',
       sourceLabel: 'Evidence source',
       disclaimer: 'Independent evidence page; this is not an NVIDIA compatibility guarantee.',
@@ -420,11 +456,7 @@ export function getGpuDetailContent(
         : `${gpu.name}：${status}、${gpu.vram_gb} GB 显存、${architecture} 架构，以及本地 Studio 适配结论与来源证据。`),
     status,
     statusHeading: traditional ? '目前 DLSS 5 狀態' : '当前 DLSS 5 状态',
-    statusExplanation: gpu.dlss5_status === 'confirmed'
-      ? (traditional ? `NVIDIA 已公佈的 DLSS 5 範圍涵蓋 RTX 50 系列，因此 ${gpu.name} 記為已確認。這是硬體範圍的結論，不代表每款遊戲都已推出 DLSS 5。` : `NVIDIA 已公布的 DLSS 5 范围涵盖 RTX 50 系列，因此 ${gpu.name} 记为已确认。这是硬件范围的结论，不代表每款游戏都已推出 DLSS 5。`)
-      : gpu.dlss5_status === 'no'
-        ? (traditional ? `${gpu.name} 落在 NVIDIA 目前已公佈的 DLSS 5 硬體範圍之外。這張卡上的舊版 DLSS 功能是另一個問題，不受本筆紀錄影響。` : `${gpu.name} 落在 NVIDIA 目前已公布的 DLSS 5 硬件范围之外。这张卡上的旧版 DLSS 功能是另一个问题，不受本条记录影响。`)
-        : (traditional ? `沒有針對 ${gpu.name} 的 NVIDIA 聲明，因此本筆紀錄維持尚未確認。我們不會把看似合理的說法寫成支援保證。` : `没有针对 ${gpu.name} 的 NVIDIA 声明，因此本条记录维持尚未确认。我们不会把看似合理的说法写成支持保证。`),
+    statusExplanation: statusAnswer(traditional ? 'zh-TW' : 'zh-CN', gpu, architecture),
     modelNoteLabel: traditional ? '型號備註' : '型号备注',
     sourceLabel: traditional ? '證據來源' : '证据来源',
     disclaimer: traditional ? '這是獨立證據頁，不是 NVIDIA 的相容性保證。' : '这是独立证据页，不是 NVIDIA 的兼容性保证。',
