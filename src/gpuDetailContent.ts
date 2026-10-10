@@ -138,6 +138,50 @@ function specRows(seriesName: string, spec: GpuSpec, lang: GpuDetailLanguage): A
   ];
 }
 
+/** 兩個發佈日相差幾個月；回傳 peer 相對 mine 的月數（正數代表 peer 較晚）。 */
+function monthsBetween(peerIso: string, mineIso: string): number {
+  const [py, pm] = peerIso.split('-').map(Number);
+  const [my, mm] = mineIso.split('-').map(Number);
+  return (py * 12 + pm) - (my * 12 + mm);
+}
+
+/** 逐型號規格的近鄰比較句 —— 用差異描述，不用同一套模板重複敘述。 */
+function peerComparison(
+  lang: GpuDetailLanguage,
+  gpuName: string,
+  peer: { name?: string; vram_gb: number; spec?: GpuSpec },
+  spec: GpuSpec,
+): string {
+  const peerName = peer.name || 'this model';
+  const peerSpec = peer.spec!;
+  const traditional = lang === 'zh-TW';
+  const months = monthsBetween(peerSpec.launch, spec.launch);
+  const coreDelta = peerSpec.cores - spec.cores;
+  const tdpDelta = peerSpec.tdp - spec.tdp;
+  if (lang === 'en') {
+    const when = months === 0 ? `in the same month (${formatLaunchDate(peerSpec.launch, 'en')})` : `${Math.abs(months)} months ${months > 0 ? 'later' : 'earlier'}`;
+    const cores = coreDelta === 0 ? 'the same CUDA core count' : `${Math.abs(coreDelta).toLocaleString('en-US')} ${coreDelta > 0 ? 'more' : 'fewer'} CUDA cores`;
+    const power = tdpDelta === 0 ? 'the same board power' : `${Math.abs(tdpDelta)} W ${tdpDelta > 0 ? 'higher' : 'lower'} board power`;
+    return `The closest record in this series is ${peerName} (${peer.vram_gb} GB). Against ${gpuName}, ${peerName} launched ${when}, with ${cores} and ${power}.`;
+  }
+  const whenCn = months === 0
+    ? (traditional ? `與 ${gpuName} 同期發佈` : `与 ${gpuName} 同期发布`)
+    : (traditional
+      ? `與 ${gpuName} 相比，${months > 0 ? '晚' : '早'} ${Math.abs(months)} 個月發佈`
+      : `与 ${gpuName} 相比，${months > 0 ? '晚' : '早'} ${Math.abs(months)} 个月发布`);
+  const coresCn = coreDelta === 0
+    ? (traditional ? 'CUDA 核心數相同' : 'CUDA 核心数相同')
+    : (traditional
+      ? `CUDA 核心${coreDelta > 0 ? '多' : '少'} ${Math.abs(coreDelta).toLocaleString('en-US')} 個`
+      : `CUDA 核心${coreDelta > 0 ? '多' : '少'} ${Math.abs(coreDelta).toLocaleString('en-US')} 个`);
+  const powerCn = tdpDelta === 0
+    ? (traditional ? '整卡功耗相同' : '整卡功耗相同')
+    : (traditional ? `整卡功耗${tdpDelta > 0 ? '高' : '低'} ${Math.abs(tdpDelta)} W` : `整卡功耗${tdpDelta > 0 ? '高' : '低'} ${Math.abs(tdpDelta)} W`);
+  return traditional
+    ? `本系列最接近的紀錄是 ${peerName}（${peer.vram_gb} GB）。${whenCn}，${coresCn}，${powerCn}。`
+    : `本系列最接近的记录是 ${peerName}（${peer.vram_gb} GB）。${whenCn}，${coresCn}，${powerCn}。`;
+}
+
 function memoryVerdictEn(vram: number): { tone: GpuCheckVerdict; verdict: string; checks: Array<{ label: string; value: string; verdict: GpuCheckVerdict }> } {
   if (vram >= STUDIO_RECOMMENDED_VRAM_GB) {
     return {
@@ -259,7 +303,7 @@ export function getGpuDetailContent(
     const peerSpec = nearest?.spec;
     const peerDetail = nearest
       ? (peerSpec && spec
-        ? `The closest record in this series is ${nearest.name} (${nearest.vram_gb} GB). It launched on ${formatLaunchDate(peerSpec.launch, 'en')} and carries ${peerSpec.cores.toLocaleString('en-US')} CUDA cores at ${peerSpec.tdp} W, against ${formatLaunchDate(spec.launch, 'en')}, ${spec.cores.toLocaleString('en-US')} CUDA cores and ${spec.tdp} W for ${gpu.name}. Both share the same DLSS 5 status in this data set.`
+        ? peerComparison('en', gpu.name, nearest, spec)
         : `The closest record in this series is ${nearest.name} (${nearest.vram_gb} GB). ${nearest.vram_gb === gpu.vram_gb ? `It carries the same ${gpu.vram_gb} GB of VRAM as ${gpu.name}` : `That is ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB ${nearest.vram_gb > gpu.vram_gb ? 'above' : 'below'} ${gpu.name}`}, and both share the same DLSS 5 status in this data set.`)
       : 'This is the only model of its series in this data set.';
     return {
@@ -332,7 +376,7 @@ export function getGpuDetailContent(
       peersHeading: `Nearest models in the same series`,
       peers: siblings,
       peersParagraphs: [
-        `${peerDetail} We publish no performance benchmark and no ranking between them.`,
+        `${peerDetail} Both share the same DLSS 5 status in this data set, and we publish no performance benchmark and no ranking between them.`,
       ],
       nextHeading: 'Before you buy or upgrade',
       nextSteps: [
@@ -359,9 +403,7 @@ export function getGpuDetailContent(
   const peerSpec = nearest?.spec;
   const peerDetailCn = nearest
     ? (peerSpec && spec
-      ? (traditional
-        ? `本系列最接近的紀錄是 ${nearest.name}（${nearest.vram_gb} GB）：發佈於 ${formatLaunchDate(peerSpec.launch, 'zh-TW')}，有 ${peerSpec.cores.toLocaleString('en-US')} 個 CUDA 核心、整卡功耗 ${peerSpec.tdp} W；${gpu.name} 則是 ${formatLaunchDate(spec.launch, 'zh-TW')}、${spec.cores.toLocaleString('en-US')} 個 CUDA 核心、${spec.tdp} W。兩者在本地資料集中 DLSS 5 狀態相同。`
-        : `本系列最接近的记录是 ${nearest.name}（${nearest.vram_gb} GB）：发布于 ${formatLaunchDate(peerSpec.launch, 'zh-CN')}，有 ${peerSpec.cores.toLocaleString('en-US')} 个 CUDA 核心、整卡功耗 ${peerSpec.tdp} W；${gpu.name} 则是 ${formatLaunchDate(spec.launch, 'zh-CN')}、${spec.cores.toLocaleString('en-US')} 个 CUDA 核心、${spec.tdp} W。两者在本地资料集中 DLSS 5 状态相同。`)
+      ? peerComparison(traditional ? 'zh-TW' : 'zh-CN', gpu.name, nearest, spec)
       : (traditional
         ? `本系列最接近的紀錄是 ${nearest.name}（${nearest.vram_gb} GB）。${nearest.vram_gb === gpu.vram_gb ? `它的顯存與 ${gpu.name} 同為 ${gpu.vram_gb} GB` : `比 ${gpu.name} ${nearest.vram_gb > gpu.vram_gb ? '多' : '少'} ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB`}，兩者在本地資料集中 DLSS 5 狀態相同。`
         : `本系列最接近的记录是 ${nearest.name}（${nearest.vram_gb} GB）。${nearest.vram_gb === gpu.vram_gb ? `它的显存与 ${gpu.name} 同为 ${gpu.vram_gb} GB` : `比 ${gpu.name} ${nearest.vram_gb > gpu.vram_gb ? '多' : '少'} ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB`}，两者在本地资料集中 DLSS 5 状态相同。`))
@@ -448,7 +490,7 @@ export function getGpuDetailContent(
     peersHeading: traditional ? '同系列最接近的型號' : '同系列最接近的型号',
     peers: siblings,
     peersParagraphs: [
-      `${peerDetailCn}${traditional ? '我們不公佈兩者之間的效能排名。' : '我们不公布两者之间的性能排名。'}`,
+      `${peerDetailCn}${traditional ? '兩者在本地資料集中 DLSS 5 狀態相同；我們不公佈兩者之間的效能排名。' : '两者在本地资料集中 DLSS 5 状态相同；我们不公布两者之间的性能排名。'}`,
     ],
     nextHeading: traditional ? '購買或升級前' : '购买或升级前',
     nextSteps: [
