@@ -5,6 +5,7 @@ import OpenCC from 'opencc-js';
 const root = resolve(new URL('..', import.meta.url).pathname);
 const dist = join(root, 'dist');
 const baseUrl = 'https://www.dlss5.app';
+const defaultOgImage = 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1600';
 const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
 
 type Lang = 'en' | 'zh-CN' | 'zh-TW';
@@ -220,7 +221,7 @@ function articleBody(lang: Lang, slug: string): { body: string; meta: Record<str
   return { meta: { ...parsed.meta, title, description }, body: `<main class="seo-shell article-shell"><article><p class="eyebrow">${eyebrow}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(description)}</p><time datetime="${escapeHtml(parsed.meta.date || '')}">${escapeHtml(parsed.meta.date || '')}</time><div class="article-content">${body}</div><p><a href="/${lang}/blog">← ${back}</a> · <a href="https://dlss5nvidia.com">${converter}</a></p></article></main>` };
 }
 
-function documentFor(route: string, lang: Lang, title: string, description: string, body: string, type: 'website' | 'article', jsonLd: unknown, robots = 'index,follow'): string {
+function documentFor(route: string, lang: Lang, title: string, description: string, body: string, type: 'website' | 'article', jsonLd: unknown, robots = 'index,follow', image = defaultOgImage): string {
   const template = readFileSync(join(dist, 'index.html'), 'utf8');
   const canonical = `${baseUrl}${route === '/' ? `/${lang}` : route}`;
   const suffix = route === '/' ? '' : route.slice(`/${lang}`.length);
@@ -232,7 +233,7 @@ function documentFor(route: string, lang: Lang, title: string, description: stri
       ['zh-Hant', `${baseUrl}/zh-TW${suffix}`],
       ['x-default', `${baseUrl}/en${suffix}`],
     ].map(([hreflang, href]) => `<link rel="alternate" hreflang="${hreflang}" href="${href}"/>`).join('');
-  const head = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"/><meta name="robots" content="${robots}"/><link rel="canonical" href="${canonical}"/>${alternates}<meta property="og:title" content="${escapeHtml(title)}"/><meta property="og:description" content="${escapeHtml(description)}"/><meta property="og:type" content="${type}"/><meta property="og:url" content="${canonical}"/><meta name="twitter:card" content="summary_large_image"/><script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
+  const head = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"/><meta name="robots" content="${robots}"/><link rel="canonical" href="${canonical}"/>${alternates}<meta property="og:title" content="${escapeHtml(title)}"/><meta property="og:description" content="${escapeHtml(description)}"/><meta property="og:type" content="${type}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${escapeHtml(image)}"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:image" content="${escapeHtml(image)}"/><script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
   return template
     .replace(/<html lang="[^"]*"/, `<html lang="${lang}"`)
     .replace(/<title>[\s\S]*?<\/title>/, '')
@@ -297,7 +298,7 @@ for (const lang of Object.keys(copy) as Lang[]) {
   for (const slug of articleSlugs) {
     const route = `${blogRoute}/${slug}`;
     const article = articleBody(lang, slug);
-    writeRoute(route, documentFor(route, lang, `${article.meta.title} | Neural Architect`, article.meta.description, article.body, 'article', { '@context': 'https://schema.org', '@type': 'Article', headline: article.meta.title, description: article.meta.description, datePublished: article.meta.date, dateModified: article.meta.date, author: { '@type': 'Organization', name: 'Neural Architect', url: baseUrl }, mainEntityOfPage: `${baseUrl}${route}` }));
+    writeRoute(route, documentFor(route, lang, `${article.meta.title} | Neural Architect`, article.meta.description, article.body, 'article', { '@context': 'https://schema.org', '@type': 'Article', headline: article.meta.title, description: article.meta.description, image: article.meta.og_image ? [article.meta.og_image] : [defaultOgImage], datePublished: article.meta.date, dateModified: article.meta.date, author: { '@type': 'Organization', name: 'Neural Architect', url: baseUrl }, mainEntityOfPage: `${baseUrl}${route}` }, 'index,follow', article.meta.og_image || defaultOgImage));
   }
 }
 
