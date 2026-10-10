@@ -111,6 +111,17 @@ export default function BlogPost() {
   }
 
   const { metadata, content: parsedContent } = parseMarkdown(content);
+  const counterpart = metadata.counterpart
+    ? {
+        href: metadata.counterpart,
+        label: currentLang === 'zh-TW'
+          ? '同一主題在 DLSS5NVIDIA 有工作流程角度的版本'
+          : isZh
+            ? '同一主题在 DLSS5NVIDIA 有工作流角度的版本'
+            : 'This topic is covered from the workflow side on DLSS5NVIDIA',
+        colon: isZh ? '：' : ': ',
+      }
+    : null;
   const displayContent = parsedContent.replace(/\]\(\/(?:tool|__studio__)\)/g, `](/${currentLang}/studio)`);
   const title = isZh && metadata.title_cn ? metadata.title_cn : metadata.title;
   const description = isZh && metadata.description_cn ? metadata.description_cn : metadata.description;
@@ -241,6 +252,12 @@ export default function BlogPost() {
             {displayContent}
           </Markdown>
         </div>
+        {counterpart && (
+          <p className="max-w-3xl mx-auto mt-10 text-sm text-on-surface-variant">
+            {counterpart.label}{counterpart.colon}{' '}
+            <a className="text-primary underline" href={counterpart.href}>{counterpart.href}</a>
+          </p>
+        )}
       </div>
 
       {/* Fixed CTA Bar */}

@@ -1,16 +1,17 @@
 ---
-title: "Will DLSS 5 Kill Artistic Vision in Games? An Honest Assessment"
-title_cn: "DLSS 5 会杀死游戏的艺术灵魂吗？一次诚实的评估"
-description: "A deep dive into the debate surrounding DLSS 5 and its impact on artistic vision and creative control in video games."
-description_cn: "深入探讨围绕 DLSS 5 及其对视频游戏艺术愿景和创意控制影响的争论。"
+title: "The DLSS 5 Artistic-Vision Debate: What Creators Can Actually Control (2026)"
+title_cn: "DLSS 5 的艺术争议：创作者到底能控制什么（2026）"
+description: "Both sides of the DLSS 5 artistic-vision argument, plus the practical question underneath it: which decisions stay with the artist, and what a pipeline should expose to them."
+description_cn: "DLSS 5 艺术争议的双方论据，以及底下那个实际问题：哪些决定应该留给创作者，工具又该暴露什么控制项。"
 date: "2026-04-11"
 og_image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1600"
 tags: ["dlss5 controversy", "ai in games", "artistic control", "neural rendering ethics", "游戏艺术"]
+counterpart: "https://www.dlss5nvidia.com/blog/dlss5-artistic-vision-debate-honest-assessment"
 ---
 <!-- ============================================================
      ENGLISH VERSION
      ============================================================ -->
-# Will DLSS 5 Kill Artistic Vision in Games? An Honest Assessment
+# The DLSS 5 Artistic-Vision Debate: What Creators Can Actually Control
 
 *9 min read · April 2026*
 
@@ -97,7 +98,7 @@ That's a design philosophy, not just a feature. We think it's the right one — 
 <!-- ============================================================
      CHINESE VERSION (中文版)
      ============================================================ -->
-# DLSS 5 会杀死游戏的艺术灵魂吗？一次诚实的评估
+# DLSS 5 的艺术争议：创作者能控制什么
 
 *阅读约9分钟 · 2026年4月*
 

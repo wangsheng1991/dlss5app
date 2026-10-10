@@ -1,16 +1,17 @@
 ---
-title: "Crimson Desert PC Optimization Guide: DLSS 4.5, FSR 4, and Getting 60fps at 4K (2026)"
-title_cn: "绯红荒漠 PC 性能优化指南：DLSS 4.5、FSR 4 设置，4K 60fps 完整教程（2026）"
-description: "How to optimize Crimson Desert on PC for 4K 60fps using DLSS 4.5 and FSR 4. Best settings for RTX 50, RTX 40, and AMD GPUs."
-description_cn: "如何使用 DLSS 4.5 和 FSR 4 在 PC 上优化绯红荒漠以实现 4K 60fps。RTX 50、RTX 40 和 AMD 显卡的最佳设置。"
+title: "Crimson Desert PC Settings for 4K 60fps — and Upscaling Your Screenshots (2026)"
+title_cn: "绯红荒漠 PC 设置：4K 60fps 怎么调，截图怎么再放大（2026）"
+description: "Crimson Desert settings by GPU tier for 4K 60fps, the Kastone stutter fix, and how to upscale the screenshots you capture with Black Space Engine."
+description_cn: "按显卡档位给出的绯红荒漠 4K 60fps 设置、卡斯通卡顿修复，以及怎么把 Black Space Engine 里截的图再放大。"
 date: "2026-04-11"
 og_image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1600"
 tags: ["crimson desert", "crimson desert dlss", "crimson desert performance", "dlss 4.5", "绯红荒漠优化"]
+counterpart: "https://www.dlss5nvidia.com/blog/crimson-desert-pc-optimization-dlss-fsr-guide-2026"
 ---
 <!-- ============================================================
      ENGLISH VERSION
      ============================================================ -->
-# Crimson Desert PC Optimization Guide: DLSS 4.5, FSR 4, and Getting 60fps at 4K (2026)
+# Crimson Desert PC Settings for 4K 60fps — and Upscaling Your Screenshots
 
 *6 min read · Updated April 2026*
 
@@ -106,7 +107,7 @@ If you're taking screenshots in Crimson Desert — and with Black Space Engine's
 <!-- ============================================================
      CHINESE VERSION (中文版)
      ============================================================ -->
-# 绯红荒漠 PC 性能优化指南：DLSS 4.5、FSR 4 设置，4K 60fps 完整教程（2026）
+# 绯红荒漠 PC 设置：4K 60fps 与截图的二次放大
 
 *阅读约6分钟 · 2026年4月更新*
 

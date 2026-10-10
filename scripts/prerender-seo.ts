@@ -296,7 +296,12 @@ function articleBody(lang: Lang, slug: string): { body: string; meta: Record<str
   const eyebrow = lang === 'en' ? 'DLSS 5 TECHNICAL GUIDE' : lang === 'zh-TW' ? 'DLSS 5 技術指南' : 'DLSS 5 技术指南';
   const back = lang === 'en' ? 'Back to all guides' : lang === 'zh-TW' ? '返回全部指南' : '返回全部指南';
   const converter = lang === 'en' ? 'Try the free DLSS 5 visual converter' : lang === 'zh-TW' ? '試用免費的 DLSS 5 視覺轉換工具' : '试用免费的 DLSS 5 视觉转换工具';
-  return { meta: { ...parsed.meta, title, description }, body: `<main class="seo-shell article-shell"><article><p class="eyebrow">${eyebrow}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(description)}</p><time datetime="${escapeHtml(parsed.meta.date || '')}">${escapeHtml(parsed.meta.date || '')}</time><div class="article-content">${body}</div><p><a href="/${lang}/blog">← ${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a></p></article></main>` };
+  // 同主题的姊妹篇在主站（角度不同：那边讲流程与工具，这边讲硬件与证据）。frontmatter 的
+  // counterpart 是这条关系的唯一登记处，没有登记就不渲染这一行。
+  const counterpart = parsed.meta.counterpart
+    ? `<p class="source-note">${lang === 'en' ? 'This topic is covered from the workflow side on DLSS5NVIDIA' : lang === 'zh-TW' ? '同一主題在 DLSS5NVIDIA 有工作流程角度的版本' : '同一主题在 DLSS5NVIDIA 有工作流角度的版本'}：<a href="${escapeHtml(parsed.meta.counterpart)}">${escapeHtml(parsed.meta.counterpart)}</a></p>`
+    : '';
+  return { meta: { ...parsed.meta, title, description }, body: `<main class="seo-shell article-shell"><article><p class="eyebrow">${eyebrow}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(description)}</p><time datetime="${escapeHtml(parsed.meta.date || '')}">${escapeHtml(parsed.meta.date || '')}</time><div class="article-content">${body}</div>${counterpart}<p><a href="/${lang}/blog">← ${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a></p></article></main>` };
 }
 
 function documentFor(route: string, lang: Lang, title: string, description: string, body: string, type: 'website' | 'article', jsonLd: unknown, robots = 'index,follow', image = defaultOgImage): string {

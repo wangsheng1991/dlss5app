@@ -1,16 +1,17 @@
 ---
-title: "What Is DLSS 5? The Complete Technical Guide to Neural Rendering (2026)"
-title_cn: "DLSS 5 是什么？神经渲染完全技术指南（2026）"
-description: "What GPUs support DLSS 5? RTX 5090, 5080, and 5070 Ti confirmed. Check the full list of DLSS 5 supported cards and see if your RTX 40-series made the cut."
-description_cn: "哪些显卡支持 DLSS 5？RTX 5090/5080/5070 已确认。查看完整的 DLSS 5 supported cards 列表，确认你的 RTX 40 系显卡是否支持。"
+title: "DLSS 5 Explained: Neural Rendering, and Which GPUs Are Confirmed to Run It (2026)"
+title_cn: "DLSS 5 深度解读：神经渲染原理与目前确认支持的显卡（2026）"
+description: "How DLSS 5 neural rendering works, plus the hardware question that decides it: the RTX 50 cards NVIDIA has confirmed, what stays unconfirmed on RTX 40, and why the older Tensor Cores are out of scope."
+description_cn: "DLSS 5 神经渲染的原理，以及决定它的硬件问题：NVIDIA 已确认的 RTX 50 型号、RTX 40 的未确认状态，以及更早的 Tensor Core 为什么不在范围内。"
 date: "2026-04-11"
 og_image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1600"
 tags: ["dlss5", "neural rendering", "nvidia", "what is dlss 5", "技术原理"]
+counterpart: "https://www.dlss5nvidia.com/blog/what-is-dlss-5-neural-rendering-guide"
 ---
 <!-- ============================================================
      ENGLISH VERSION
      ============================================================ -->
-# What Is DLSS 5? The Complete Technical Guide to Neural Rendering (2026)
+# DLSS 5 Explained: Neural Rendering, and Which GPUs Are Confirmed to Run It
 
 *8 min read · Last updated April 2026*
 
@@ -129,7 +130,7 @@ The AI upscaling tools you can use online today, including ours, operate on simi
 <!-- ============================================================
      CHINESE VERSION (中文版)
      ============================================================ -->
-# DLSS 5 是什么？神经渲染完全技术指南（2026）
+# DLSS 5 深度解读：神经渲染与已确认支持的显卡
 
 *阅读约8分钟 · 2026年4月更新*
 
