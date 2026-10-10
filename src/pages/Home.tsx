@@ -17,13 +17,13 @@ export default function Home() {
       <Helmet>
         <title>DLSS 5 GPU Checker & Feature Matrix | Neural Architect</title>
         <meta name="description" content="What GPUs support DLSS 5? RTX 5090, 5080, and 5070 Ti confirmed. Check the full list of DLSS 5 supported cards and see if your RTX 40-series made the cut." />
-        <link rel="canonical" href={`https://dlss5.app/${currentLang}`} />
+        <link rel="canonical" href={`https://www.dlss5.app/${currentLang}`} />
         
         {/* Open Graph */}
         <meta property="og:title" content="DLSS 5 GPU Checker & Feature Matrix | Neural Architect" />
         <meta property="og:description" content="What GPUs support DLSS 5? RTX 5090, 5080, and 5070 Ti confirmed. Check the full list of DLSS 5 supported cards and see if your RTX 40-series made the cut." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://dlss5.app/${currentLang}`} />
+        <meta property="og:url" content={`https://www.dlss5.app/${currentLang}`} />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -36,10 +36,10 @@ export default function Home() {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Neural Architect",
-            "url": "https://dlss5.app/",
+            "url": "https://www.dlss5.app/",
             "potentialAction": {
               "@type": "SearchAction",
-              "target": "https://dlss5.app/?q={search_term_string}",
+              "target": "https://www.dlss5.app/?q={search_term_string}",
               "query-input": "required name=search_term_string"
             }
           })}

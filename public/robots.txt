@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dlss5.app/sitemap.xml
+Sitemap: https://www.dlss5.app/sitemap.xml

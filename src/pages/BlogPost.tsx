@@ -116,13 +116,13 @@ export default function BlogPost() {
       <Helmet>
         <title>{title} | Neural Architect</title>
         {description && <meta name="description" content={description} />}
-        <link rel="canonical" href={`https://dlss5.app/${currentLang}/blog/${slug}`} />
+        <link rel="canonical" href={`https://www.dlss5.app/${currentLang}/blog/${slug}`} />
         
         {/* Open Graph */}
         <meta property="og:title" content={`${title} | Neural Architect`} />
         {description && <meta property="og:description" content={description} />}
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://dlss5.app/${currentLang}/blog/${slug}`} />
+        <meta property="og:url" content={`https://www.dlss5.app/${currentLang}/blog/${slug}`} />
         {metadata.og_image && <meta property="og:image" content={metadata.og_image} />}
         
         {/* Twitter Card */}
@@ -143,7 +143,7 @@ export default function BlogPost() {
             "author": [{
                 "@type": "Organization",
                 "name": "Neural Architect",
-                "url": "https://dlss5.app"
+                "url": "https://www.dlss5.app"
             }]
           })}
         </script>

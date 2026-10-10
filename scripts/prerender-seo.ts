@@ -3,7 +3,7 @@ import { dirname, join, resolve } from 'node:path';
 
 const root = resolve(new URL('..', import.meta.url).pathname);
 const dist = join(root, 'dist');
-const baseUrl = 'https://dlss5.app';
+const baseUrl = 'https://www.dlss5.app';
 
 type Lang = 'en' | 'zh-CN' | 'zh-TW';
 

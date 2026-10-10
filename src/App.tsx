@@ -54,9 +54,9 @@ function SEOHead() {
 
   return (
     <Helmet>
-      <link rel="alternate" hrefLang="x-default" href={`https://dlss5.app/en${basePath}`} />
+      <link rel="alternate" hrefLang="x-default" href={`https://www.dlss5.app/en${basePath}`} />
       {languages.map(code => (
-        <link key={code} rel="alternate" hrefLang={code} href={`https://dlss5.app/${code}${basePath}`} />
+        <link key={code} rel="alternate" hrefLang={code} href={`https://www.dlss5.app/${code}${basePath}`} />
       ))}
     </Helmet>
   );

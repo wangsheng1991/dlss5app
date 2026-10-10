@@ -105,13 +105,13 @@ export default function BlogList() {
       <Helmet>
         <title>{isZh ? 'DLSS 5 博客与新闻 | Neural Architect' : 'DLSS 5 Blog & News | Neural Architect'}</title>
         <meta name="description" content={isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
-        <link rel="canonical" href={`https://dlss5.app/${currentLang}/blog`} />
+        <link rel="canonical" href={`https://www.dlss5.app/${currentLang}/blog`} />
         
         {/* Open Graph */}
         <meta property="og:title" content={isZh ? 'DLSS 5 博客与新闻 | Neural Architect' : 'DLSS 5 Blog & News | Neural Architect'} />
         <meta property="og:description" content={isZh ? '探索 DLSS 5 的最新动态、技术分析和行业争议。' : 'Explore the latest updates, technical analysis, and industry controversies surrounding DLSS 5.'} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://dlss5.app/${currentLang}/blog`} />
+        <meta property="og:url" content={`https://www.dlss5.app/${currentLang}/blog`} />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
