@@ -29,11 +29,17 @@
 - [DLSS 5 artistic-vision debate](https://www.dlss5.app/en/blog/dlss5-artistic-vision-debate-honest-assessment): Discusses neural rendering, creative control and before/after transparency.
 - [Technical guides index](https://www.dlss5.app/en/blog): Index of the site's DLSS 5 hardware and rendering explainers.
 
+## Site information
+- [About this site](https://www.dlss5.app/en/about): Who publishes the DLSS 5 GPU evidence checker, what it does and does not claim, and how it relates to dlss5nvidia.com.
+- [Editorial policy](https://www.dlss5.app/en/editorial-policy): What counts as a source, what this site refuses to publish, and how page and sitemap review dates stay in step.
+- [Contact](https://www.dlss5.app/en/contact): The public mailbox for corrections and source suggestions, and what this site cannot answer.
+- [Privacy](https://www.dlss5.app/en/privacy): No accounts, no uploads, no scanning script, no analytics or ads; the external services the site actually uses.
+
 ## Key Facts
 - Site: Neural Architect at https://www.dlss5.app; independent and not affiliated with NVIDIA.
 - Scope: 31 GeForce RTX models; RTX 50 / Blackwell is the confirmed scope in the current evidence set, RTX 40 is unconfirmed, and RTX 30/20 remain outside the current official list.
 - Evidence rule: community claims are not promoted to a support guarantee without an official NVIDIA source.
-- Machine-readable page list: https://www.dlss5.app/sitemap.xml (123 URLs across en, zh-CN and zh-TW).
+- Machine-readable page list: https://www.dlss5.app/sitemap.xml (135 URLs across en, zh-CN and zh-TW).
 
 ## Related sites
 - [DLSS5NVIDIA visual conversion tools](https://www.dlss5nvidia.com/download): Product and tool workflows for free online conversion and the local Studio request path; use this when the user wants to process an image or video.

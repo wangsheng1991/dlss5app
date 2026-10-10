@@ -16,6 +16,7 @@ import GpuDetail from './pages/GpuDetail';
 import Studio from './pages/Studio';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
+import SiteInfo from './pages/SiteInfo';
 
 export default function App() {
   return (
@@ -29,6 +30,10 @@ export default function App() {
             <Route path="supported-cards" element={<SupportedCards />} />
             <Route path="blog" element={<BlogList />} />
             <Route path="blog/:slug" element={<BlogPost />} />
+            <Route path="about" element={<SiteInfo slug="about" />} />
+            <Route path="editorial-policy" element={<SiteInfo slug="editorial-policy" />} />
+            <Route path="contact" element={<SiteInfo slug="contact" />} />
+            <Route path="privacy" element={<SiteInfo slug="privacy" />} />
             <Route path="games" element={<div className="pt-32 text-center text-white">Games List Coming Soon</div>} />
           </Route>
           <Route path="*" element={<LanguageRedirect />} />
@@ -94,7 +99,7 @@ function Layout() {
       <div className="flex-grow">
         <Outlet />
       </div>
-      <Footer />
+      <Footer lang={lang || 'en'} />
     </div>
   );
 }
@@ -104,7 +109,7 @@ function Banner({ lang }: { lang: string }) {
   return (
     <div className="bg-primary text-on-primary px-4 py-2 text-center text-sm font-headline font-bold flex flex-wrap items-center justify-center gap-2 z-[60] relative">
       <span>{t('banner.text')}</span>
-      <Link to={`/${lang}/blog/dlss5-ai-slop-controversy`} className="inline-flex items-center gap-1 underline decoration-on-primary/50 hover:decoration-on-primary transition-all">
+      <Link to={`/${lang}/blog/dlss5-artistic-vision-debate-honest-assessment`} className="inline-flex items-center gap-1 underline decoration-on-primary/50 hover:decoration-on-primary transition-all">
         {t('banner.link')} <ArrowRight className="w-3 h-3" />
       </Link>
     </div>
@@ -227,21 +232,33 @@ function Header({ lang }: { lang: string }) {
   );
 }
 
-function Footer() {
+function Footer({ lang }: { lang: string }) {
+  const isEnglish = lang === 'en';
+  const isTraditional = lang === 'zh-TW';
+  const links: Array<[string, string]> = [
+    [isEnglish ? 'GPU checker' : isTraditional ? 'GPU 檢查器' : 'GPU 检测器', `/${lang}`],
+    [isEnglish ? 'Supported cards' : isTraditional ? '支援顯示卡' : '支持显卡', `/${lang}/supported-cards`],
+    [isEnglish ? 'Studio requirements' : isTraditional ? 'Studio 要求' : 'Studio 要求', `/${lang}/studio`],
+    [isEnglish ? 'Technical guides' : isTraditional ? '技術指南' : '技术指南', `/${lang}/blog`],
+    [isEnglish ? 'About' : isTraditional ? '關於本站' : '关于本站', `/${lang}/about`],
+    [isEnglish ? 'Editorial policy' : isTraditional ? '編輯政策' : '编辑政策', `/${lang}/editorial-policy`],
+    [isEnglish ? 'Contact' : isTraditional ? '聯絡我們' : '联系我们', `/${lang}/contact`],
+    [isEnglish ? 'Privacy' : isTraditional ? '隱私' : '隐私', `/${lang}/privacy`],
+  ];
   return (
     <footer className="bg-[#131313] border-t border-white/5 py-12 px-6 mt-auto">
       <div className="flex flex-col md:flex-row justify-between items-center gap-8 w-full max-w-7xl mx-auto">
         <div className="flex flex-col items-center md:items-start gap-4">
           <span className="text-primary font-bold font-headline text-lg">NEURAL ARCHITECT</span>
           <p className="text-white/40 text-sm tracking-wide">© 2026 NEURAL ARCHITECT. POWERED BY DLSS 5.</p>
+          <p className="text-white/30 text-xs tracking-wide max-w-xs text-center md:text-left">{isEnglish ? 'Independent reference. Not affiliated with NVIDIA.' : isTraditional ? '獨立資料頁，與 NVIDIA 沒有隸屬關係。' : '独立资料页，与 NVIDIA 没有隶属关系。'}</p>
         </div>
-        <div className="flex flex-wrap justify-center gap-6 text-white/40 text-sm tracking-wide">
-          <a href="#" className="hover:text-white transition-colors">Architecture</a>
-          <a href="#" className="hover:text-white transition-colors">Benchmarks</a>
-          <a href="#" className="hover:text-white transition-colors">Compatibility</a>
-          <a href="#" className="hover:text-white transition-colors">Support</a>
-          <a href="#" className="hover:text-white transition-colors">Privacy</a>
-        </div>
+        <nav aria-label={isEnglish ? 'Site information' : isTraditional ? '站點資訊' : '站点信息'} className="flex flex-wrap justify-center gap-6 text-white/40 text-sm tracking-wide">
+          {links.map(([label, to]) => (
+            <Link key={to} to={to} className="hover:text-white transition-colors">{label}</Link>
+          ))}
+          <a href="/llms.txt" className="hover:text-white transition-colors">{isEnglish ? 'llms.txt' : 'llms.txt'}</a>
+        </nav>
         <div className="flex gap-4">
           <Globe className="w-5 h-5 text-white/20 hover:text-primary cursor-pointer transition-colors" />
           <Terminal className="w-5 h-5 text-white/20 hover:text-primary cursor-pointer transition-colors" />

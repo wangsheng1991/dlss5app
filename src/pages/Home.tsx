@@ -328,6 +328,8 @@ function AboutSection() {
 
 function CompatibilitySection() {
   const { t } = useTranslation();
+  const { lang } = useParams<{ lang: string }>();
+  const currentLang = lang || 'en';
   const [activeFilter, setActiveFilter] = useState('ALL');
   const filters = ['ALL', 'RTX 50 SERIES', 'RTX 40 SERIES', 'RTX 30 SERIES', 'RTX 20 SERIES'];
 
@@ -378,7 +380,7 @@ function CompatibilitySection() {
             <tbody className="divide-y divide-white/5">
               {filteredGpus.map((gpu, index) => (
                 <tr key={gpu.id} className={`${index % 2 !== 0 ? 'bg-surface-container-low/50' : ''} hover:bg-white/5 transition-colors`}>
-                  <td className="px-8 py-6 font-bold text-white">{gpu.name}</td>
+                  <td className="px-8 py-6 font-bold text-white"><Link className="hover:text-primary transition-colors" to={`/${currentLang}/gpu/${gpu.id}`}>{gpu.name}</Link></td>
                   <td className="px-8 py-6 text-on-surface-variant">{gpuData.gpu_series.find(s => s.id === gpu.series)?.architecture}</td>
                   <td className="px-8 py-6 text-on-surface-variant">{gpu.vram_gb}</td>
                   <td className="px-8 py-6 text-right">

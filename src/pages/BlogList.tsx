@@ -7,7 +7,7 @@ import OpenCC from 'opencc-js';
 
 const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
 
-const blogPosts = [
+export const blogPosts = [
   {
     slug: 'dlss-5-architecture-explained-blackwell-neural-rendering',
     title: {

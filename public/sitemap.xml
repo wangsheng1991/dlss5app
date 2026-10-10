@@ -1231,4 +1231,124 @@
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/gpu/rtx2060" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/gpu/rtx2060" />
   </url>
+  <url>
+    <loc>https://www.dlss5.app/en/about</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/about" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/about" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/about" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-CN/about</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/about" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/about" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/about" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-TW/about</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/about" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/about" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/about" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/en/editorial-policy</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/editorial-policy" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-CN/editorial-policy</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/editorial-policy" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-TW/editorial-policy</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/editorial-policy" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/en/contact</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/contact" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-CN/contact</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/contact" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-TW/contact</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/contact" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/en/privacy</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/privacy" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-CN/privacy</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/privacy" />
+  </url>
+  <url>
+    <loc>https://www.dlss5.app/zh-TW/privacy</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dlss5.app/en/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.dlss5.app/zh-CN/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://www.dlss5.app/zh-TW/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dlss5.app/en/privacy" />
+  </url>
 </urlset>

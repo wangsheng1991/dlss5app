@@ -11,6 +11,12 @@ const defaultOgImage = 'https://images.unsplash.com/photo-1620641788421-7a1c342e
 const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
 const officialDlssSource = 'https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/';
 const gpuEntries = gpuData.gpus;
+/** 站点信息页（E-E-A-T 门槛那一组）：谁做的、按什么规矩写、怎么联系、怎么处理数据。 */
+const TRUST_PAGE_SLUGS = ['about', 'editorial-policy', 'contact', 'privacy'] as const;
+/** 两站共用的公开联系邮箱 —— 主站 /download 与法务页用的也是这个地址。 */
+const supportEmail = 'support@dlss5nvidia.com';
+/** 本轮复核日期：型号页状态段、文章页 reviewed、sitemap 都从这里取。 */
+const reviewedDate = '2026-10-10';
 const brandOrganization = {
   '@type': 'Organization',
   '@id': 'https://www.dlss5nvidia.com/#organization',
@@ -18,6 +24,12 @@ const brandOrganization = {
   url: 'https://www.dlss5nvidia.com/',
   description: 'Independent, non-official AI image upscaling and neural super-resolution showcase.',
   sameAs: ['https://www.dlss5nvidia.com/', 'https://www.dlss5.app/'],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    email: supportEmail,
+    url: `mailto:${supportEmail}`,
+  },
 };
 
 type Lang = 'en' | 'zh-CN' | 'zh-TW';
@@ -40,7 +52,9 @@ const statusCounts = {
   outOfScope: gpuEntries.filter(gpu => gpu.dlss5_status === 'no').length,
 };
 const languageCount = 3;
-const pageCount = languageCount * (4 + articleSlugs.length + gpuEntries.length);
+/** 每种语言下的路由数：首页 + studio + supported-cards + blog 索引 + 文章 + 型号页 + 4 个站点信息页。 */
+const routesPerLanguage = 4 + articleSlugs.length + gpuEntries.length + TRUST_PAGE_SLUGS.length;
+const pageCount = languageCount * routesPerLanguage;
 
 const copy: Record<Lang, {
   title: string;
@@ -172,31 +186,11 @@ function localizedStatus(lang: Lang, status: string): string {
   return lang === 'zh-TW' ? '目前官方清單不支援' : '当前官方列表不支持';
 }
 
-function gpuRows(lang: Lang): string {
-  return gpuEntries.map(gpu => `<tr><th scope="row"><a href="/${lang}/gpu/${gpu.id}">${escapeHtml(gpu.name)}</a></th><td>${escapeHtml(String(gpu.vram_gb))} GB</td><td>${escapeHtml(gpuData.gpu_series.find(series => series.id === gpu.series)?.architecture || '')}</td><td>${escapeHtml(localizedStatus(lang, gpu.dlss5_status))}</td><td>${escapeHtml(gpu.note)}</td><td><a href="${officialDlssSource}">${lang === 'en' ? 'NVIDIA source' : lang === 'zh-TW' ? 'NVIDIA 來源' : 'NVIDIA 来源'}</a></td></tr>`).join('');
-}
-
-function homeBody(lang: Lang): string {
-  const c = copy[lang];
-  const questions = faq[lang];
-  const questionsHtml = questions.map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
+/** 三种状态分别需要什么证据 —— 首页与编辑政策页共用同一张表，口径不许分叉。 */
+function renderStatusTable(lang: Lang): string {
   const isEnglish = lang === 'en';
   const isTraditional = lang === 'zh-TW';
-  const tableTitle = isEnglish ? `${gpuEntries.length} GeForce RTX models with source-linked status` : isTraditional ? `${gpuEntries.length} 款 GeForce RTX 型號與來源狀態` : `${gpuEntries.length} 款 GeForce RTX 型号与来源状态`;
-  const tableIntro = isEnglish ? 'The model-level data is intentionally visible in the HTML: VRAM, architecture, status, notes and the NVIDIA source used for our evidence boundary.' : isTraditional ? '型號級資料直接呈現在頁面中：顯存、架構、狀態、備註，以及我們用來劃定證據範圍的 NVIDIA 來源。' : '型号级数据直接呈现在页面中：显存、架构、状态、备注，以及我们用来划定证据范围的 NVIDIA 来源。';
-  const headers = isEnglish ? ['GPU model', 'VRAM', 'Architecture', 'DLSS 5 status', 'Note', 'Evidence'] : isTraditional ? ['顯示卡型號', '顯存', '架構', 'DLSS 5 狀態', '備註', '證據'] : ['显卡型号', '显存', '架构', 'DLSS 5 状态', '备注', '证据'];
-  const seriesLinks = gpuData.gpu_series.map(series => `<a href="/${lang}/supported-cards#${series.id}">${escapeHtml(series.name)}</a>`).join(' · ');
-  const studioTitle = isEnglish ? 'DLSS 5 Studio: the local software track' : isTraditional ? 'DLSS 5 Studio：本機軟體路線' : 'DLSS 5 Studio：本地软件路线';
-  const studioCopy = isEnglish ? 'Game-internal DLSS 5 support and our local Studio software are separate questions. Studio is designed for Windows 10 1909+/Windows 11 with RTX 20-series or newer; NVENC hardware encoding requires driver 610+, and the published 4090 measurement is 720p to 2560×1440 H.264 in 87.4 seconds (2.43 s/frame).' : isTraditional ? '遊戲內 DLSS 5 支援與本機 Studio 軟體是兩條獨立判定軸。Studio 針對 Windows 10 1909+/Windows 11 與 RTX 20 系列以上設計；NVENC 硬體編碼需要 610+ 驅動程式，已公開的 4090 實測為 720p 轉 2560×1440 H.264，用時 87.4 秒（2.43 秒/幀）。' : '游戏内 DLSS 5 支持与本地 Studio 软件是两条独立判断轴。Studio 面向 Windows 10 1909+/Windows 11 与 RTX 20 系列以上设计；NVENC 硬件编码需要 610+ 驱动，已公开的 4090 实测为 720p 转 2560×1440 H.264，用时 87.4 秒（2.43 秒/帧）。';
-  const methodTitle = isEnglish ? 'How to read this checker' : isTraditional ? '如何閱讀這份檢查器' : '如何阅读这份检测器';
-  const methodCopy = isEnglish ? 'Official means NVIDIA has published the scope. Unconfirmed means we found no official model statement. The table does not turn community claims into a support guarantee; recheck the linked source before buying or upgrading.' : isTraditional ? '「官方確認」代表 NVIDIA 已公開支援範圍；「尚未確認」代表我們沒有找到官方型號聲明。表格不會把社群說法變成支援保證；購買或升級前請重新核對連結來源。' : '“官方确认”代表 NVIDIA 已公开支持范围；“尚未确认”代表我们没有找到官方型号声明。表格不会把社区说法变成支持保证；购买或升级前请重新核对链接来源。';
-  // 自足段：把「这是什么站」一段话讲清，AI 不必拼 H1 和表格才能引用。
-  const keyFacts = isEnglish
-    ? `Neural Architect is an independent, free DLSS 5 GPU compatibility checker at https://www.dlss5.app, published in English, Simplified Chinese and Traditional Chinese across ${pageCount} pages. It is not affiliated with NVIDIA, and it publishes no compatibility claim that is not backed by an official NVIDIA source.`
-    : isTraditional
-      ? `Neural Architect 是獨立的免費 DLSS 5 顯示卡相容性檢查器，網站在 https://www.dlss5.app，以英文、簡體中文、繁體中文三種語言共 ${pageCount} 個頁面發佈。本站與 NVIDIA 沒有隸屬關係，凡是官方來源支持不了的相容性結論，我們都不寫。`
-      : `Neural Architect 是独立的免费 DLSS 5 显卡兼容性检测器，站点在 https://www.dlss5.app，以英文、简体中文、繁体中文三种语言共 ${pageCount} 个页面发布。本站与 NVIDIA 没有隶属关系，凡是官方来源支持不了的兼容性结论，我们都不写。`;
-  const statusTable = isEnglish
+  const table = isEnglish
     ? {
       title: 'What each status means',
       head: ['Status', 'What it means', 'Evidence required'],
@@ -225,7 +219,74 @@ function homeBody(lang: Lang): string {
           ['不支持', '落在已公布的兼容范围之外', '架构信息与官方兼容说明'],
         ],
       };
-  const statusTableHtml = `<table><caption>${escapeHtml(statusTable.title)}</caption><thead><tr>${statusTable.head.map(cell => `<th>${escapeHtml(cell)}</th>`).join('')}</tr></thead><tbody>${statusTable.rows.map(row => `<tr>${row.map((cell, index) => index === 0 ? `<th scope="row">${escapeHtml(cell)}</th>` : `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  return `<table><caption>${escapeHtml(table.title)}</caption><thead><tr>${table.head.map(cell => `<th>${escapeHtml(cell)}</th>`).join('')}</tr></thead><tbody>${table.rows.map(row => `<tr>${row.map((cell, index) => index === 0 ? `<th scope="row">${escapeHtml(cell)}</th>` : `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+/** 面包屑结构化数据（竞品每个内页都有，我们原来一条没有）。 */
+function breadcrumbNode(lang: Lang, trail: Array<[string, string]>): Record<string, unknown> {
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map(([name, path], index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name,
+      item: `${baseUrl}/${lang}${path}`,
+    })),
+  };
+}
+
+/** 面包屑里的页面名 —— 口径跟各页标题一致，别在循环里各写一套。 */
+function crumbLabel(lang: Lang, key: 'home' | 'studio' | 'supportedCards' | 'blog'): string {
+  const isEnglish = lang === 'en';
+  const isTraditional = lang === 'zh-TW';
+  const table = {
+    home: isEnglish ? 'Home' : isTraditional ? '首頁' : '首页',
+    studio: 'DLSS 5 Studio',
+    supportedCards: isEnglish ? 'DLSS 5 supported cards' : isTraditional ? 'DLSS 5 支援顯示卡' : 'DLSS 5 支持显卡',
+    blog: isEnglish ? 'Technical guides' : isTraditional ? '技術指南' : '技术指南',
+  };
+  return table[key];
+}
+
+/** 每一页都带站点信息页的出口 —— 这些页要能被爬虫发现，不能只躺在 sitemap 里。 */
+function trustNav(lang: Lang): string {
+  const isEnglish = lang === 'en';
+  const isTraditional = lang === 'zh-TW';
+  const labels = isEnglish
+    ? ['About', 'Editorial policy', 'Contact', 'Privacy']
+    : isTraditional
+      ? ['關於本站', '編輯政策', '聯絡我們', '隱私']
+      : ['关于本站', '编辑政策', '联系我们', '隐私'];
+  const links = TRUST_PAGE_SLUGS.map((slug, index) => `<a href="/${lang}/${slug}">${escapeHtml(labels[index])}</a>`).join(' · ');
+  const llms = isEnglish ? 'Machine-readable summary' : isTraditional ? '給機器讀的摘要' : '给机器读的摘要';
+  return `<nav class="site-info" aria-label="${isEnglish ? 'Site information' : isTraditional ? '站點資訊' : '站点信息'}">${links} · <a href="/llms.txt">${escapeHtml(llms)}</a></nav>`;
+}
+
+function gpuRows(lang: Lang): string {
+  return gpuEntries.map(gpu => `<tr><th scope="row"><a href="/${lang}/gpu/${gpu.id}">${escapeHtml(gpu.name)}</a></th><td>${escapeHtml(String(gpu.vram_gb))} GB</td><td>${escapeHtml(gpuData.gpu_series.find(series => series.id === gpu.series)?.architecture || '')}</td><td>${escapeHtml(localizedStatus(lang, gpu.dlss5_status))}</td><td>${escapeHtml(gpu.note)}</td><td><a href="${officialDlssSource}">${lang === 'en' ? 'NVIDIA source' : lang === 'zh-TW' ? 'NVIDIA 來源' : 'NVIDIA 来源'}</a></td></tr>`).join('');
+}
+
+function homeBody(lang: Lang): string {
+  const c = copy[lang];
+  const questions = faq[lang];
+  const questionsHtml = questions.map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
+  const isEnglish = lang === 'en';
+  const isTraditional = lang === 'zh-TW';
+  const tableTitle = isEnglish ? `${gpuEntries.length} GeForce RTX models with source-linked status` : isTraditional ? `${gpuEntries.length} 款 GeForce RTX 型號與來源狀態` : `${gpuEntries.length} 款 GeForce RTX 型号与来源状态`;
+  const tableIntro = isEnglish ? 'The model-level data is intentionally visible in the HTML: VRAM, architecture, status, notes and the NVIDIA source used for our evidence boundary.' : isTraditional ? '型號級資料直接呈現在頁面中：顯存、架構、狀態、備註，以及我們用來劃定證據範圍的 NVIDIA 來源。' : '型号级数据直接呈现在页面中：显存、架构、状态、备注，以及我们用来划定证据范围的 NVIDIA 来源。';
+  const headers = isEnglish ? ['GPU model', 'VRAM', 'Architecture', 'DLSS 5 status', 'Note', 'Evidence'] : isTraditional ? ['顯示卡型號', '顯存', '架構', 'DLSS 5 狀態', '備註', '證據'] : ['显卡型号', '显存', '架构', 'DLSS 5 状态', '备注', '证据'];
+  const seriesLinks = gpuData.gpu_series.map(series => `<a href="/${lang}/supported-cards#${series.id}">${escapeHtml(series.name)}</a>`).join(' · ');
+  const studioTitle = isEnglish ? 'DLSS 5 Studio: the local software track' : isTraditional ? 'DLSS 5 Studio：本機軟體路線' : 'DLSS 5 Studio：本地软件路线';
+  const studioCopy = isEnglish ? 'Game-internal DLSS 5 support and our local Studio software are separate questions. Studio is designed for Windows 10 1909+/Windows 11 with RTX 20-series or newer; NVENC hardware encoding requires driver 610+, and the published 4090 measurement is 720p to 2560×1440 H.264 in 87.4 seconds (2.43 s/frame).' : isTraditional ? '遊戲內 DLSS 5 支援與本機 Studio 軟體是兩條獨立判定軸。Studio 針對 Windows 10 1909+/Windows 11 與 RTX 20 系列以上設計；NVENC 硬體編碼需要 610+ 驅動程式，已公開的 4090 實測為 720p 轉 2560×1440 H.264，用時 87.4 秒（2.43 秒/幀）。' : '游戏内 DLSS 5 支持与本地 Studio 软件是两条独立判断轴。Studio 面向 Windows 10 1909+/Windows 11 与 RTX 20 系列以上设计；NVENC 硬件编码需要 610+ 驱动，已公开的 4090 实测为 720p 转 2560×1440 H.264，用时 87.4 秒（2.43 秒/帧）。';
+  const methodTitle = isEnglish ? 'How to read this checker' : isTraditional ? '如何閱讀這份檢查器' : '如何阅读这份检测器';
+  const methodCopy = isEnglish ? 'Official means NVIDIA has published the scope. Unconfirmed means we found no official model statement. The table does not turn community claims into a support guarantee; recheck the linked source before buying or upgrading.' : isTraditional ? '「官方確認」代表 NVIDIA 已公開支援範圍；「尚未確認」代表我們沒有找到官方型號聲明。表格不會把社群說法變成支援保證；購買或升級前請重新核對連結來源。' : '“官方确认”代表 NVIDIA 已公开支持范围；“尚未确认”代表我们没有找到官方型号声明。表格不会把社区说法变成支持保证；购买或升级前请重新核对链接来源。';
+  // 自足段：把「这是什么站」一段话讲清，AI 不必拼 H1 和表格才能引用。
+  const keyFacts = isEnglish
+    ? `Neural Architect is an independent, free DLSS 5 GPU compatibility checker at https://www.dlss5.app, published in English, Simplified Chinese and Traditional Chinese across ${pageCount} pages. It is not affiliated with NVIDIA, and it publishes no compatibility claim that is not backed by an official NVIDIA source.`
+    : isTraditional
+      ? `Neural Architect 是獨立的免費 DLSS 5 顯示卡相容性檢查器，網站在 https://www.dlss5.app，以英文、簡體中文、繁體中文三種語言共 ${pageCount} 個頁面發佈。本站與 NVIDIA 沒有隸屬關係，凡是官方來源支持不了的相容性結論，我們都不寫。`
+      : `Neural Architect 是独立的免费 DLSS 5 显卡兼容性检测器，站点在 https://www.dlss5.app，以英文、简体中文、繁体中文三种语言共 ${pageCount} 个页面发布。本站与 NVIDIA 没有隶属关系，凡是官方来源支持不了的兼容性结论，我们都不写。`;
+  const statusTableHtml = renderStatusTable(lang);
   return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'EVIDENCE-FIRST GPU CHECKER' : isTraditional ? '以證據為先的 GPU 檢查器' : '以证据为先的 GPU 检测器'}</p><h1>${escapeHtml(c.h1)}</h1><p class="lede">${escapeHtml(c.intro)}</p><p class="key-facts">${escapeHtml(keyFacts)}</p><form action="/${lang}" method="get"><label for="gpu-query">${isEnglish ? 'GPU model' : isTraditional ? '顯示卡型號' : '显卡型号'}</label><input id="gpu-query" name="gpu" placeholder="RTX 5090" /><button type="submit">${isEnglish ? 'Check compatibility' : isTraditional ? '檢查相容性' : '检查兼容性'}</button></form></header><section><h2>${escapeHtml(tableTitle)}</h2><p>${tableIntro}</p><table><thead><tr>${headers.map(header => `<th>${header}</th>`).join('')}</tr></thead><tbody>${gpuRows(lang)}</tbody></table><p class="source-note">${escapeHtml(c.sourceNote)} <a href="/${lang}/supported-cards">${isEnglish ? 'Open the methodology and FAQ →' : isTraditional ? '查看方法與常見問題 →' : '查看方法与常见问题 →'}</a></p><p>${seriesLinks}</p></section><section><h2>${studioTitle}</h2><p>${studioCopy}</p><p><a href="/${lang}/studio">${isEnglish ? 'See DLSS 5 Studio requirements and measurements →' : isTraditional ? '查看 DLSS 5 Studio 要求與實測 →' : '查看 DLSS 5 Studio 要求与实测 →'}</a> · <a href="https://www.dlss5nvidia.com/download">${isEnglish ? 'Open the download page' : isTraditional ? '前往下載頁' : '前往下载页'}</a></p></section><section><h2>${methodTitle}</h2><p>${methodCopy}</p>${statusTableHtml}<p><a href="${officialDlssSource}">${isEnglish ? 'Read NVIDIA’s official DLSS 5 announcement' : isTraditional ? '閱讀 NVIDIA 官方 DLSS 5 公告' : '阅读 NVIDIA 官方 DLSS 5 公告'}</a> · <a href="/${lang}/blog">${isEnglish ? 'Browse technical guides →' : isTraditional ? '瀏覽技術指南 →' : '浏览技术指南 →'}</a></p></section><section><h2>${escapeHtml(c.faq)}</h2>${questionsHtml}</section><section><h2>${escapeHtml(c.blog)}</h2><p><a href="/${lang}/blog">${isEnglish ? 'Browse all technical guides and comparisons →' : isTraditional ? '瀏覽全部技術指南與比較文章 →' : '浏览全部技术指南与对比文章 →'}</a></p></section></main>`;
 }
 
@@ -270,6 +331,7 @@ function studioBody(lang: Lang): string {
 function supportedCardsBody(lang: Lang): string {
   const isEnglish = lang === 'en';
   const isTraditional = lang === 'zh-TW';
+  const isChinese = !isEnglish;
   const questions = isEnglish
     ? [
         ['Which GPUs support DLSS 5?', 'NVIDIA has confirmed DLSS 5 for GeForce RTX 50 Series Blackwell hardware. RTX 40 support remains unconfirmed until NVIDIA publishes a compatibility statement.'],
@@ -283,27 +345,157 @@ function supportedCardsBody(lang: Lang): string {
         [isTraditional ? '這個檢查器是 NVIDIA 官方工具嗎？' : '这个检测器是 NVIDIA 官方工具吗？', isTraditional ? '不是。這是獨立資料頁，整理公開的 NVIDIA 公告並標註核對日期，不會掃描你的電腦。' : '不是。它是独立资料页，整理公开的 NVIDIA 公告并标注核对日期，不会扫描你的电脑。'],
         [isTraditional ? '顯示卡狀態多久更新一次？' : '显卡状态多久更新一次？', isTraditional ? '當 NVIDIA 發布可核實的驅動程式、遊戲或硬體資訊時更新；每條結論都應回到來源核對。' : '当 NVIDIA 发布可核实的驱动、游戏或硬件信息时更新；每条结论都应回到来源核对。'],
       ];
-  const rows = gpuSeries.map(([series, architecture, status]) => {
-    const translatedStatus = isEnglish
-      ? status
-      : status === 'Confirmed'
-        ? (isTraditional ? '已確認' : '已确认')
-        : status === 'Not confirmed by NVIDIA'
-          ? (isTraditional ? 'NVIDIA 尚未確認' : 'NVIDIA 尚未确认')
-          : (isTraditional ? '目前官方清單不支援' : '当前官方列表不支持');
-    return `<tr><th scope="row">${escapeHtml(isEnglish ? series : series.replace('RTX ', 'GeForce RTX '))}</th><td>${escapeHtml(architecture)}</td><td>${escapeHtml(translatedStatus)}</td></tr>`;
-  }).join('');
   const questionsHtml = questions.map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
   const title = isEnglish ? 'DLSS 5 Supported Cards & GPU Compatibility Checker' : isTraditional ? 'DLSS 5 支援顯示卡與 GPU 相容性檢查器' : 'DLSS 5 支持的显卡与 GPU 兼容性检测器';
   const guide = isEnglish ? 'EVIDENCE-BASED GPU GUIDE' : isTraditional ? '基於證據的 GPU 指南' : '基于证据的 GPU 指南';
-  const intro = isEnglish ? 'Check DLSS 5 support by GPU family, architecture and official evidence. Unknown stays unknown until NVIDIA publishes a verifiable statement.' : isTraditional ? '按 GPU 系列、架構和官方證據查看 DLSS 5 支援狀態；沒有原文依據的型號會保留為未確認。' : '按 GPU 系列、架构和官方证据查看 DLSS 5 支持状态；没有原文依据的型号会保留为未确认。';
-  const matrix = isEnglish ? 'DLSS 5 GPU support matrix' : isTraditional ? 'DLSS 5 GPU 支援矩陣' : 'DLSS 5 GPU 支持矩阵';
-  const source = isEnglish ? 'Source: ' : isTraditional ? '資料來源：' : '资料来源：';
-  const disclaimer = isEnglish ? 'Independent reference; not affiliated with NVIDIA.' : isTraditional ? '本站與 NVIDIA 沒有隸屬關係。' : '本站与 NVIDIA 没有隶属关系。';
-  const faqTitle = isEnglish ? 'Compatibility FAQ' : isTraditional ? '相容性常見問題' : '兼容性常见问题';
   const back = isEnglish ? '← Back to the GPU checker' : isTraditional ? '← 返回 GPU 檢查器首頁' : '← 返回 GPU 检测器首页';
   const converter = isEnglish ? 'Try the free visual converter' : isTraditional ? '試用免費的視覺轉換器' : '试用免费的视觉转换器';
-  return `<main class="seo-shell"><header><p class="eyebrow">${guide}</p><h1>${title}</h1><p class="lede">${intro}</p></header><section><h2>${matrix}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${source}<a href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. ${disclaimer}</p></section><section><h2>${faqTitle}</h2>${questionsHtml}</section><p><a href="/${lang}">${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a> · <a href="https://www.dlss5nvidia.com/models">${isEnglish ? 'Browse model workflows' : isTraditional ? '瀏覽模型工作流程' : '浏览模型工作流'}</a> · <a href="https://www.dlss5nvidia.com/comparisons">${isEnglish ? 'Compare visual workflows' : isTraditional ? '比較視覺工作流程' : '比较视觉工作流'}</a></p></main>`;
+  const summary = isEnglish
+    ? `All ${gpuEntries.length} GeForce RTX models in this data set are listed below with VRAM, architecture, status and a link to the evidence page for each card: ${statusCounts.confirmed} RTX 50-series cards confirmed, ${statusCounts.unconfirmed} RTX 40-series cards unconfirmed, ${statusCounts.outOfScope} RTX 30/20-series cards outside the published scope.`
+    : isTraditional
+      ? `本資料集收錄的 ${gpuEntries.length} 款 GeForce RTX 型號全部列在下面，每款都標明顯存、架構、狀態，並連到該型號自己的證據頁：${statusCounts.confirmed} 款 RTX 50 系列已確認、${statusCounts.unconfirmed} 款 RTX 40 系列尚未確認、${statusCounts.outOfScope} 款 RTX 30/20 系列落在已公佈範圍之外。`
+      : `本资料集收录的 ${gpuEntries.length} 款 GeForce RTX 型号全部列在下面，每款都标明显存、架构、状态，并连到该型号自己的证据页：${statusCounts.confirmed} 款 RTX 50 系列已确认、${statusCounts.unconfirmed} 款 RTX 40 系列未确认、${statusCounts.outOfScope} 款 RTX 30/20 系列落在已公布范围之外。`;
+  const matrixTitle = isEnglish ? `DLSS 5 support by model (${gpuEntries.length} cards)` : isTraditional ? `逐型號 DLSS 5 支援情況（${gpuEntries.length} 款）` : `逐型号 DLSS 5 支持情况（${gpuEntries.length} 款）`;
+  const headers = isEnglish
+    ? ['GPU model', 'Architecture', 'VRAM', 'DLSS 5 status', 'Evidence page']
+    : isTraditional
+      ? ['顯示卡型號', '架構', '顯存', 'DLSS 5 狀態', '證據頁']
+      : ['显卡型号', '架构', '显存', 'DLSS 5 状态', '证据页'];
+  const rows = gpuEntries.map(gpu => {
+    const architecture = gpuData.gpu_series.find(series => series.id === gpu.series)?.architecture || '';
+    const detail = isEnglish ? `RTX ${gpu.name.replace(/^RTX /, '')} record` : isTraditional ? `${gpu.name} 紀錄` : `${gpu.name} 记录`;
+    return `<tr><th scope="row"><a href="/${lang}/gpu/${gpu.id}">${escapeHtml(gpu.name)}</a></th><td>${escapeHtml(architecture)}</td><td>${gpu.vram_gb} GB</td><td>${escapeHtml(localizedStatus(lang, gpu.dlss5_status))}</td><td><a href="/${lang}/gpu/${gpu.id}">${escapeHtml(detail)} →</a></td></tr>`;
+  }).join('');
+  const seriesIntro = (seriesId: string): string => {
+    const series = gpuData.gpu_series.find(item => item.id === seriesId);
+    const members = gpuEntries.filter(gpu => gpu.series === seriesId);
+    const names = members.map(gpu => gpu.name).join(isChinese ? '、' : ', ');
+    const count = members.length;
+    const architecture = series?.architecture || '';
+    const name = series?.name || seriesId;
+    if (seriesId === 'rtx50') {
+      return isEnglish
+        ? `NVIDIA's published DLSS 5 scope names this generation. All ${count} models below are recorded as confirmed — ${names}. Confirmed is a hardware-scope statement: each game still has to ship the feature, so check the title you care about before buying a card for it.`
+        : isTraditional
+          ? `NVIDIA 已公佈的 DLSS 5 範圍點名的就是這一代（${architecture}）。下面 ${count} 款全部記為已確認——${names}。已確認是硬體範圍結論：單款遊戲仍要自己上線這個功能，為某款遊戲買卡前請先確認那款遊戲。`
+          : `NVIDIA 已公布的 DLSS 5 范围点名的就是这一代（${architecture}）。下面 ${count} 款全部记为已确认——${names}。已确认是硬件范围结论：单款游戏仍要自己上线这个功能，为某款游戏买卡前请先确认那款游戏。`;
+    }
+    if (seriesId === 'rtx40') {
+      return isEnglish
+        ? `No NVIDIA statement covers ${architecture} at model level, so all ${count} cards below stay unconfirmed — ${names}. Unconfirmed is not a rejection: it means the source needed to say "supported" has not been published.`
+        : isTraditional
+          ? `NVIDIA 沒有針對 ${architecture} 的型號級聲明，因此下面 ${count} 款全部維持尚未確認——${names}。尚未確認不等於被否定：它表示「支援」這句話所需的來源還沒公佈。`
+          : `NVIDIA 没有针对 ${architecture} 的型号级声明，因此下面 ${count} 款全部维持未确认——${names}。未确认不等于被否定：它表示「支持」这句话所需的来源还没公布。`;
+    }
+    return isEnglish
+      ? `${architecture} sits outside the DLSS 5 scope NVIDIA has published, so all ${count} cards below read "not supported in the current official list" — ${names}. Older DLSS features on these cards are separate and unchanged by this record.`
+      : isTraditional
+        ? `${architecture} 落在 NVIDIA 已公佈的 DLSS 5 範圍之外，因此下面 ${count} 款全部記為「目前官方清單不支援」——${names}。這些卡上的舊版 DLSS 功能是另一回事，不受本紀錄影響。`
+        : `${architecture} 落在 NVIDIA 已公布的 DLSS 5 范围之外，因此下面 ${count} 款全部记为「当前官方列表不支持」——${names}。这些卡上的旧版 DLSS 功能是另一回事，不受本条记录影响。`;
+  };
+  const seriesSections = gpuData.gpu_series.map(series => {
+    const heading = isEnglish
+      ? `${series.name} (${series.architecture})`
+      : isTraditional
+        ? `${series.name}（${series.architecture}）`
+        : `${series.name}（${series.architecture}）`;
+    return `<section><h2>${escapeHtml(heading)}</h2><p>${escapeHtml(seriesIntro(series.id))}</p></section>`;
+  }).join('');
+  const sourceNote = isEnglish
+    ? `Source for every status on this page: <a href="${officialDlssSource}">NVIDIA's DLSS 5 announcement</a>. Hardware specification values on the individual model pages come from the published GeForce RTX series specification tables, which cite NVIDIA's own product pages and architecture whitepapers. Independent reference; not affiliated with NVIDIA.`
+    : isTraditional
+      ? `本頁每一條狀態的來源：<a href="${officialDlssSource}">NVIDIA DLSS 5 公告</a>。逐型號頁面上的硬體規格取自公開的 GeForce RTX 系列規格表，該表引用 NVIDIA 自己的產品頁與架構白皮書。本站為獨立資料頁，與 NVIDIA 沒有隸屬關係。`
+      : `本页每一条状态的来源：<a href="${officialDlssSource}">NVIDIA DLSS 5 公告</a>。逐型号页面上的硬件规格取自公开的 GeForce RTX 系列规格表，该表引用 NVIDIA 自己的产品页与架构白皮书。本站为独立资料页，与 NVIDIA 没有隶属关系。`;
+  const reviewedLine = isEnglish ? `Last reviewed ${reviewedDate}` : isTraditional ? `內容複審 ${reviewedDate}` : `内容复审 ${reviewedDate}`;
+  const methodHeading = isEnglish ? 'How each status is decided' : isTraditional ? '每種狀態怎麼得出' : '每种状态怎么得出';
+  return `<main class="seo-shell"><header><p class="eyebrow">${guide}</p><h1>${title}</h1><p class="lede">${escapeHtml(summary)}</p><p class="article-meta"><span class="reviewed">${reviewedLine}</span></p><p><a href="/${lang}">${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a></p></header><section><h2>${escapeHtml(matrixTitle)}</h2><table><thead><tr>${headers.map(header => `<th>${header}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table><p class="source-note">${sourceNote}</p></section><section><h2>${methodHeading}</h2>${renderStatusTable(lang)}</section>${seriesSections}<section><h2>${isEnglish ? 'Compatibility FAQ' : isTraditional ? '相容性常見問題' : '兼容性常见问题'}</h2>${questionsHtml}</section><p><a href="/${lang}">${back}</a> · <a href="/${lang}/studio">${isEnglish ? 'Studio requirements and measurements' : isTraditional ? 'Studio 要求與實測' : 'Studio 要求与实测'}</a> · <a href="/${lang}/blog">${isEnglish ? 'Technical guides' : isTraditional ? '技術指南' : '技术指南'}</a> · <a href="/${lang}/editorial-policy">${isEnglish ? 'Editorial policy' : isTraditional ? '編輯政策' : '编辑政策'}</a></p></main>`;
+}
+
+type TrustPage = { title: string; description: string; heading: string; body: string; schemaType: string };
+
+/**
+ * 四个站点信息页：谁做的（about）、按什么规矩写（editorial-policy）、怎么联系（contact）、怎么处理数据（privacy）。
+ * 内容全部是本站已经成立的事实，不写承诺、不写没有来源的表述。
+ */
+function trustPage(slug: typeof TRUST_PAGE_SLUGS[number], lang: Lang): TrustPage {
+  const isEnglish = lang === 'en';
+  const isTraditional = lang === 'zh-TW';
+  const mail = `<a href="mailto:${supportEmail}">${supportEmail}</a>`;
+  const links = (items: Array<[string, string]>) => `<nav class="site-info">${items.map(([label, href]) => `<a href="${href}">${escapeHtml(label)}</a>`).join(' · ')}</nav>`;
+
+  if (slug === 'about') {
+    const title = isEnglish
+      ? 'About the DLSS 5 GPU evidence checker'
+      : isTraditional
+        ? '關於本站：DLSS 5 顯示卡證據檢查器'
+        : '关于本站：DLSS 5 显卡证据检测器';
+    const description = isEnglish
+      ? `Who publishes the DLSS 5 GPU evidence checker at dlss5.app, what it does and does not claim, and how it relates to dlss5nvidia.com. Reviewed ${reviewedDate}.`
+      : isTraditional
+        ? `dlss5.app 的 DLSS 5 顯示卡證據檢查器由誰發布、聲明什麼與不聲明什麼、與 dlss5nvidia.com 是什麼關係。複審日期 ${reviewedDate}。`
+        : `dlss5.app 的 DLSS 5 显卡证据检测器由谁发布、声明什么与不声明什么、与 dlss5nvidia.com 是什么关系。复审日期 ${reviewedDate}。`;
+    const body = isEnglish
+      ? `<section><h2>What this site is</h2><p>Neural Architect is an independent, free DLSS 5 GPU compatibility checker published at https://www.dlss5.app. It maps ${gpuEntries.length} GeForce RTX models to the public NVIDIA source behind each status, in English, Simplified Chinese and Traditional Chinese — ${pageCount} pages in total. Every model has its own page carrying the card's hardware record, its DLSS 5 status and the source for both.</p><p>The site answers one question: can this card run DLSS 5, and what is the evidence? It does not sell anything, does not require an account and does not scan your computer.</p></section><section><h2>How it relates to dlss5nvidia.com</h2><p>Both sites are published by the same team and are meant to be read together. <a href="https://www.dlss5nvidia.com/">dlss5nvidia.com</a> is the product and workflow site — the local DLSS 5 Studio software, the visual converter, model workflows and the download page. This site is the evidence desk: compatibility, per-card records and the sources behind them. The division is deliberate, so a "can my card run it" question and a "how do I use it" question do not get answered with the same page.</p></section><section><h2>What this site does not claim</h2><p>It is not affiliated with, endorsed by or connected to NVIDIA. It publishes no compatibility claim that is not backed by an official NVIDIA source or a published specification table. It does not turn community reports, leaks or predictions into a status, and it publishes no benchmark ranking between models.</p><p>Where the evidence is missing, the record says so: "unconfirmed" means we found no official model-level statement, not that the card has been rejected.</p></section><section><h2>How the data is maintained</h2><p>Statuses and hardware records are updated when NVIDIA publishes verifiable information; each affected page carries its own review date. The rules we hold ourselves to are written out on the <a href="/${lang}/editorial-policy">editorial policy</a> page.</p></section><section><h2>Contact</h2><p>Corrections, source suggestions and questions: ${mail}. How to reach us, and what we can and cannot answer, is on the <a href="/${lang}/contact">contact page</a>.</p></section>`
+      : isTraditional
+        ? `<section><h2>這是什麼站</h2><p>Neural Architect 是獨立的免費 DLSS 5 顯示卡相容性檢查器，發佈在 https://www.dlss5.app。本站把 ${gpuEntries.length} 款 GeForce RTX 型號逐一對應到每條狀態背後的 NVIDIA 公開來源，以英文、簡體中文、繁體中文三種語言發佈，共 ${pageCount} 個頁面。每款型號都有自己的頁面，上面有這張卡的硬體紀錄、DLSS 5 狀態，以及兩者各自的來源。</p><p>本站只回答一個問題：這張卡能不能執行 DLSS 5，憑什麼這麼說。這裡不賣東西、不要求註冊，也不會掃描你的電腦。</p></section><section><h2>與 dlss5nvidia.com 的關係</h2><p>兩個站由同一個團隊維護，是要一起看的。<a href="https://www.dlss5nvidia.com/">dlss5nvidia.com</a> 是產品與工作流程站——本機 DLSS 5 Studio 軟體、視覺轉換器、模型工作流程與下載頁；本站是證據台：相容性、逐卡紀錄與它們的來源。這樣分開是刻意的，「我的卡能不能跑」和「我要怎麼用」不該用同一頁回答。</p></section><section><h2>本站不聲明什麼</h2><p>本站與 NVIDIA 沒有隸屬、背書或合作關係。凡是官方聲明或公開規格表支持不了的相容性結論，我們都不寫；也不把社群說法、洩露或預測寫成狀態，不發布型號之間的效能排名。</p><p>證據不足時，紀錄就照實寫：「尚未確認」代表我們沒有找到官方型號級聲明，不代表這張卡被否定。</p></section><section><h2>資料怎麼維護</h2><p>NVIDIA 發布可核實資訊時更新狀態與硬體紀錄；受影響的頁面各自標註複審日期。我們給自己定的規矩寫在<a href="/${lang}/editorial-policy">編輯政策</a>頁。</p></section><section><h2>聯絡</h2><p>更正、補充來源或提問：${mail}。怎麼找我們、我們能答什麼與不能答什麼，寫在<a href="/${lang}/contact">聯絡頁</a>。</p></section>`
+        : `<section><h2>这是什么站</h2><p>Neural Architect 是独立的免费 DLSS 5 显卡兼容性检测器，发布在 https://www.dlss5.app。本站把 ${gpuEntries.length} 款 GeForce RTX 型号逐一对应到每条状态背后的 NVIDIA 公开来源，以英文、简体中文、繁体中文三种语言发布，共 ${pageCount} 个页面。每款型号都有自己的页面，上面有这张卡的硬件记录、DLSS 5 状态，以及两者各自的来源。</p><p>本站只回答一个问题：这张卡能不能运行 DLSS 5，凭什么这么说。这里不卖东西、不要求注册，也不会扫描你的电脑。</p></section><section><h2>与 dlss5nvidia.com 的关系</h2><p>两个站由同一个团队维护，是要一起看的。<a href="https://www.dlss5nvidia.com/">dlss5nvidia.com</a> 是产品与工作流站——本地 DLSS 5 Studio 软件、视觉转换器、模型工作流与下载页；本站是证据台：兼容性、逐卡记录与它们的来源。这样分开是刻意的，「我的卡能不能跑」和「我要怎么用」不该用同一页回答。</p></section><section><h2>本站不声明什么</h2><p>本站与 NVIDIA 没有隶属、背书或合作关系。凡是官方声明或公开规格表支持不了的兼容性结论，我们都不写；也不把社区说法、泄露或预测写成状态，不发布型号之间的性能排名。</p><p>证据不足时，记录就照实写：「未确认」代表我们没有找到官方型号级声明，不代表这张卡被否定。</p></section><section><h2>数据怎么维护</h2><p>NVIDIA 发布可核实信息时更新状态与硬件记录；受影响的页面各自标注复审日期。我们给自己定的规矩写在<a href="/${lang}/editorial-policy">编辑政策</a>页。</p></section><section><h2>联系</h2><p>更正、补充来源或提问：${mail}。怎么找我们、我们能答什么与不能答什么，写在<a href="/${lang}/contact">联系页</a>。</p></section>`;
+    return { title, description, heading: isEnglish ? 'About this site' : isTraditional ? '關於本站' : '关于本站', body, schemaType: 'AboutPage' };
+  }
+
+  if (slug === 'editorial-policy') {
+    const title = isEnglish
+      ? 'DLSS 5 editorial policy and review dates'
+      : isTraditional
+        ? '編輯政策：DLSS 5 狀態與硬體紀錄的來源規矩'
+        : '编辑政策：DLSS 5 状态与硬件记录的来源规矩';
+    const description = isEnglish
+      ? `The rules behind every DLSS 5 status on dlss5.app — what counts as evidence, what we refuse to publish, how review dates work. Reviewed ${reviewedDate}.`
+      : isTraditional
+        ? `dlss5.app 上每條 DLSS 5 狀態背後的規矩：什麼算證據、我們拒寫什麼、複審日期怎麼運作。複審日期 ${reviewedDate}。`
+        : `dlss5.app 上每条 DLSS 5 状态背后的规矩：什么算证据、我们拒写什么、复审日期怎么运作。复审日期 ${reviewedDate}。`;
+    const body = isEnglish
+      ? `<section><h2>One status, one source</h2><p>Every card carries one of three statuses, and each one has a specific evidence requirement. Nothing is written into a status field on the strength of a plausible argument.</p>${renderStatusTable(lang)}</section><section><h2>What counts as a source</h2><p>Official NVIDIA announcements, product pages, driver release notes and published specification tables. For the per-card hardware record — launch date, die, CUDA cores, memory bus, board power — we use the published GeForce RTX series specification tables, which cite NVIDIA's own product pages and architecture whitepapers; each model page prints the source link and the date it our side read it (${reviewedDate}).</p><p>Where a card exists in more than one memory configuration, the record is matched to the configuration this site lists, so the spec row and the VRAM column can never disagree.</p></section><section><h2>What we refuse to publish</h2><p>Community reports, mod results, leaks and launch-date guesses are not evidence and are never turned into a status. We publish no ranking between models and no performance percentage unless we measured it ourselves. Where our own measurement exists it is labelled as a single-machine result with the machine, the driver and the input given — the RTX 4090 video run on this site is exactly that: one configuration, not a promise about yours.</p></section><section><h2>Freshness</h2><p>Model pages and articles carry a review date, and the sitemap's lastmod value is taken from the same field, so the page and the sitemap can never disagree about how current a claim is. A page is only given a new review date when its claims were actually re-checked against their sources.</p></section><section><h2>Corrections</h2><p>When a claim turns out to be wrong or the source has changed, we change the page and update its review date. If you find an error, write to ${mail} with the URL and the source you are comparing against.</p></section>${links([[isEnglish ? 'About this site' : isTraditional ? '關於本站' : '关于本站', `/${lang}/about`], [isEnglish ? 'Contact' : isTraditional ? '聯絡我們' : '联系我们', `/${lang}/contact`], [isEnglish ? 'DLSS 5 Studio on dlss5nvidia.com' : isTraditional ? 'DLSS 5 Studio（dlss5nvidia.com）' : 'DLSS 5 Studio（dlss5nvidia.com）', 'https://www.dlss5nvidia.com/download']])}`
+      : isTraditional
+        ? `<section><h2>一條狀態，一個來源</h2><p>每張卡只會落在三種狀態之一，每種狀態都有明確的證據要求。不會因為「說得通」就往狀態欄裡寫東西。</p>${renderStatusTable(lang)}</section><section><h2>什麼算來源</h2><p>NVIDIA 官方公告、產品頁、驅動程式發行說明，以及公開的規格表。逐卡的硬體紀錄——發佈時間、核心代號、CUDA 核心數、顯存位寬、整卡功耗——取自公開的 GeForce RTX 系列規格表，該表引用 NVIDIA 自己的產品頁與架構白皮書；每個型號頁都印出來源連結與我們讀取的日期（${reviewedDate}）。</p><p>同一款卡存在多種顯存配置時，紀錄對齊本站列出的那一種，因此規格列與顯存欄不會互相矛盾。</p></section><section><h2>我們拒寫什麼</h2><p>社群說法、改機結果、洩露與發布日期猜測都不算證據，也不會被寫成狀態。我們不發布型號之間的排名；沒有自己測過的效能百分比也不寫。確實有自己實測的地方，會標明是單機單配置的結果並附上機器、驅動與輸入——本站 RTX 4090 的那組影片數據就是如此：一個配置的結果，不是對你那台的承諾。</p></section><section><h2>新鮮度</h2><p>型號頁與文章都標註複審日期，sitemap 的 lastmod 取同一個值，所以頁面與 sitemap 不會對「這條結論有多新」各說各話。只有在真的回到來源核對過之後，頁面才會更新複審日期。</p></section><section><h2>更正</h2><p>如果某條結論是錯的，或來源變了，我們改頁面並更新複審日期。發現錯誤時，請把網址與你對照的來源寄到 ${mail}。</p></section>${links([['關於本站', `/${lang}/about`], ['聯絡我們', `/${lang}/contact`], ['DLSS 5 Studio（dlss5nvidia.com）', 'https://www.dlss5nvidia.com/download']])}`
+        : `<section><h2>一条状态，一个来源</h2><p>每张卡只会落在三种状态之一，每种状态都有明确的证据要求。不会因为「说得通」就往状态栏里写东西。</p>${renderStatusTable(lang)}</section><section><h2>什么算来源</h2><p>NVIDIA 官方公告、产品页、驱动发行说明，以及公开的规格表。逐卡的硬件记录——发布时间、核心代号、CUDA 核心数、显存位宽、整卡功耗——取自公开的 GeForce RTX 系列规格表，该表引用 NVIDIA 自己的产品页与架构白皮书；每个型号页都印出来源链接与我们读取的日期（${reviewedDate}）。</p><p>同一款卡存在多种显存配置时，记录对齐本站列出的那一种，因此规格列与显存栏不会互相矛盾。</p></section><section><h2>我们拒写什么</h2><p>社区说法、改机结果、泄露与发布日期猜测都不算证据，也不会被写成状态。我们不发布型号之间的排名；没有自己测过的性能百分比也不写。确实有自己实测的地方，会标明是单机单配置的结果并附上机器、驱动与输入——本站 RTX 4090 的那组视频数据就是如此：一个配置的结果，不是对你那台的承诺。</p></section><section><h2>新鲜度</h2><p>型号页与文章都标注复审日期，sitemap 的 lastmod 取同一个值，所以页面与 sitemap 不会对「这条结论有多新」各说各话。只有在真的回到来源核对过之后，页面才会更新复审日期。</p></section><section><h2>更正</h2><p>如果某条结论是错的，或来源变了，我们改页面并更新复审日期。发现错误时，请把网址与你对照的来源寄到 ${mail}。</p></section>${links([['关于本站', `/${lang}/about`], ['联系我们', `/${lang}/contact`], ['DLSS 5 Studio（dlss5nvidia.com）', 'https://www.dlss5nvidia.com/download']])}`;
+    return { title, description, heading: isEnglish ? 'Editorial policy' : isTraditional ? '編輯政策' : '编辑政策', body, schemaType: 'WebPage' };
+  }
+
+  if (slug === 'contact') {
+    const title = isEnglish
+      ? 'Contact the DLSS 5 evidence checker'
+      : isTraditional
+        ? '聯絡 DLSS 5 顯示卡證據檢查器'
+        : '联系 DLSS 5 显卡证据检测器';
+    const description = isEnglish
+      ? `How to reach Neural Architect about a DLSS 5 status, a source or a correction — and what this site cannot answer. Reviewed ${reviewedDate}.`
+      : isTraditional
+        ? `如何就 DLSS 5 狀態、來源或更正與 Neural Architect 聯絡，以及本站不能回答什麼。複審日期 ${reviewedDate}。`
+        : `如何就 DLSS 5 状态、来源或更正与 Neural Architect 联系，以及本站不能回答什么。复审日期 ${reviewedDate}。`;
+    const body = isEnglish
+      ? `<section><h2>Email</h2><p>${mail} — the same mailbox the software and billing pages use. Both sites are read by the same team.</p></section><section><h2>What we can help with</h2><p>A status that looks wrong, a source we have missed for a specific card, a hardware value that does not match the specification table, a broken link, or a page that needs re-review. Include the URL and, where you have one, the source you are comparing against — that is usually enough to act on.</p></section><section><h2>What we cannot answer</h2><p>We cannot say when NVIDIA will publish support for a given generation, whether a specific unreleased game will ship DLSS 5, or what performance your machine will produce. Those are not things this site measures, and inventing an answer would contradict the <a href="/${lang}/editorial-policy">editorial policy</a> it publishes.</p></section><section><h2>Looking for the software instead?</h2><p>The local DLSS 5 Studio build, its requirements and its measured results are on <a href="https://www.dlss5nvidia.com/download">dlss5nvidia.com/download</a>; subscription questions go to the same address. This site only covers whether a card is in scope and on what evidence.</p></section><section><h2>Security note</h2><p>We never ask for passwords, payment details or remote access by email. Anything requesting those is not from us.</p></section>`
+      : isTraditional
+        ? `<section><h2>電子郵件</h2><p>${mail}——與軟體、付款頁面用的是同一個信箱。兩個站由同一批人讀。</p></section><section><h2>我們能幫什麼</h2><p>某條狀態看起來不對、某款卡我們漏了來源、某個硬體數值與規格表不符、連結失效，或某頁需要重新複審。請附上網址；如果你有對照的來源也一併附上——通常這樣就足以處理。</p></section><section><h2>我們不能答什麼</h2><p>我們不能說 NVIDIA 什麼時候會為某代顯示卡發布支援、某款未上市遊戲會不會支援 DLSS 5，也無法預測你那台機器的效能。這些不是本站測得到的事，硬編一個答案會違背本站公開的<a href="/${lang}/editorial-policy">編輯政策</a>。</p></section><section><h2>你要找的是軟體？</h2><p>本機 DLSS 5 Studio 版本、執行要求與實測結果在 <a href="https://www.dlss5nvidia.com/download">dlss5nvidia.com/download</a>；訂閱相關問題寄同一個信箱。本站只負責這張卡在不在範圍內、憑什麼。</p></section><section><h2>安全提醒</h2><p>我們不會用郵件索取密碼、付款資訊或遠端存取權限。任何索取這些的郵件都不是我們發的。</p></section>`
+        : `<section><h2>电子邮件</h2><p>${mail}——与软件、付款页面用的是同一个邮箱。两个站由同一批人读。</p></section><section><h2>我们能帮什么</h2><p>某条状态看起来不对、某款卡我们漏了来源、某个硬件数值与规格表不符、链接失效，或某页需要重新复审。请附上网址；如果你有对照的来源也一并附上——通常这样就足以处理。</p></section><section><h2>我们不能答什么</h2><p>我们不能说 NVIDIA 什么时候会为某代显卡发布支持、某款未上市游戏会不会支持 DLSS 5，也无法预测你那台机器的性能。这些不是本站测得到的事，硬编一个答案会违背本站公开的<a href="/${lang}/editorial-policy">编辑政策</a>。</p></section><section><h2>你要找的是软件？</h2><p>本地 DLSS 5 Studio 版本、运行要求与实测结果在 <a href="https://www.dlss5nvidia.com/download">dlss5nvidia.com/download</a>；订阅相关问题寄同一个邮箱。本站只负责这张卡在不在范围内、凭什么。</p></section><section><h2>安全提醒</h2><p>我们不会用邮件索取密码、付款信息或远程访问权限。任何索取这些的邮件都不是我们发的。</p></section>`;
+    return { title, description, heading: isEnglish ? 'Contact' : isTraditional ? '聯絡我們' : '联系我们', body, schemaType: 'ContactPage' };
+  }
+
+  const title = isEnglish
+    ? 'Privacy: what dlss5.app collects'
+    : isTraditional
+      ? '隱私：dlss5.app 收集什麼、不收集什麼'
+      : '隐私：dlss5.app 收集什么、不收集什么';
+  const description = isEnglish
+    ? `No accounts, no uploads, no scanning script, no third-party analytics or ads. The two external services this site does rely on, and what they see. Reviewed ${reviewedDate}.`
+    : isTraditional
+      ? `不要求註冊、不收上傳、不跑掃描腳本、沒有第三方分析或廣告。本站唯一依賴的兩個外部服務，以及它們能看到什麼。複審日期 ${reviewedDate}。`
+      : `不要求注册、不收上传、不跑扫描脚本、没有第三方分析或广告。本站唯一依赖的两个外部服务，以及它们能看到什么。复审日期 ${reviewedDate}。`;
+  const body = isEnglish
+    ? `<section><h2>What this site does not do</h2><p>No account is required and none can be created. No file can be uploaded here. No script on this site reads your hardware: the checker is a published data set, not a scan of your computer. There is no newsletter and no advertising.</p><p>Queries you type into the checker are handled in your browser; the URL of a model page is a plain path, so nothing about your machine is sent to us when you open it.</p></section><section><h2>The two external services this site uses</h2><p><strong>Google Fonts</strong> — the page loads its typefaces from fonts.googleapis.com and fonts.gstatic.com. Your IP address and browser user agent are sent to Google as part of that request; that is a Google service, governed by Google's own privacy terms.</p><p><strong>Vercel hosting</strong> — the site is served by Vercel, which keeps standard request logs (IP address, user agent, timestamp, requested path) as any web host does.</p><p>Article pages with a share image load that image from the Unsplash CDN (images.unsplash.com).</p></section><section><h2>Third-party analytics and ads</h2><p>This site runs no analytics script and no advertising script — first-party or third-party. We do not build a profile of you and there is nothing here to sell it to anyone.</p></section><section><h2>Payments</h2><p>Nothing is sold on this site and no payment details are collected here. The paid product lives on <a href="https://www.dlss5nvidia.com/">dlss5nvidia.com</a>, and its own privacy, refund and terms pages govern that transaction.</p></section><section><h2>Outbound links</h2><p>Pages here link to NVIDIA's own announcements and to dlss5nvidia.com. Once you follow an outbound link, the destination site's own privacy policy applies.</p></section><section><h2>Questions</h2><p>Write to ${mail} with the URL you are asking about.</p></section>`
+    : isTraditional
+      ? `<section><h2>本站不做什麼</h2><p>不需要註冊，也沒有註冊功能。本站不接受任何檔案上傳。本站沒有腳本會去讀你的硬體：檢查器是一份公開資料集，不是對你電腦的掃描。沒有電子報，也沒有廣告。</p><p>你在檢查器裡輸入的查詢在瀏覽器內處理；型號頁的網址就是一條普通路徑，開啟它不會送出任何關於你機器的資訊。</p></section><section><h2>本站用到的兩個外部服務</h2><p><strong>Google Fonts</strong>——頁面從 fonts.googleapis.com 與 fonts.gstatic.com 載入字型。這個請求會把你的 IP 位址與瀏覽器 UA 送給 Google；那是 Google 的服務，適用 Google 自己的隱私條款。</p><p><strong>Vercel 託管</strong>——本站由 Vercel 提供服務，跟任何網站主機一樣會保留標準請求日誌（IP 位址、UA、時間、請求路徑）。</p><p>帶分享圖的文章頁，該圖片從 Unsplash 的 CDN（images.unsplash.com）載入。</p></section><section><h2>第三方分析與廣告</h2><p>本站不執行任何分析腳本，也不執行任何廣告腳本——自家的或第三方的都沒有。我們不會為你建立画像，也沒有東西可以賣給別人。</p></section><section><h2>付款</h2><p>本站不販售任何東西，也不在此收集付款資訊。付費產品在 <a href="https://www.dlss5nvidia.com/">dlss5nvidia.com</a>，該筆交易適用它自己的隱私、退款與條款頁。</p></section><section><h2>對外連結</h2><p>本站頁面會連結到 NVIDIA 自己的公告與 dlss5nvidia.com。一旦你離開本站，目的地網站的隱私政策適用於那裡。</p></section><section><h2>問題</h2><p>請把你要問的網址附上，寄到 ${mail}。</p></section>`
+      : `<section><h2>本站不做什么</h2><p>不需要注册，也没有注册功能。本站不接受任何文件上传。本站没有脚本会去读你的硬件：检测器是一份公开数据集，不是对你电脑的扫描。没有订阅邮件，也没有广告。</p><p>你在检测器里输入的查询在浏览器内处理；型号页的网址就是一条普通路径，打开它不会送出任何关于你机器的信息。</p></section><section><h2>本站用到的两个外部服务</h2><p><strong>Google Fonts</strong>——页面从 fonts.googleapis.com 与 fonts.gstatic.com 加载字体。这个请求会把你的 IP 地址与浏览器 UA 送给 Google；那是 Google 的服务，适用 Google 自己的隐私条款。</p><p><strong>Vercel 托管</strong>——本站由 Vercel 提供服务，跟任何网站主机一样会保留标准请求日志（IP 地址、UA、时间、请求路径）。</p><p>带分享图的文章页，该图片从 Unsplash 的 CDN（images.unsplash.com）加载。</p></section><section><h2>第三方分析与广告</h2><p>本站不执行任何分析脚本，也不执行任何广告脚本——自家的或第三方的都没有。我们不会为你建立画像，也没有东西可以卖给别人。</p></section><section><h2>付款</h2><p>本站不销售任何东西，也不在此收集付款信息。付费产品在 <a href="https://www.dlss5nvidia.com/">dlss5nvidia.com</a>，该笔交易适用它自己的隐私、退款与条款页。</p></section><section><h2>对外链接</h2><p>本站页面会链接到 NVIDIA 自己的公告与 dlss5nvidia.com。一旦你离开本站，目的地网站的隐私政策适用于那里。</p></section><section><h2>问题</h2><p>请把你要问的网址附上，寄到 ${mail}。</p></section>`;
+  return { title, description, heading: isEnglish ? 'Privacy' : isTraditional ? '隱私' : '隐私', body, schemaType: 'WebPage' };
 }
 
 function blogBody(lang: Lang): string {
@@ -384,7 +576,7 @@ function documentFor(route: string, lang: Lang, title: string, description: stri
     .replace(/\s*<meta name="description"[^>]*\/>/g, '')
     .replace(/\s*<meta name="robots"[^>]*\/>/g, '')
     .replace('</head>', `${head}</head>`)
-    .replace('<div id="root"></div>', `<div id="root">${body}</div>`);
+    .replace('<div id="root"></div>', `<div id="root">${body}${trustNav(lang)}</div>`);
 }
 
 function writeRoute(route: string, html: string): void {
@@ -428,7 +620,13 @@ for (const lang of Object.keys(copy) as Lang[]) {
   const studioRoute = `${homeRoute}/studio`;
   const studioTitle = lang === 'en' ? 'DLSS 5 Studio local software requirements and measured performance | Neural Architect' : lang === 'zh-TW' ? 'DLSS 5 Studio 本機軟體要求與實測效能 | Neural Architect' : 'DLSS 5 Studio 本地软件要求与实测性能 | Neural Architect';
   const studioDescription = lang === 'en' ? 'DLSS 5 Studio local software requirements, RTX and Windows compatibility, NVENC driver notes and a measured RTX 4090 workflow.' : lang === 'zh-TW' ? 'DLSS 5 Studio 本機軟體要求、RTX 與 Windows 相容性、NVENC 驅動程式說明，以及 RTX 4090 實測工作流程。' : 'DLSS 5 Studio 本地软件要求、RTX 与 Windows 兼容性、NVENC 驱动说明，以及 RTX 4090 实测工作流。';
-  writeRoute(studioRoute, documentFor(studioRoute, lang, studioTitle, studioDescription, studioBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'WebPage', name: studioTitle, description: studioDescription, url: `${baseUrl}${studioRoute}` }));
+  writeRoute(studioRoute, documentFor(studioRoute, lang, studioTitle, studioDescription, studioBody(lang), 'website', {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'WebPage', name: studioTitle, description: studioDescription, url: `${baseUrl}${studioRoute}` },
+      breadcrumbNode(lang, [[crumbLabel(lang, 'home'), ''], [crumbLabel(lang, 'studio'), '/studio']]),
+    ],
+  }));
   for (const gpu of gpuEntries) {
     const gpuRoute = `${homeRoute}/gpu/${gpu.id}`;
     const gpuTitle = lang === 'en' ? `${gpu.name} DLSS 5 support and VRAM evidence | Neural Architect` : lang === 'zh-TW' ? `${gpu.name} DLSS 5 支援與顯存證據 | Neural Architect` : `${gpu.name} DLSS 5 支持与显存证据 | Neural Architect`;
@@ -439,28 +637,67 @@ for (const lang of Object.keys(copy) as Lang[]) {
       '@graph': [
         { '@type': 'TechArticle', headline: gpuTitle, description: gpuDescription, author: { '@type': 'Organization', name: 'Neural Architect', url: baseUrl }, publisher: { '@id': 'https://www.dlss5nvidia.com/#organization' }, datePublished: '2026-10-10', dateModified: '2026-10-10', citation: officialDlssSource, mainEntityOfPage: `${baseUrl}${gpuRoute}` },
         { '@type': 'FAQPage', mainEntity: gpuContent.faq.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) },
+        breadcrumbNode(lang, [[crumbLabel(lang, 'home'), ''], [crumbLabel(lang, 'supportedCards'), '/supported-cards'], [gpu.name, `/gpu/${gpu.id}`]]),
       ],
     };
     writeRoute(gpuRoute, documentFor(gpuRoute, lang, gpuTitle, gpuDescription, gpuDetailBody(lang, gpu.id), 'article', gpuSchema));
   }
   const supportedCardsRoute = `${homeRoute}/supported-cards`;
+  const supportedCardsHeading = lang === 'en'
+    ? 'DLSS 5 Supported Cards & GPU Compatibility Checker'
+    : lang === 'zh-TW'
+      ? 'DLSS 5 支援顯示卡與 GPU 相容性檢查器'
+      : 'DLSS 5 支持的显卡与 GPU 兼容性检测器';
+  const supportedCardsTitle = `${supportedCardsHeading} | Neural Architect`;
   const supportedCardsDescription = lang === 'en'
     ? 'Evidence-based DLSS 5 GPU compatibility matrix by series, architecture and official NVIDIA sources, with an FAQ for upgrade decisions.'
     : lang === 'zh-TW'
       ? '按系列、架構與 NVIDIA 官方來源整理的 DLSS 5 顯示卡相容性矩陣，並提供升級決策常見問題。'
       : '按系列、架构与 NVIDIA 官方来源整理的 DLSS 5 显卡兼容性矩阵，并提供升级决策常见问题。';
-  writeRoute(supportedCardsRoute, documentFor(supportedCardsRoute, lang, `${c.title} | Neural Architect`, supportedCardsDescription, supportedCardsBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq[lang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) }));
+  writeRoute(supportedCardsRoute, documentFor(supportedCardsRoute, lang, supportedCardsTitle, supportedCardsDescription, supportedCardsBody(lang), 'website', {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'FAQPage', mainEntity: faq[lang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) },
+      breadcrumbNode(lang, [[crumbLabel(lang, 'home'), ''], [crumbLabel(lang, 'supportedCards'), '/supported-cards']]),
+    ],
+  }));
   const blogRoute = `${homeRoute}/blog`;
   const blogDescription = lang === 'en'
     ? 'Independent DLSS 5 explainers covering neural rendering, supported hardware, game settings and AI image tools.'
     : lang === 'zh-TW'
       ? '獨立整理 DLSS 5 神經渲染、支援硬體、遊戲設定與 AI 圖像工具的技術指南。'
       : '独立整理 DLSS 5 神经渲染、支持硬件、游戏设置与 AI 图片工具的技术指南。';
-  writeRoute(blogRoute, documentFor(blogRoute, lang, `${c.blog} | Neural Architect`, blogDescription, blogBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'CollectionPage', name: c.blog, url: `${baseUrl}${blogRoute}` }));
+  writeRoute(blogRoute, documentFor(blogRoute, lang, `${c.blog} | Neural Architect`, blogDescription, blogBody(lang), 'website', {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'CollectionPage', name: c.blog, url: `${baseUrl}${blogRoute}` },
+      breadcrumbNode(lang, [[crumbLabel(lang, 'home'), ''], [crumbLabel(lang, 'blog'), '/blog']]),
+    ],
+  }));
   for (const slug of articleSlugs) {
     const route = `${blogRoute}/${slug}`;
     const article = articleBody(lang, slug);
-    writeRoute(route, documentFor(route, lang, `${article.meta.title} | Neural Architect`, article.meta.description, article.body, 'article', { '@context': 'https://schema.org', '@type': 'Article', headline: article.meta.title, description: article.meta.description, image: article.meta.og_image ? [article.meta.og_image] : [defaultOgImage], datePublished: article.meta.date, dateModified: article.meta.reviewed || article.meta.date, author: { '@type': 'Organization', name: 'Neural Architect', url: baseUrl }, publisher: { '@id': 'https://www.dlss5nvidia.com/#organization' }, mainEntityOfPage: `${baseUrl}${route}` }, 'index,follow', article.meta.og_image || defaultOgImage));
+    const articleSchema = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        { '@type': 'Article', headline: article.meta.title, description: article.meta.description, image: article.meta.og_image ? [article.meta.og_image] : [defaultOgImage], datePublished: article.meta.date, dateModified: article.meta.reviewed || article.meta.date, author: { '@type': 'Organization', name: 'Neural Architect', url: baseUrl }, publisher: { '@id': 'https://www.dlss5nvidia.com/#organization' }, mainEntityOfPage: `${baseUrl}${route}` },
+        breadcrumbNode(lang, [[crumbLabel(lang, 'home'), ''], [crumbLabel(lang, 'blog'), '/blog'], [article.meta.title, `/blog/${slug}`]]),
+      ],
+    };
+    writeRoute(route, documentFor(route, lang, `${article.meta.title} | Neural Architect`, article.meta.description, article.body, 'article', articleSchema, 'index,follow', article.meta.og_image || defaultOgImage));
+  }
+  for (const slug of TRUST_PAGE_SLUGS) {
+    const page = trustPage(slug, lang);
+    const route = `${homeRoute}/${slug}`;
+    const body = `<main class="seo-shell"><header><p class="eyebrow">NEURAL ARCHITECT</p><h1>${escapeHtml(page.heading)}</h1><p class="lede">${escapeHtml(page.description)}</p></header>${page.body}</main>`;
+    const schema = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        { '@type': page.schemaType, name: page.title, description: page.description, url: `${baseUrl}${route}` },
+        breadcrumbNode(lang, [[crumbLabel(lang, 'home'), ''], [page.heading, `/${slug}`]]),
+      ],
+    };
+    writeRoute(route, documentFor(route, lang, `${page.title} | Neural Architect`, page.description, body, 'website', schema));
   }
 }
 
@@ -470,7 +707,7 @@ writeRoute('/', documentFor('/', 'en', rootCopy.title, rootCopy.description, hom
 
 function sitemapXml(): string {
   const date = '2026-10-10';
-  const suffixes = ['', '/studio', '/supported-cards', '/blog', ...articleSlugs.map(slug => `/blog/${slug}`), ...gpuEntries.map(gpu => `/gpu/${gpu.id}`)];
+  const suffixes = ['', '/studio', '/supported-cards', '/blog', ...articleSlugs.map(slug => `/blog/${slug}`), ...gpuEntries.map(gpu => `/gpu/${gpu.id}`), ...TRUST_PAGE_SLUGS.map(slug => `/${slug}`)];
   // 文章用自己 frontmatter 的复审日期，别和页面里的 dateModified 打架。
   const articleReviewed = new Map(articleSlugs.map(slug => [`/blog/${slug}`, parseFrontmatter(readFileSync(join(root, 'src/content', `${slug}.md`), 'utf8')).meta.reviewed || date]));
   const escapeXml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
@@ -480,12 +717,19 @@ function sitemapXml(): string {
       const path = `/${lang}${suffix}`;
       const lastmod = articleReviewed.get(suffix) || date;
       const alternates = (Object.keys(copy) as Lang[]).map(code => `    <xhtml:link rel="alternate" hreflang="${code}" href="${baseUrl}/${code}${suffix}" />`).join('\n');
-      urls.push(`  <url>\n    <loc>${escapeXml(`${baseUrl}${path}`)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${suffix.startsWith('/blog/') ? 'weekly' : 'daily'}</changefreq>\n    <priority>${suffix === '' ? '1.0' : suffix === '/supported-cards' ? '0.9' : '0.8'}</priority>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/en${suffix}" />\n  </url>`);
+      // 站点信息页不常改，别跟着首页写 daily —— 编辑政策页承诺过 lastmod 与页面一致，口径也得跟着。
+      const changefreq = suffix.startsWith('/blog/') ? 'weekly' : (TRUST_PAGE_SLUGS as readonly string[]).includes(suffix.slice(1)) ? 'monthly' : 'daily';
+      const priority = suffix === '' ? '1.0' : suffix === '/supported-cards' ? '0.9' : (TRUST_PAGE_SLUGS as readonly string[]).includes(suffix.slice(1)) ? '0.5' : '0.8';
+      urls.push(`  <url>\n    <loc>${escapeXml(`${baseUrl}${path}`)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/en${suffix}" />\n  </url>`);
     }
   }
   return `<?xml version="1.0" encoding="UTF-8"?>\n<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`;
 }
 
-writeFileSync(join(root, 'public/sitemap.xml'), sitemapXml());
+// 两份都写：dist 是真正被部署的那份（vite 先跑、拷的是上一轮的 public/sitemap.xml），
+// public 是仓库里的源，dev server 与下次构建的拷贝都用它。只写一份就会一直落后一轮。
+const sitemap = sitemapXml();
+writeFileSync(join(root, 'public/sitemap.xml'), sitemap);
+writeFileSync(join(dist, 'sitemap.xml'), sitemap);
 
 console.log(`Pre-rendered ${Object.keys(copy).length} languages, ${articleSlugs.length} articles, supported-cards landing pages and static FAQ/checker content.`);
