@@ -22,6 +22,7 @@ export default function GpuDetail() {
     series,
     gpuData.feature_matrix,
     gpuData.gpus,
+    gpuData.spec_sources,
   );
   const toolHref = gpu.series === 'rtx50' ? '/game-character-style' : gpu.series === 'rtx40' ? '/video-upscaler' : '/image-quality-enhancer';
   const toolLabel = gpu.series === 'rtx50'
@@ -65,6 +66,28 @@ export default function GpuDetail() {
       </section>
 
       <section className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-8 space-y-5">
+        <h2 className="text-2xl font-bold">{copy.specHeading}</h2>
+        {copy.specRows.length > 0 && (
+          <table className="w-full text-left text-white/75">
+            <tbody>
+              {copy.specRows.map(row => (
+                <tr key={row.label} className="border-b border-white/10 last:border-0">
+                  <th scope="row" className="py-3 pr-6 font-semibold text-white/60 align-top">{row.label}</th>
+                  <td className="py-3">{row.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        {copy.specParagraphs.map(paragraph => <p key={paragraph} className="text-white/75 leading-8">{paragraph}</p>)}
+        {copy.specSourceUrl && (
+          <p className="text-white/50 text-sm">
+            {copy.specSourceLabel}：<a className="text-primary underline" href={copy.specSourceUrl}>{copy.specSourceUrl}</a> — {copy.specSourceNote}
+          </p>
+        )}
+      </section>
+
+      <section className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-8 space-y-5">
         <h2 className="text-2xl font-bold">{copy.studioHeading}</h2>
         <p className={`text-lg font-semibold ${toneClass[copy.studioVerdictTone]}`}>{copy.studioVerdict}</p>
         <table className="w-full text-left text-white/75">
@@ -101,7 +124,7 @@ export default function GpuDetail() {
           {copy.peers.map(peer => (
             <li key={peer.id}>
               <Link className="text-primary underline" to={`/${lang}/gpu/${peer.id}`}>{peer.name || peer.id}</Link>
-              {` · ${peer.vram_gb} GB`}
+              {` · ${peer.vram_gb} GB${peer.spec ? ` · ${peer.spec.cores.toLocaleString('en-US')} CUDA cores` : ''}`}
             </li>
           ))}
         </ul>

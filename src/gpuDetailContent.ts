@@ -1,5 +1,14 @@
 export type GpuDetailLanguage = 'en' | 'zh-CN' | 'zh-TW';
 
+/** Per-card hardware facts, sourced from the series specification table. */
+export type GpuSpec = {
+  launch: string;
+  die: string;
+  cores: number;
+  bus: number;
+  tdp: number;
+};
+
 type GpuRecord = {
   id?: string;
   series?: string;
@@ -7,6 +16,7 @@ type GpuRecord = {
   vram_gb: number;
   dlss5_status: string;
   note: string;
+  spec?: GpuSpec;
 };
 
 type SeriesRecord = {
@@ -15,7 +25,7 @@ type SeriesRecord = {
 };
 
 /** 同页要展示的近邻型号。 */
-export type GpuPeer = { id: string; name?: string; vram_gb: number; status: string };
+export type GpuPeer = { id: string; name?: string; vram_gb: number; status: string; spec?: GpuSpec };
 
 export type GpuCheckVerdict = 'met' | 'below' | 'info';
 
@@ -31,6 +41,12 @@ export type GpuDetailContent = {
   disclaimer: string;
   factsHeading: string;
   facts: Array<{ label: string; value: string }>;
+  specHeading: string;
+  specRows: Array<{ label: string; value: string }>;
+  specParagraphs: string[];
+  specSourceLabel: string;
+  specSourceUrl: string;
+  specSourceNote: string;
   evidenceHeading: string;
   evidenceParagraphs: string[];
   studioHeading: string;
@@ -65,8 +81,7 @@ export const STUDIO_MEASURED = {
 };
 
 /** 特性矩陣的取值是資料集裡的英文 token，中文頁要照自己的語言呈現。 */
-function localizeFeatureValue(value: string, traditional: boolean): string {
-  const map: Record<string, [string, string]> = {
+function localizeFeatureValue(value: string, traditional: boolean): string {  const map: Record<string, [string, string]> = {
     confirmed: ['已确认', '已確認'],
     unconfirmed: ['尚未确认', '尚未獲 NVIDIA 確認'],
     no: ['不支持', '不支援'],
@@ -83,6 +98,45 @@ const NOT_IN_MATRIX = {
   'zh-CN': '本站已公佈的特性矩陣涵蓋 RTX 30 系列及更新世代，這一代在本資料集中沒有逐項結論。',
   'zh-TW': '本站已公佈的特性矩陣涵蓋 RTX 30 系列及更新世代，這一代在本資料集中沒有逐項結論。',
 };
+
+const EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'];
+
+/** '2019-07-09' -> '9 July 2019' / '2019 年 7 月 9 日'（繁簡同日語序）。 */
+function formatLaunchDate(iso: string, lang: GpuDetailLanguage): string {
+  const [year, month, day] = iso.split('-').map(Number);
+  if (!year || !month) return iso;
+  if (lang === 'en') return `${day} ${EN_MONTHS[month - 1]} ${year}`;
+  return `${year} 年 ${month} 月${day ? ` ${day} 日` : ''}`;
+}
+
+/** 每張卡的硬體規格列 —— 只在資料集有 spec 時產生。 */
+function specRows(seriesName: string, spec: GpuSpec, lang: GpuDetailLanguage): Array<{ label: string; value: string }> {
+  const traditional = lang === 'zh-TW';
+  const chinese = lang !== 'en';
+  return [
+    {
+      label: chinese ? (traditional ? '發佈時間' : '发布时间') : 'Launch date',
+      value: formatLaunchDate(spec.launch, lang),
+    },
+    {
+      label: chinese ? (traditional ? 'GPU 核心代號' : 'GPU 核心代号') : 'GPU die',
+      value: spec.die,
+    },
+    {
+      label: chinese ? 'CUDA 核心' : 'CUDA cores',
+      value: spec.cores.toLocaleString('en-US'),
+    },
+    {
+      label: chinese ? (traditional ? '顯存位寬' : '显存位宽') : 'Memory bus width',
+      value: `${spec.bus}-bit`,
+    },
+    {
+      label: chinese ? (traditional ? '整卡功耗（TDP）' : '整卡功耗（TDP）') : 'Board power (TDP)',
+      value: `${spec.tdp} W`,
+    },
+  ];
+}
 
 function memoryVerdictEn(vram: number): { tone: GpuCheckVerdict; verdict: string; checks: Array<{ label: string; value: string; verdict: GpuCheckVerdict }> } {
   if (vram >= STUDIO_RECOMMENDED_VRAM_GB) {
@@ -166,6 +220,7 @@ export function getGpuDetailContent(
   series?: SeriesRecord,
   featureMatrix?: Array<Record<string, string>>,
   all?: GpuRecord[],
+  specSources?: Record<string, string>,
 ): GpuDetailContent {
   const architecture = series?.architecture || 'NVIDIA architecture';
   const seriesName = series?.name || architecture;
@@ -178,13 +233,22 @@ export function getGpuDetailContent(
   const statusEn = gpu.dlss5_status === 'confirmed' ? 'Confirmed' : gpu.dlss5_status === 'no' ? 'Not supported in the current official scope' : 'Unconfirmed by NVIDIA';
   const statusCn = gpu.dlss5_status === 'confirmed' ? (isTraditional ? '已確認' : '已确认') : gpu.dlss5_status === 'no' ? (isTraditional ? '目前官方清單不支援' : '当前官方列表不支持') : (isTraditional ? '尚未獲 NVIDIA 確認' : 'NVIDIA 尚未确认');
   const status = isChinese ? statusCn : statusEn;
+  const spec = gpu.spec;
+  const specSourceUrl = (gpu.series && specSources && specSources[gpu.series]) || '';
+  const launchYear = spec ? spec.launch.slice(0, 4) : '';
 
-  // 同系列近鄰：先按顯存接近度排，取最多 4 個。
+  // 同系列近鄰：先按顯存接近度排，再看 CUDA 核心數接近度，取最多 4 個。
   const siblings = (all || [])
     .filter((entry) => entry.id !== gpu.id && entry.series === gpu.series)
-    .sort((a, b) => Math.abs(a.vram_gb - gpu.vram_gb) - Math.abs(b.vram_gb - gpu.vram_gb) || b.vram_gb - a.vram_gb)
+    .sort((a, b) => {
+      const vramGap = Math.abs(a.vram_gb - gpu.vram_gb) - Math.abs(b.vram_gb - gpu.vram_gb);
+      if (vramGap !== 0) return vramGap;
+      const aGap = spec && a.spec ? Math.abs(a.spec.cores - spec.cores) : Number.MAX_SAFE_INTEGER;
+      const bGap = spec && b.spec ? Math.abs(b.spec.cores - spec.cores) : Number.MAX_SAFE_INTEGER;
+      return aGap - bGap || b.vram_gb - a.vram_gb;
+    })
     .slice(0, 4)
-    .map((entry) => ({ id: entry.id as string, name: entry.name, vram_gb: entry.vram_gb, status: entry.dlss5_status }));
+    .map((entry) => ({ id: entry.id as string, name: entry.name, vram_gb: entry.vram_gb, status: entry.dlss5_status, spec: entry.spec }));
   const nearest = siblings[0];
 
   if (!isChinese) {
@@ -192,10 +256,18 @@ export function getGpuDetailContent(
     const featureRows = covered
       ? matrix.map((row) => ({ label: row.label, value: row[seriesKey] || 'not covered by this data set' }))
       : [{ label: 'Feature matrix', value: NOT_IN_MATRIX.en }];
+    const peerSpec = nearest?.spec;
+    const peerDetail = nearest
+      ? (peerSpec && spec
+        ? `The closest record in this series is ${nearest.name} (${nearest.vram_gb} GB). It launched on ${formatLaunchDate(peerSpec.launch, 'en')} and carries ${peerSpec.cores.toLocaleString('en-US')} CUDA cores at ${peerSpec.tdp} W, against ${formatLaunchDate(spec.launch, 'en')}, ${spec.cores.toLocaleString('en-US')} CUDA cores and ${spec.tdp} W for ${gpu.name}. Both share the same DLSS 5 status in this data set.`
+        : `The closest record in this series is ${nearest.name} (${nearest.vram_gb} GB). ${nearest.vram_gb === gpu.vram_gb ? `It carries the same ${gpu.vram_gb} GB of VRAM as ${gpu.name}` : `That is ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB ${nearest.vram_gb > gpu.vram_gb ? 'above' : 'below'} ${gpu.name}`}, and both share the same DLSS 5 status in this data set.`)
+      : 'This is the only model of its series in this data set.';
     return {
       eyebrow: 'GPU EVIDENCE DETAIL',
       title: `${gpu.name} DLSS 5 support and VRAM evidence`,
-      description: `${gpu.name}: ${status}, ${gpu.vram_gb} GB VRAM, ${architecture} architecture, local Studio readiness and source-linked evidence.`,
+      description: spec
+        ? `${gpu.name}: ${status}, ${gpu.vram_gb} GB VRAM, ${spec.cores.toLocaleString('en-US')} CUDA cores, ${spec.bus}-bit bus, launched ${launchYear}, ${architecture} architecture, local Studio readiness and source-linked evidence.`
+        : `${gpu.name}: ${status}, ${gpu.vram_gb} GB VRAM, ${architecture} architecture, local Studio readiness and source-linked evidence.`,
       status,
       statusHeading: 'Current DLSS 5 status',
       statusExplanation: gpu.dlss5_status === 'confirmed'
@@ -216,6 +288,18 @@ export function getGpuDetailContent(
         { label: 'Evidence', value: 'NVIDIA DLSS 5 launch article' },
         { label: 'Last verified', value: '2026-10-10' },
       ],
+      specHeading: `Hardware specification of ${gpu.name}`,
+      specRows: spec ? specRows(seriesName, spec, 'en') : [],
+      specParagraphs: spec
+        ? [
+          `These values come from the published ${seriesName} specification table, which aggregates NVIDIA’s own product pages and architecture whitepapers. They describe the card itself; the DLSS 5 status above rests on a different source.`,
+          'Launch date, die code, core count, bus width and board power are hardware facts. This page publishes no benchmark score and no ranking between models — more CUDA cores is not on its own a statement about DLSS 5 performance.',
+          `Vendor cards and laptop versions of ${gpu.name} can differ in clocks, memory capacity and power limit, so match the exact variant before you buy.`,
+        ]
+        : ['No per-model hardware record is attached to this page yet, so it publishes no specification row rather than guessing one.'],
+      specSourceLabel: 'Hardware specification source',
+      specSourceUrl,
+      specSourceNote: `“${seriesName}” specification table on Wikipedia, which cites NVIDIA’s product pages and architecture whitepapers. Retrieved 2026-10-10.`,
       evidenceHeading: 'What the source does and does not prove',
       evidenceParagraphs: [
         gpu.dlss5_status === 'confirmed'
@@ -248,17 +332,14 @@ export function getGpuDetailContent(
       peersHeading: `Nearest models in the same series`,
       peers: siblings,
       peersParagraphs: [
-        nearest
-          ? `The closest record in this series is ${nearest.name} (${nearest.vram_gb} GB). ${nearest.vram_gb === gpu.vram_gb ? `It carries the same ${gpu.vram_gb} GB of VRAM as ${gpu.name}` : `That is ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB ${nearest.vram_gb > gpu.vram_gb ? 'above' : 'below'} ${gpu.name}`}, and both share the same DLSS 5 status in this data set. We publish no performance ranking between them.`
-          : 'This is the only model of its series in this data set.',
+        `${peerDetail} We publish no performance benchmark and no ranking between them.`,
       ],
       nextHeading: 'Before you buy or upgrade',
       nextSteps: [
         `Confirm the exact ${gpu.name} variant and its VRAM capacity — vendor and laptop versions differ.`,
         'Open the linked source and check whether your target game and driver publish a compatible path.',
         'Treat “unconfirmed” as a prompt to wait for evidence; never infer support from a similar model.',
-      ],
-      faqHeading: 'GPU detail FAQ',
+      ],      faqHeading: 'GPU detail FAQ',
       faq: [
         { question: `Is ${gpu.name} confirmed for DLSS 5?`, answer: `${gpu.name} is recorded as “${status}” in this evidence set. The linked source and the status above are the basis for this page.` },
         { question: `Can ${gpu.name} run the local DLSS5 Studio workflow?`, answer: memory.tone === 'below' ? `No — ${gpu.vram_gb} GB is below our published 8 GB minimum. The online converter runs the same pipeline in the browser.` : `Yes for the published requirements: RTX 20 series or newer with ${gpu.vram_gb} GB of VRAM.${memory.tone === 'info' ? ` ${STUDIO_RECOMMENDED_VRAM_GB} GB is recommended for 1080p and 4K video.` : ''}` },
@@ -275,12 +356,26 @@ export function getGpuDetailContent(
   const featureRows = covered
     ? matrix.map((row) => ({ label: row.label, value: row[seriesKey] ? localizeFeatureValue(row[seriesKey], traditional) : (traditional ? '本資料集未收錄' : '本资料集未收录') }))
     : [{ label: traditional ? '特性矩陣' : '特性矩阵', value: traditional ? NOT_IN_MATRIX['zh-TW'] : NOT_IN_MATRIX['zh-CN'] }];
+  const peerSpec = nearest?.spec;
+  const peerDetailCn = nearest
+    ? (peerSpec && spec
+      ? (traditional
+        ? `本系列最接近的紀錄是 ${nearest.name}（${nearest.vram_gb} GB）：發佈於 ${formatLaunchDate(peerSpec.launch, 'zh-TW')}，有 ${peerSpec.cores.toLocaleString('en-US')} 個 CUDA 核心、整卡功耗 ${peerSpec.tdp} W；${gpu.name} 則是 ${formatLaunchDate(spec.launch, 'zh-TW')}、${spec.cores.toLocaleString('en-US')} 個 CUDA 核心、${spec.tdp} W。兩者在本地資料集中 DLSS 5 狀態相同。`
+        : `本系列最接近的记录是 ${nearest.name}（${nearest.vram_gb} GB）：发布于 ${formatLaunchDate(peerSpec.launch, 'zh-CN')}，有 ${peerSpec.cores.toLocaleString('en-US')} 个 CUDA 核心、整卡功耗 ${peerSpec.tdp} W；${gpu.name} 则是 ${formatLaunchDate(spec.launch, 'zh-CN')}、${spec.cores.toLocaleString('en-US')} 个 CUDA 核心、${spec.tdp} W。两者在本地资料集中 DLSS 5 状态相同。`)
+      : (traditional
+        ? `本系列最接近的紀錄是 ${nearest.name}（${nearest.vram_gb} GB）。${nearest.vram_gb === gpu.vram_gb ? `它的顯存與 ${gpu.name} 同為 ${gpu.vram_gb} GB` : `比 ${gpu.name} ${nearest.vram_gb > gpu.vram_gb ? '多' : '少'} ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB`}，兩者在本地資料集中 DLSS 5 狀態相同。`
+        : `本系列最接近的记录是 ${nearest.name}（${nearest.vram_gb} GB）。${nearest.vram_gb === gpu.vram_gb ? `它的显存与 ${gpu.name} 同为 ${gpu.vram_gb} GB` : `比 ${gpu.name} ${nearest.vram_gb > gpu.vram_gb ? '多' : '少'} ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB`}，两者在本地资料集中 DLSS 5 状态相同。`))
+    : (traditional ? '這是本資料集中該系列唯一的型號。' : '这是本资料集中该系列唯一的型号。');
   return {
     eyebrow: traditional ? 'GPU 證據詳情' : 'GPU 证据详情',
     title: traditional ? `${gpu.name} DLSS 5 支援與顯存證據` : `${gpu.name} DLSS 5 支持与显存证据`,
-    description: traditional
-      ? `${gpu.name}：${status}、${gpu.vram_gb} GB 顯存、${architecture} 架構，以及本機 Studio 適配結論與來源證據。`
-      : `${gpu.name}：${status}、${gpu.vram_gb} GB 显存、${architecture} 架构，以及本地 Studio 适配结论与来源证据。`,
+    description: spec
+      ? (traditional
+        ? `${gpu.name}：${status}、${gpu.vram_gb} GB 顯存、${spec.cores.toLocaleString('en-US')} 個 CUDA 核心、${spec.bus}-bit 位寬、${launchYear} 年發佈、${architecture} 架構，以及本機 Studio 適配結論與來源證據。`
+        : `${gpu.name}：${status}、${gpu.vram_gb} GB 显存、${spec.cores.toLocaleString('en-US')} 个 CUDA 核心、${spec.bus}-bit 位宽、${launchYear} 年发布、${architecture} 架构，以及本地 Studio 适配结论与来源证据。`)
+      : (traditional
+        ? `${gpu.name}：${status}、${gpu.vram_gb} GB 顯存、${architecture} 架構，以及本機 Studio 適配結論與來源證據。`
+        : `${gpu.name}：${status}、${gpu.vram_gb} GB 显存、${architecture} 架构，以及本地 Studio 适配结论与来源证据。`),
     status,
     statusHeading: traditional ? '目前 DLSS 5 狀態' : '当前 DLSS 5 状态',
     statusExplanation: gpu.dlss5_status === 'confirmed'
@@ -301,6 +396,26 @@ export function getGpuDetailContent(
       { label: traditional ? '證據' : '证据', value: 'NVIDIA DLSS 5 公告' },
       { label: traditional ? '核對日期' : '核对日期', value: '2026-10-10' },
     ],
+    specHeading: traditional ? `${gpu.name} 的硬體規格` : `${gpu.name} 的硬件规格`,
+    specRows: spec ? specRows(seriesName, spec, lang) : [],
+    specParagraphs: spec
+      ? (traditional
+        ? [
+          `這些數值取自公開的 ${seriesName} 規格表，該表彙總 NVIDIA 自己的產品頁與架構白皮書。它們描述的是顯卡本身；上方的 DLSS 5 狀態另有來源。`,
+          '發佈時間、核心代號、核心數、位寬與整卡功耗都是硬體事實。本頁不發佈跑分，也不在型號之間排名——CUDA 核心更多本身並不構成 DLSS 5 效能結論。',
+          `各廠商版本與筆電版本的 ${gpu.name} 在時脈、顯存容量與功耗限制上可能不同，購買前請核對具體版本。`,
+        ]
+        : [
+          `这些数值取自公开的 ${seriesName} 规格表，该表汇总 NVIDIA 自己的产品页与架构白皮书。它们描述的是显卡本身；上方的 DLSS 5 状态另有来源。`,
+          '发布时间、核心代号、核心数、位宽与整卡功耗都是硬件事实。本页不发布跑分，也不在型号之间排名——CUDA 核心更多本身并不构成 DLSS 5 性能结论。',
+          `各厂商版本与笔记本版本的 ${gpu.name} 在频率、显存容量与功耗限制上可能不同，购买前请核对具体版本。`,
+        ])
+      : [traditional ? '本頁目前沒有逐型號的硬體紀錄，因此不發布規格列，而不是先猜一個。' : '本页目前没有逐型号的硬件记录，因此不发布规格列，而不是先猜一个。'],
+    specSourceLabel: traditional ? '硬體規格來源' : '硬件规格来源',
+    specSourceUrl,
+    specSourceNote: traditional
+      ? `維基百科「${seriesName}」規格表，該表引用 NVIDIA 的產品頁與架構白皮書。讀取日期 2026-10-10。`
+      : `维基百科「${seriesName}」规格表，该表引用 NVIDIA 的产品页与架构白皮书。读取日期 2026-10-10。`,
     evidenceHeading: traditional ? '來源能證明什麼、不能證明什麼' : '来源能证明什么、不能证明什么',
     evidenceParagraphs: [
       gpu.dlss5_status === 'confirmed'
@@ -333,11 +448,7 @@ export function getGpuDetailContent(
     peersHeading: traditional ? '同系列最接近的型號' : '同系列最接近的型号',
     peers: siblings,
     peersParagraphs: [
-      nearest
-        ? (traditional
-          ? `本系列最接近的紀錄是 ${nearest.name}（${nearest.vram_gb} GB）。${nearest.vram_gb === gpu.vram_gb ? `它的顯存與 ${gpu.name} 同為 ${gpu.vram_gb} GB` : `比 ${gpu.name} ${nearest.vram_gb > gpu.vram_gb ? '多' : '少'} ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB`}，兩者在本地資料集中 DLSS 5 狀態相同。我們不公佈兩者之間的效能排名。`
-          : `本系列最接近的记录是 ${nearest.name}（${nearest.vram_gb} GB）。${nearest.vram_gb === gpu.vram_gb ? `它的显存与 ${gpu.name} 同为 ${gpu.vram_gb} GB` : `比 ${gpu.name} ${nearest.vram_gb > gpu.vram_gb ? '多' : '少'} ${Math.abs(nearest.vram_gb - gpu.vram_gb)} GB`}，两者在本地资料集中 DLSS 5 状态相同。我们不公布两者之间的性能排名。`)
-        : (traditional ? '這是本資料集中該系列唯一的型號。' : '这是本资料集中该系列唯一的型号。'),
+      `${peerDetailCn}${traditional ? '我們不公佈兩者之間的效能排名。' : '我们不公布两者之间的性能排名。'}`,
     ],
     nextHeading: traditional ? '購買或升級前' : '购买或升级前',
     nextSteps: [
