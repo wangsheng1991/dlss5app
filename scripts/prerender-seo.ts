@@ -1,12 +1,15 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import OpenCC from 'opencc-js';
+import { gpuData } from '../src/data';
 
 const root = resolve(new URL('..', import.meta.url).pathname);
 const dist = join(root, 'dist');
 const baseUrl = 'https://www.dlss5.app';
 const defaultOgImage = 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1600';
 const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
+const officialDlssSource = 'https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/';
+const gpuEntries = gpuData.gpus;
 
 type Lang = 'en' | 'zh-CN' | 'zh-TW';
 
@@ -33,10 +36,10 @@ const copy: Record<Lang, {
   sourceNote: string;
 }> = {
   en: {
-    title: 'DLSS 5 Supported Cards & GPU Compatibility Checker',
-    description: 'Free DLSS 5 GPU compatibility checker with an evidence-based RTX 50, RTX 40, RTX 30 and RTX 20 series matrix, technical guides and FAQ.',
-    h1: 'DLSS 5 Supported Cards & GPU Checker',
-    intro: 'Search your NVIDIA GeForce model to see the current DLSS 5 status, architecture, VRAM and the evidence behind each result.',
+    title: 'DLSS 5 GPU Evidence Checker | Sources, VRAM & Studio Readiness',
+    description: 'Check 31 NVIDIA GeForce RTX models with source-linked DLSS 5 status, VRAM notes and a separate DLSS 5 Studio readiness guide.',
+    h1: 'DLSS 5 GPU evidence checker — every model linked to a source',
+    intro: 'Search a GeForce model to see its DLSS 5 status, architecture, VRAM and the public evidence behind our conclusion.',
     checker: 'DLSS 5 supported cards by GPU series',
     matrix: 'DLSS 5, DLSS 4 and FSR 4 explained',
     faq: 'Frequently asked questions',
@@ -44,10 +47,10 @@ const copy: Record<Lang, {
     sourceNote: 'Independent reference. Hardware status is updated when NVIDIA publishes verifiable information; this site is not affiliated with NVIDIA.',
   },
   'zh-CN': {
-    title: 'DLSS 5 支持的显卡与 GPU 兼容性检测器',
-    description: '免费的 DLSS 5 显卡兼容性检测器，提供 RTX 50、RTX 40、RTX 30 和 RTX 20 系列的证据、技术指南与常见问题。',
-    h1: 'DLSS 5 支持的显卡与 GPU 检测器',
-    intro: '输入 NVIDIA GeForce 型号，查看当前 DLSS 5 状态、架构、显存，以及每个结论对应的证据。',
+    title: 'DLSS 5 显卡证据检测器｜来源、显存与 Studio 运行条件',
+    description: '查询 31 款 NVIDIA GeForce RTX 显卡的 DLSS 5 状态、显存说明、来源链接，以及 DLSS 5 Studio 运行条件。',
+    h1: 'DLSS 5 显卡证据检测器：每个型号都有来源',
+    intro: '输入 GeForce 型号，查看 DLSS 5 状态、架构、显存，以及我们引用的公开证据。',
     checker: '按 GPU 系列查看 DLSS 5 支持情况',
     matrix: 'DLSS 5、DLSS 4 与 FSR 4 说明',
     faq: '常见问题',
@@ -55,10 +58,10 @@ const copy: Record<Lang, {
     sourceNote: '独立资料页。NVIDIA 发布可核实信息后我们会更新硬件状态；本站与 NVIDIA 没有隶属关系。',
   },
   'zh-TW': {
-    title: 'DLSS 5 支援顯示卡與 GPU 相容性檢查器',
-    description: '免費的 DLSS 5 顯示卡相容性檢查器，提供 RTX 50、RTX 40、RTX 30 與 RTX 20 系列的證據、技術指南與常見問題。',
-    h1: 'DLSS 5 支援顯示卡與 GPU 檢查器',
-    intro: '輸入 NVIDIA GeForce 型號，查看目前 DLSS 5 狀態、架構、顯示記憶體，以及每個結論的證據。',
+    title: 'DLSS 5 顯示卡證據檢查器｜來源、顯存與 Studio 執行條件',
+    description: '查詢 31 款 NVIDIA GeForce RTX 顯示卡的 DLSS 5 狀態、顯存說明、來源連結，以及 DLSS 5 Studio 執行條件。',
+    h1: 'DLSS 5 顯示卡證據檢查器：每個型號都有來源',
+    intro: '輸入 GeForce 型號，查看 DLSS 5 狀態、架構、顯示記憶體，以及我們引用的公開證據。',
     checker: '按 GPU 系列查看 DLSS 5 支援情況',
     matrix: 'DLSS 5、DLSS 4 與 FSR 4 說明',
     faq: '常見問題',
@@ -144,16 +147,58 @@ function markdownToHtml(markdown: string): string {
   return html.join('\n');
 }
 
+function localizedStatus(lang: Lang, status: string): string {
+  if (lang === 'en') return status;
+  if (status === 'confirmed') return lang === 'zh-TW' ? '已確認' : '已确认';
+  if (status === 'unconfirmed') return lang === 'zh-TW' ? '尚未獲 NVIDIA 確認' : 'NVIDIA 尚未确认';
+  return lang === 'zh-TW' ? '目前官方清單不支援' : '当前官方列表不支持';
+}
+
+function gpuRows(lang: Lang): string {
+  return gpuEntries.map(gpu => `<tr><th scope="row"><a href="/${lang}/gpu/${gpu.id}">${escapeHtml(gpu.name)}</a></th><td>${escapeHtml(String(gpu.vram_gb))} GB</td><td>${escapeHtml(gpuData.gpu_series.find(series => series.id === gpu.series)?.architecture || '')}</td><td>${escapeHtml(localizedStatus(lang, gpu.dlss5_status))}</td><td>${escapeHtml(gpu.note)}</td><td><a href="${officialDlssSource}">${lang === 'en' ? 'NVIDIA source' : lang === 'zh-TW' ? 'NVIDIA 來源' : 'NVIDIA 来源'}</a></td></tr>`).join('');
+}
+
 function homeBody(lang: Lang): string {
   const c = copy[lang];
   const questions = faq[lang];
-  const rows = gpuSeries.map(([series, architecture, status]) => {
-    const translatedStatus = lang === 'en' ? status : status === 'Confirmed' ? (lang === 'zh-CN' ? '已确认' : '已確認') : status === 'Not confirmed by NVIDIA' ? (lang === 'zh-CN' ? 'NVIDIA 尚未确认' : 'NVIDIA 尚未確認') : (lang === 'zh-CN' ? '当前官方列表不支持' : '目前官方清單不支援');
-    return `<tr><th scope="row">${escapeHtml(lang === 'en' ? series : series.replace('RTX ', 'GeForce RTX '))}</th><td>${escapeHtml(architecture)}</td><td>${escapeHtml(translatedStatus)}</td></tr>`;
-  }).join('');
   const questionsHtml = questions.map(([q, a]) => `<section><h3>${escapeHtml(q)}</h3><p>${escapeHtml(a)}</p></section>`).join('');
   const isEnglish = lang === 'en';
-  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'FREE GPU COMPATIBILITY CHECKER' : '免费 GPU 兼容性检测器'}</p><h1>${escapeHtml(c.h1)}</h1><p class="lede">${escapeHtml(c.intro)}</p><form action="/${lang}" method="get"><label for="gpu-query">${isEnglish ? 'GPU model' : 'GPU 型号'}</label><input id="gpu-query" name="gpu" placeholder="RTX 5090" /><button type="submit">${isEnglish ? 'Check compatibility' : '检查兼容性'}</button></form></header><section><h2>${escapeHtml(c.checker)}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${escapeHtml(c.sourceNote)}</p><p><a href="/${lang}/supported-cards">${isEnglish ? 'Open the full supported-cards matrix →' : '查看完整的显卡支持矩阵 →'}</a></p></section><section><h2>${escapeHtml(c.matrix)}</h2><p>${isEnglish ? 'Compare the neural rendering, frame generation and super resolution paths across NVIDIA GPU generations before you upgrade.' : '在升级前比较不同 NVIDIA GPU 世代的神经渲染、帧生成与超分辨率路径。'}</p><p><a href="https://www.nvidia.com/en-us/geforce/technologies/dlss/">${isEnglish ? 'Read NVIDIA’s official DLSS information' : '阅读 NVIDIA 官方 DLSS 信息'}</a> · <a href="https://dlss5nvidia.com">${isEnglish ? 'Try the free visual converter' : '试用免费的视觉转换工具'}</a></p></section><section><h2>${escapeHtml(c.faq)}</h2>${questionsHtml}</section><section><h2>${escapeHtml(c.blog)}</h2><p><a href="/${lang}/blog">${isEnglish ? 'Browse all technical guides and comparisons →' : '浏览全部技术指南与对比文章 →'}</a></p></section></main>`;
+  const isTraditional = lang === 'zh-TW';
+  const tableTitle = isEnglish ? `${gpuEntries.length} GeForce RTX models with source-linked status` : isTraditional ? `${gpuEntries.length} 款 GeForce RTX 型號與來源狀態` : `${gpuEntries.length} 款 GeForce RTX 型号与来源状态`;
+  const tableIntro = isEnglish ? 'The model-level data is intentionally visible in the HTML: VRAM, architecture, status, notes and the NVIDIA source used for our evidence boundary.' : isTraditional ? '型號級資料直接呈現在頁面中：顯存、架構、狀態、備註，以及我們用來劃定證據範圍的 NVIDIA 來源。' : '型号级数据直接呈现在页面中：显存、架构、状态、备注，以及我们用来划定证据范围的 NVIDIA 来源。';
+  const headers = isEnglish ? ['GPU model', 'VRAM', 'Architecture', 'DLSS 5 status', 'Note', 'Evidence'] : isTraditional ? ['顯示卡型號', '顯存', '架構', 'DLSS 5 狀態', '備註', '證據'] : ['显卡型号', '显存', '架构', 'DLSS 5 状态', '备注', '证据'];
+  const seriesLinks = gpuData.gpu_series.map(series => `<a href="/${lang}/supported-cards#${series.id}">${escapeHtml(series.name)}</a>`).join(' · ');
+  const studioTitle = isEnglish ? 'DLSS 5 Studio: the local software track' : isTraditional ? 'DLSS 5 Studio：本機軟體路線' : 'DLSS 5 Studio：本地软件路线';
+  const studioCopy = isEnglish ? 'Game-internal DLSS 5 support and our local Studio software are separate questions. Studio is designed for Windows 10 1909+/Windows 11 with RTX 20-series or newer; NVENC hardware encoding requires driver 610+, and the published 4090 measurement is 720p to 2560×1440 H.264 in 87.4 seconds (2.43 s/frame).' : isTraditional ? '遊戲內 DLSS 5 支援與本機 Studio 軟體是兩條獨立判定軸。Studio 針對 Windows 10 1909+/Windows 11 與 RTX 20 系列以上設計；NVENC 硬體編碼需要 610+ 驅動程式，已公開的 4090 實測為 720p 轉 2560×1440 H.264，用時 87.4 秒（2.43 秒/幀）。' : '游戏内 DLSS 5 支持与本地 Studio 软件是两条独立判断轴。Studio 面向 Windows 10 1909+/Windows 11 与 RTX 20 系列以上设计；NVENC 硬件编码需要 610+ 驱动，已公开的 4090 实测为 720p 转 2560×1440 H.264，用时 87.4 秒（2.43 秒/帧）。';
+  const methodTitle = isEnglish ? 'How to read this checker' : isTraditional ? '如何閱讀這份檢查器' : '如何阅读这份检测器';
+  const methodCopy = isEnglish ? 'Official means NVIDIA has published the scope. Unconfirmed means we found no official model statement. The table does not turn community claims into a support guarantee; recheck the linked source before buying or upgrading.' : isTraditional ? '「官方確認」代表 NVIDIA 已公開支援範圍；「尚未確認」代表我們沒有找到官方型號聲明。表格不會把社群說法變成支援保證；購買或升級前請重新核對連結來源。' : '“官方确认”代表 NVIDIA 已公开支持范围；“尚未确认”代表我们没有找到官方型号声明。表格不会把社区说法变成支持保证；购买或升级前请重新核对链接来源。';
+  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'EVIDENCE-FIRST GPU CHECKER' : isTraditional ? '以證據為先的 GPU 檢查器' : '以证据为先的 GPU 检测器'}</p><h1>${escapeHtml(c.h1)}</h1><p class="lede">${escapeHtml(c.intro)}</p><form action="/${lang}" method="get"><label for="gpu-query">${isEnglish ? 'GPU model' : isTraditional ? '顯示卡型號' : '显卡型号'}</label><input id="gpu-query" name="gpu" placeholder="RTX 5090" /><button type="submit">${isEnglish ? 'Check compatibility' : isTraditional ? '檢查相容性' : '检查兼容性'}</button></form></header><section><h2>${escapeHtml(tableTitle)}</h2><p>${tableIntro}</p><table><thead><tr>${headers.map(header => `<th>${header}</th>`).join('')}</tr></thead><tbody>${gpuRows(lang)}</tbody></table><p class="source-note">${escapeHtml(c.sourceNote)} <a href="/${lang}/supported-cards">${isEnglish ? 'Open the methodology and FAQ →' : isTraditional ? '查看方法與常見問題 →' : '查看方法与常见问题 →'}</a></p><p>${seriesLinks}</p></section><section><h2>${studioTitle}</h2><p>${studioCopy}</p><p><a href="/${lang}/studio">${isEnglish ? 'See DLSS 5 Studio requirements and measurements →' : isTraditional ? '查看 DLSS 5 Studio 要求與實測 →' : '查看 DLSS 5 Studio 要求与实测 →'}</a> · <a href="https://www.dlss5nvidia.com/download">${isEnglish ? 'Open the download page' : isTraditional ? '前往下載頁' : '前往下载页'}</a></p></section><section><h2>${methodTitle}</h2><p>${methodCopy}</p><p><a href="${officialDlssSource}">${isEnglish ? 'Read NVIDIA’s official DLSS 5 announcement' : isTraditional ? '閱讀 NVIDIA 官方 DLSS 5 公告' : '阅读 NVIDIA 官方 DLSS 5 公告'}</a> · <a href="/${lang}/blog">${isEnglish ? 'Browse technical guides →' : isTraditional ? '瀏覽技術指南 →' : '浏览技术指南 →'}</a></p></section><section><h2>${escapeHtml(c.faq)}</h2>${questionsHtml}</section><section><h2>${escapeHtml(c.blog)}</h2><p><a href="/${lang}/blog">${isEnglish ? 'Browse all technical guides and comparisons →' : isTraditional ? '瀏覽全部技術指南與比較文章 →' : '浏览全部技术指南与对比文章 →'}</a></p></section></main>`;
+}
+
+function gpuDetailBody(lang: Lang, id: string): string {
+  const gpu = gpuEntries.find(entry => entry.id === id);
+  if (!gpu) return `<main class="seo-shell"><h1>Not found</h1><p><a href="/${lang}">Back to the checker</a></p></main>`;
+  const series = gpuData.gpu_series.find(entry => entry.id === gpu.series);
+  const isEnglish = lang === 'en';
+  const isTraditional = lang === 'zh-TW';
+  const title = isEnglish ? `${gpu.name} DLSS 5 support and VRAM evidence` : isTraditional ? `${gpu.name} DLSS 5 支援與顯存證據` : `${gpu.name} DLSS 5 支持与显存证据`;
+  const status = localizedStatus(lang, gpu.dlss5_status);
+  const sourceLabel = isEnglish ? 'Evidence source' : isTraditional ? '證據來源' : '证据来源';
+  const noteLabel = isEnglish ? 'Model note' : isTraditional ? '型號備註' : '型号备注';
+  const back = isEnglish ? 'Back to all GPU models' : isTraditional ? '返回全部顯示卡型號' : '返回全部显卡型号';
+  const disclaimer = isEnglish ? 'This is an independent evidence page, not an NVIDIA compatibility guarantee.' : isTraditional ? '這是獨立證據頁，不是 NVIDIA 的相容性保證。' : '这是独立证据页，不是 NVIDIA 的兼容性保证。';
+  return `<main class="seo-shell"><header><p class="eyebrow">${isEnglish ? 'GPU EVIDENCE DETAIL' : isTraditional ? 'GPU 證據詳情' : 'GPU 证据详情'}</p><h1>${escapeHtml(title)}</h1><p class="lede">${escapeHtml(gpu.name)} · ${escapeHtml(series?.architecture || '')} · ${escapeHtml(String(gpu.vram_gb))} GB VRAM</p></header><section><h2>${isEnglish ? 'Current DLSS 5 status' : isTraditional ? '目前 DLSS 5 狀態' : '当前 DLSS 5 状态'}</h2><p><strong>${escapeHtml(status)}</strong></p><p>${escapeHtml(noteLabel)}：${escapeHtml(gpu.note)}</p><p>${escapeHtml(sourceLabel)}：<a href="${officialDlssSource}">${officialDlssSource}</a></p><p class="source-note">${disclaimer}</p></section><p><a href="/${lang}">← ${back}</a> · <a href="/${lang}/studio">DLSS 5 Studio</a> · <a href="/${lang}/blog">${isEnglish ? 'Technical guides' : isTraditional ? '技術指南' : '技术指南'}</a></p></main>`;
+}
+
+function studioBody(lang: Lang): string {
+  const isEnglish = lang === 'en';
+  const isTraditional = lang === 'zh-TW';
+  const title = isEnglish ? 'DLSS 5 Studio local software requirements and measured performance' : isTraditional ? 'DLSS 5 Studio 本機軟體要求與實測效能' : 'DLSS 5 Studio 本地软件要求与实测性能';
+  const intro = isEnglish ? 'A separate local-software reference for the DLSS 5 Studio / Visual Enhancer workflow. It is not the same as game-internal DLSS 5 support.' : isTraditional ? '這是 DLSS 5 Studio／Visual Enhancer 工作流程的獨立本機軟體資料頁，與遊戲內 DLSS 5 支援是不同判定。' : '这是 DLSS 5 Studio／Visual Enhancer 工作流的独立本地软件资料页，与游戏内 DLSS 5 支持是不同判断。';
+  const rows = isEnglish ? [['OS', 'Windows 10 1909+ or Windows 11'], ['GPU', 'RTX 20 series or newer for the published Studio path'], ['Memory / disk', '8–16 GB RAM and about 3 GB free disk space'], ['NVENC', 'Hardware video encoding requires driver 610+; older drivers can fall back to software encoding'], ['Measured run', 'RTX 4090 24 GB · driver 591.86 · 720p → 2560×1440 H.264 · 87.4 s (2.43 s/frame)']] : isTraditional ? [['作業系統', 'Windows 10 1909+ 或 Windows 11'], ['GPU', '已公開的 Studio 路徑支援 RTX 20 系列以上'], ['記憶體／磁碟', '8–16 GB 記憶體，約 3 GB 可用磁碟空間'], ['NVENC', '硬體影片編碼需要 610+ 驅動程式；較舊驅動可退回軟體編碼'], ['實測', 'RTX 4090 24 GB · 驅動程式 591.86 · 720p → 2560×1440 H.264 · 87.4 秒（2.43 秒／幀）']] : [['操作系统', 'Windows 10 1909+ 或 Windows 11'], ['GPU', '已公开的 Studio 路径支持 RTX 20 系列以上'], ['内存／磁盘', '8–16 GB 内存，约 3 GB 可用磁盘空间'], ['NVENC', '硬件视频编码需要 610+ 驱动；较旧驱动可回退软件编码'], ['实测', 'RTX 4090 24 GB · 驱动 591.86 · 720p → 2560×1440 H.264 · 87.4 秒（2.43 秒/帧）']];
+  const method = isEnglish ? 'The 87.4-second result is one measured machine/configuration, not a real-time guarantee. Add a second 12 GB card benchmark before making broader performance claims.' : isTraditional ? '87.4 秒是單一機器與設定的實測，不代表即時處理保證。在擴大效能口徑前，還需要補一張 12 GB 顯示卡的實測。' : '87.4 秒是单一机器与设置的实测，不代表实时处理保证。在扩大性能口径前，还需要补一张 12 GB 显卡的实测。';
+  const back = isEnglish ? 'Back to the GPU evidence checker' : isTraditional ? '返回 GPU 證據檢查器' : '返回 GPU 证据检测器';
+  return `<main class="seo-shell"><header><p class="eyebrow">DLSS 5 STUDIO · LOCAL SOFTWARE</p><h1>${title}</h1><p class="lede">${intro}</p></header><section><h2>${isEnglish ? 'Requirements and measured result' : isTraditional ? '要求與實測結果' : '要求与实测结果'}</h2><table><thead><tr><th>${isEnglish ? 'Item' : isTraditional ? '項目' : '项目'}</th><th>${isEnglish ? 'Published or measured detail' : isTraditional ? '公開或實測內容' : '公开或实测内容'}</th></tr></thead><tbody>${rows.map(([name, value]) => `<tr><th scope="row">${name}</th><td>${value}</td></tr>`).join('')}</tbody></table><p class="source-note">${method}</p></section><section><h2>${isEnglish ? 'Keep the two support questions separate' : isTraditional ? '請分開兩條支援判定' : '请分开两条支持判断'}</h2><p>${isEnglish ? 'The GPU table answers whether NVIDIA has published game-internal DLSS 5 scope. This page answers whether the local Studio workflow can be installed and measured on your machine. One does not prove the other.' : isTraditional ? 'GPU 表格回答 NVIDIA 是否公開遊戲內 DLSS 5 範圍；本頁回答本機 Studio 工作流程能否在你的電腦安裝並實測。兩者不能互相推導。' : 'GPU 表格回答 NVIDIA 是否公开游戏内 DLSS 5 范围；本页回答本地 Studio 工作流能否在你的电脑安装并实测。两者不能互相推导。'}</p></section><p><a href="/${lang}">← ${back}</a> · <a href="https://www.dlss5nvidia.com/download">${isEnglish ? 'Open the Studio download page' : isTraditional ? '前往 Studio 下載頁' : '前往 Studio 下载页'}</a></p></main>`;
 }
 
 function supportedCardsBody(lang: Lang): string {
@@ -281,6 +326,16 @@ for (const lang of Object.keys(copy) as Lang[]) {
     ],
   };
   writeRoute(homeRoute, documentFor(homeRoute, lang, c.title, c.description, homeBody(lang), 'website', homeJsonLd));
+  const studioRoute = `${homeRoute}/studio`;
+  const studioTitle = lang === 'en' ? 'DLSS 5 Studio local software requirements and measured performance | Neural Architect' : lang === 'zh-TW' ? 'DLSS 5 Studio 本機軟體要求與實測效能 | Neural Architect' : 'DLSS 5 Studio 本地软件要求与实测性能 | Neural Architect';
+  const studioDescription = lang === 'en' ? 'DLSS 5 Studio local software requirements, RTX and Windows compatibility, NVENC driver notes and a measured RTX 4090 workflow.' : lang === 'zh-TW' ? 'DLSS 5 Studio 本機軟體要求、RTX 與 Windows 相容性、NVENC 驅動程式說明，以及 RTX 4090 實測工作流程。' : 'DLSS 5 Studio 本地软件要求、RTX 与 Windows 兼容性、NVENC 驱动说明，以及 RTX 4090 实测工作流。';
+  writeRoute(studioRoute, documentFor(studioRoute, lang, studioTitle, studioDescription, studioBody(lang), 'website', { '@context': 'https://schema.org', '@type': 'WebPage', name: studioTitle, description: studioDescription, url: `${baseUrl}${studioRoute}` }));
+  for (const gpu of gpuEntries) {
+    const gpuRoute = `${homeRoute}/gpu/${gpu.id}`;
+    const gpuTitle = lang === 'en' ? `${gpu.name} DLSS 5 support and VRAM evidence | Neural Architect` : lang === 'zh-TW' ? `${gpu.name} DLSS 5 支援與顯存證據 | Neural Architect` : `${gpu.name} DLSS 5 支持与显存证据 | Neural Architect`;
+    const gpuDescription = lang === 'en' ? `${gpu.name}: ${localizedStatus(lang, gpu.dlss5_status)}, ${gpu.vram_gb} GB VRAM, architecture and source-linked evidence.` : lang === 'zh-TW' ? `${gpu.name}：${localizedStatus(lang, gpu.dlss5_status)}、${gpu.vram_gb} GB 顯存、架構與來源證據。` : `${gpu.name}：${localizedStatus(lang, gpu.dlss5_status)}、${gpu.vram_gb} GB 显存、架构与来源证据。`;
+    writeRoute(gpuRoute, documentFor(gpuRoute, lang, gpuTitle, gpuDescription, gpuDetailBody(lang, gpu.id), 'article', { '@context': 'https://schema.org', '@type': 'TechArticle', headline: gpuTitle, description: gpuDescription, author: { '@type': 'Organization', name: 'Neural Architect', url: baseUrl }, mainEntityOfPage: `${baseUrl}${gpuRoute}` }));
+  }
   const supportedCardsRoute = `${homeRoute}/supported-cards`;
   const supportedCardsDescription = lang === 'en'
     ? 'Evidence-based DLSS 5 GPU compatibility matrix by series, architecture and official NVIDIA sources, with an FAQ for upgrade decisions.'
@@ -308,7 +363,7 @@ writeRoute('/', documentFor('/', 'en', rootCopy.title, rootCopy.description, hom
 
 function sitemapXml(): string {
   const date = '2026-10-10';
-  const suffixes = ['', '/supported-cards', '/blog', ...articleSlugs.map(slug => `/blog/${slug}`)];
+  const suffixes = ['', '/studio', '/supported-cards', '/blog', ...articleSlugs.map(slug => `/blog/${slug}`), ...gpuEntries.map(gpu => `/gpu/${gpu.id}`)];
   const escapeXml = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
   const urls: string[] = [];
   for (const suffix of suffixes) {

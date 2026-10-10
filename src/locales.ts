@@ -7,10 +7,10 @@ export const resources = {
         link: "Read Full Story"
       },
       hero: {
-        badge: "Neural Rendering Evolution",
-        title1: "DLSS 5 Supported",
-        title2: "Cards & GPU Checker",
-        desc: "Instantly verify if your hardware architecture is ready for NVIDIA's next-generation Neural Texture Reconstruction and Frame Synthesis 3.0.",
+        badge: "Evidence-first GPU checker",
+        title1: "DLSS 5 GPU evidence",
+        title2: "with a source for every model",
+        desc: "Search 31 GeForce RTX models for VRAM, architecture, status and the public evidence behind each conclusion.",
         placeholder: "Enter GPU model (e.g. RTX 5090)",
         btn: "CHECK COMPATIBILITY",
         notFound: "GPU Not Found",
@@ -87,10 +87,10 @@ export const resources = {
         link: "阅读全文"
       },
       hero: {
-        badge: "NVIDIA DLSS 神经渲染的演进",
-        title1: "DLSS 5 显卡支持",
-        title2: "与 GeForce GPU 检测",
-        desc: "一键验证您的硬件架构，确认是否支持 NVIDIA 新一代 DLSS 5 神经纹理重建与帧生成 3.0 技术。",
+        badge: "以证据为先的 GPU 检测",
+        title1: "DLSS 5 显卡证据",
+        title2: "每个型号都有来源",
+        desc: "查询 31 款 GeForce RTX 显卡的显存、架构、状态，以及每个结论背后的公开证据。",
         placeholder: "输入 GPU 型号 (例如: RTX 5090)",
         btn: "检查 DLSS 5 兼容性",
         notFound: "未找到匹配的 GPU",
@@ -167,10 +167,10 @@ export const resources = {
         link: "閱讀全文"
       },
       hero: {
-        badge: "神經渲染的演進",
-        title1: "DLSS 5 顯示卡支援",
-        title2: "與 GPU 相容性檢測",
-        desc: "一鍵驗證您的硬體架構，確認是否支援 NVIDIA 新一代神經紋理重建與影格生成 3.0 技術。",
+        badge: "以證據為先的 GPU 檢查",
+        title1: "DLSS 5 顯示卡證據",
+        title2: "每個型號都有來源",
+        desc: "查詢 31 款 GeForce RTX 顯示卡的顯存、架構、狀態，以及每個結論背後的公開證據。",
         placeholder: "輸入 GPU 型號 (例如: RTX 5090)",
         btn: "檢查相容性",
         notFound: "找不到匹配的 GPU",

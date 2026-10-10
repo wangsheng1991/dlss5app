@@ -12,23 +12,25 @@ export default function Home() {
   const { t } = useTranslation();
   const { lang } = useParams<{ lang: string }>();
   const currentLang = lang || 'en';
+  const pageTitle = currentLang === 'zh-TW' ? 'DLSS 5 顯示卡證據檢查器｜來源、顯存與 Studio 執行條件' : currentLang === 'zh-CN' ? 'DLSS 5 显卡证据检测器｜来源、显存与 Studio 运行条件' : 'DLSS 5 GPU Evidence Checker | Sources, VRAM & Studio Readiness';
+  const pageDescription = currentLang === 'zh-TW' ? '查詢 31 款 NVIDIA GeForce RTX 顯示卡的 DLSS 5 狀態、顯存說明、來源連結，以及 DLSS 5 Studio 執行條件。' : currentLang === 'zh-CN' ? '查询 31 款 NVIDIA GeForce RTX 显卡的 DLSS 5 状态、显存说明、来源链接，以及 DLSS 5 Studio 运行条件。' : 'Check 31 NVIDIA GeForce RTX models with source-linked DLSS 5 status, VRAM notes and a separate DLSS 5 Studio readiness guide.';
   return (
     <main className="pt-16">
       <Helmet>
-        <title>DLSS 5 GPU Checker & Feature Matrix | Neural Architect</title>
-        <meta name="description" content="What GPUs support DLSS 5? RTX 5090, 5080, and 5070 Ti confirmed. Check the full list of DLSS 5 supported cards and see if your RTX 40-series made the cut." />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
         <link rel="canonical" href={`https://www.dlss5.app/${currentLang}`} />
         
         {/* Open Graph */}
-        <meta property="og:title" content="DLSS 5 GPU Checker & Feature Matrix | Neural Architect" />
-        <meta property="og:description" content="What GPUs support DLSS 5? RTX 5090, 5080, and 5070 Ti confirmed. Check the full list of DLSS 5 supported cards and see if your RTX 40-series made the cut." />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://www.dlss5.app/${currentLang}`} />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="DLSS 5 GPU Checker & Feature Matrix | Neural Architect" />
-        <meta name="twitter:description" content="What GPUs support DLSS 5? RTX 5090, 5080, and 5070 Ti confirmed. Check the full list of DLSS 5 supported cards and see if your RTX 40-series made the cut." />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
         
         {/* JSON-LD Structured Data */}
         <script type="application/ld+json">

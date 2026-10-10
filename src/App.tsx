@@ -12,6 +12,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import Home from './pages/Home';
 import SupportedCards from './pages/SupportedCards';
+import GpuDetail from './pages/GpuDetail';
+import Studio from './pages/Studio';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 
@@ -22,6 +24,8 @@ export default function App() {
         <Routes>
           <Route path="/:lang" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="studio" element={<Studio />} />
+            <Route path="gpu/:id" element={<GpuDetail />} />
             <Route path="supported-cards" element={<SupportedCards />} />
             <Route path="blog" element={<BlogList />} />
             <Route path="blog/:slug" element={<BlogPost />} />
