@@ -36,14 +36,38 @@ export default function Home() {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "Neural Architect",
-            "url": "https://www.dlss5.app/",
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://www.dlss5.app/?q={search_term_string}",
-              "query-input": "required name=search_term_string"
-            }
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": "https://www.dlss5nvidia.com/#organization",
+                "name": "DLSS 5 NVIDIA Independent Showcase",
+                "url": "https://www.dlss5nvidia.com/",
+                "description": "Independent, non-official AI image upscaling and neural super-resolution showcase.",
+                "sameAs": ["https://www.dlss5nvidia.com/", "https://www.dlss5.app/"]
+              },
+              {
+                "@type": "WebSite",
+                "@id": "https://www.dlss5.app/#website",
+                "name": "Neural Architect",
+                "url": "https://www.dlss5.app/",
+                "publisher": { "@id": "https://www.dlss5nvidia.com/#organization" },
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://www.dlss5.app/?q={search_term_string}",
+                  "query-input": "required name=search_term_string"
+                }
+              },
+              {
+                "@type": "WebApplication",
+                "@id": "https://www.dlss5.app/#application",
+                "name": pageTitle,
+                "applicationCategory": "UtilitiesApplication",
+                "operatingSystem": "Web",
+                "isAccessibleForFree": true,
+                "url": `https://www.dlss5.app/${currentLang}`,
+                "publisher": { "@id": "https://www.dlss5nvidia.com/#organization" }
+              }
+            ]
           })}
         </script>
       </Helmet>

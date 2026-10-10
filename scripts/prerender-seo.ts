@@ -11,6 +11,14 @@ const defaultOgImage = 'https://images.unsplash.com/photo-1620641788421-7a1c342e
 const toTraditionalChinese = OpenCC.Converter({ from: 'cn', to: 'tw' });
 const officialDlssSource = 'https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/';
 const gpuEntries = gpuData.gpus;
+const brandOrganization = {
+  '@type': 'Organization',
+  '@id': 'https://www.dlss5nvidia.com/#organization',
+  name: 'DLSS 5 NVIDIA Independent Showcase',
+  url: 'https://www.dlss5nvidia.com/',
+  description: 'Independent, non-official AI image upscaling and neural super-resolution showcase.',
+  sameAs: ['https://www.dlss5nvidia.com/', 'https://www.dlss5.app/'],
+};
 
 type Lang = 'en' | 'zh-CN' | 'zh-TW';
 
@@ -184,7 +192,15 @@ function gpuDetailBody(lang: Lang, id: string): string {
   const paragraphs = (values: string[]) => values.map(value => `<p>${escapeHtml(value)}</p>`).join('');
   const steps = copy.nextSteps.map(step => `<li>${escapeHtml(step)}</li>`).join('');
   const faq = copy.faq.map(item => `<div><h3>${escapeHtml(item.question)}</h3><p>${escapeHtml(item.answer)}</p></div>`).join('');
-  return `<main class="seo-shell"><header><p class="eyebrow">${escapeHtml(copy.eyebrow)}</p><h1>${escapeHtml(copy.title)}</h1><p class="lede">${escapeHtml(gpu.name)} · ${escapeHtml(series?.architecture || '')} · ${escapeHtml(String(gpu.vram_gb))} GB VRAM</p></header><section><h2>${escapeHtml(copy.statusHeading)}</h2><p><strong>${escapeHtml(copy.status)}</strong></p><p>${escapeHtml(copy.modelNoteLabel)}：${escapeHtml(gpu.note)}</p><p>${escapeHtml(copy.sourceLabel)}：<a href="${officialDlssSource}">${officialDlssSource}</a></p><p>${escapeHtml(copy.statusExplanation)}</p><p class="source-note">${escapeHtml(copy.disclaimer)}</p></section><section><h2>${escapeHtml(copy.evidenceHeading)}</h2>${paragraphs(copy.evidenceParagraphs)}</section><section><h2>${escapeHtml(copy.hardwareHeading)}</h2>${paragraphs(copy.hardwareParagraphs)}</section><section><h2>${escapeHtml(copy.studioHeading)}</h2>${paragraphs(copy.studioParagraphs)}</section><section><h2>${escapeHtml(copy.nextHeading)}</h2><ol>${steps}</ol></section><section><h2>${escapeHtml(copy.faqHeading)}</h2>${faq}</section><p><a href="/${lang}">← ${escapeHtml(copy.back)}</a> · <a href="/${lang}/studio">${escapeHtml(copy.studioLink)}</a> · <a href="/${lang}/blog">${escapeHtml(copy.guidesLink)}</a></p></main>`;
+  const isTraditional = lang === 'zh-TW';
+  const isChinese = lang !== 'en';
+  const toolHref = gpu.series === 'rtx50' ? '/game-character-style' : gpu.series === 'rtx40' ? '/video-upscaler' : '/image-quality-enhancer';
+  const toolLabel = gpu.series === 'rtx50'
+    ? (isChinese ? (isTraditional ? '在 DLSS5NVIDIA 試用人物風格轉換 →' : '在 DLSS5NVIDIA 试用人物风格转换 →') : 'Try character style conversion on DLSS5NVIDIA →')
+    : gpu.series === 'rtx40'
+      ? (isChinese ? (isTraditional ? '在 DLSS5NVIDIA 查看影片增強工作流程 →' : '在 DLSS5NVIDIA 查看视频增强工作流 →') : 'Open the video enhancement workflow on DLSS5NVIDIA →')
+      : (isChinese ? (isTraditional ? '在 DLSS5NVIDIA 開啟影像品質增強器 →' : '在 DLSS5NVIDIA 打开图像质量增强器 →') : 'Open the image quality enhancer on DLSS5NVIDIA →');
+  return `<main class="seo-shell"><header><p class="eyebrow">${escapeHtml(copy.eyebrow)}</p><h1>${escapeHtml(copy.title)}</h1><p class="lede">${escapeHtml(gpu.name)} · ${escapeHtml(series?.architecture || '')} · ${escapeHtml(String(gpu.vram_gb))} GB VRAM</p></header><section><h2>${escapeHtml(copy.statusHeading)}</h2><p><strong>${escapeHtml(copy.status)}</strong></p><p>${escapeHtml(copy.modelNoteLabel)}：${escapeHtml(gpu.note)}</p><p>${escapeHtml(copy.sourceLabel)}：<a href="${officialDlssSource}">${officialDlssSource}</a></p><p>${escapeHtml(copy.statusExplanation)}</p><p class="source-note">${escapeHtml(copy.disclaimer)}</p></section><section><h2>${escapeHtml(copy.evidenceHeading)}</h2>${paragraphs(copy.evidenceParagraphs)}</section><section><h2>${escapeHtml(copy.hardwareHeading)}</h2>${paragraphs(copy.hardwareParagraphs)}</section><section><h2>${escapeHtml(copy.studioHeading)}</h2>${paragraphs(copy.studioParagraphs)}</section><section><h2>${escapeHtml(copy.nextHeading)}</h2><ol>${steps}</ol></section><section><h2>${escapeHtml(copy.faqHeading)}</h2>${faq}</section><p><a href="/${lang}">← ${escapeHtml(copy.back)}</a> · <a href="/${lang}/studio">${escapeHtml(copy.studioLink)}</a> · <a href="/${lang}/blog">${escapeHtml(copy.guidesLink)}</a> · <a href="https://www.dlss5nvidia.com${toolHref}">${escapeHtml(toolLabel)}</a></p></main>`;
 }
 
 function studioBody(lang: Lang): string {
@@ -234,7 +250,7 @@ function supportedCardsBody(lang: Lang): string {
   const faqTitle = isEnglish ? 'Compatibility FAQ' : isTraditional ? '相容性常見問題' : '兼容性常见问题';
   const back = isEnglish ? '← Back to the GPU checker' : isTraditional ? '← 返回 GPU 檢查器首頁' : '← 返回 GPU 检测器首页';
   const converter = isEnglish ? 'Try the free visual converter' : isTraditional ? '試用免費的視覺轉換器' : '试用免费的视觉转换器';
-  return `<main class="seo-shell"><header><p class="eyebrow">${guide}</p><h1>${title}</h1><p class="lede">${intro}</p></header><section><h2>${matrix}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${source}<a href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. ${disclaimer}</p></section><section><h2>${faqTitle}</h2>${questionsHtml}</section><p><a href="/${lang}">${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a></p></main>`;
+  return `<main class="seo-shell"><header><p class="eyebrow">${guide}</p><h1>${title}</h1><p class="lede">${intro}</p></header><section><h2>${matrix}</h2><table><thead><tr><th>GPU series</th><th>Architecture</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table><p class="source-note">${source}<a href="https://www.nvidia.com/en-us/geforce/news/dlss-5-3d-guided-neural-rendering/">NVIDIA DLSS 5 launch article</a>. ${disclaimer}</p></section><section><h2>${faqTitle}</h2>${questionsHtml}</section><p><a href="/${lang}">${back}</a> · <a href="https://www.dlss5nvidia.com/download">${converter}</a> · <a href="https://www.dlss5nvidia.com/models">${isEnglish ? 'Browse model workflows' : isTraditional ? '瀏覽模型工作流程' : '浏览模型工作流'}</a> · <a href="https://www.dlss5nvidia.com/comparisons">${isEnglish ? 'Compare visual workflows' : isTraditional ? '比較視覺工作流程' : '比较视觉工作流'}</a></p></main>`;
 }
 
 function blogBody(lang: Lang): string {
@@ -286,7 +302,14 @@ function documentFor(route: string, lang: Lang, title: string, description: stri
       ['zh-TW', `${baseUrl}/zh-TW${suffix}`],
       ['x-default', `${baseUrl}/en${suffix}`],
     ].map(([hreflang, href]) => `<link rel="alternate" hreflang="${hreflang}" href="${href}"/>`).join('');
-  const head = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"/><meta name="robots" content="${robots}"/><link rel="canonical" href="${canonical}"/>${alternates}<meta property="og:title" content="${escapeHtml(title)}"/><meta property="og:description" content="${escapeHtml(description)}"/><meta property="og:type" content="${type}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${escapeHtml(image)}"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:image" content="${escapeHtml(image)}"/><script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
+  const graph = jsonLd && typeof jsonLd === 'object' && Array.isArray((jsonLd as { '@graph'?: unknown[] })['@graph'])
+    ? (jsonLd as { '@graph': unknown[] })['@graph']
+    : [jsonLd];
+  const normalizedJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [brandOrganization, ...graph.filter((node) => Boolean(node) && (node as { '@type'?: string })['@type'] !== 'Organization')],
+  };
+  const head = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"/><meta name="robots" content="${robots}"/><link rel="canonical" href="${canonical}"/>${alternates}<meta property="og:title" content="${escapeHtml(title)}"/><meta property="og:description" content="${escapeHtml(description)}"/><meta property="og:type" content="${type}"/><meta property="og:url" content="${canonical}"/><meta property="og:image" content="${escapeHtml(image)}"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:image" content="${escapeHtml(image)}"/><script type="application/ld+json">${JSON.stringify(normalizedJsonLd)}</script>`;
   return template
     .replace(/<html lang="[^"]*"/, `<html lang="${lang}"`)
     .replace(/<title>[\s\S]*?<\/title>/, '')
@@ -327,9 +350,9 @@ for (const lang of Object.keys(copy) as Lang[]) {
   const homeRoute = `/${lang}`;
   const homeJsonLd = {
     '@context': 'https://schema.org',
-    '@graph': [
-      { '@type': 'WebSite', name: 'Neural Architect', url: baseUrl, inLanguage: lang },
-      { '@type': 'WebApplication', name: c.title, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', isAccessibleForFree: true, url: `${baseUrl}${homeRoute}` },
+      '@graph': [
+      { '@type': 'WebSite', '@id': `${baseUrl}/#website`, name: 'Neural Architect', url: baseUrl, inLanguage: lang, publisher: { '@id': brandOrganization['@id'] } },
+      { '@type': 'WebApplication', '@id': `${baseUrl}/#application`, name: c.title, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', isAccessibleForFree: true, url: `${baseUrl}${homeRoute}`, publisher: { '@id': brandOrganization['@id'] } },
       { '@type': 'FAQPage', mainEntity: faq[lang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) },
     ],
   };

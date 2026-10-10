@@ -11,6 +11,12 @@ export default function GpuDetail() {
   if (!gpu) return <main className="pt-32 text-center text-white"><h1>GPU not found</h1><Link to={`/${lang}`} className="text-primary">Back to checker</Link></main>;
   const series = gpuData.gpu_series.find(entry => entry.id === gpu.series);
   const copy = getGpuDetailContent(lang === 'zh-CN' || lang === 'zh-TW' ? lang : 'en', gpu, series);
+  const toolHref = gpu.series === 'rtx50' ? '/game-character-style' : gpu.series === 'rtx40' ? '/video-upscaler' : '/image-quality-enhancer';
+  const toolLabel = gpu.series === 'rtx50'
+    ? (lang === 'zh-TW' ? '在 DLSS5NVIDIA 試用人物風格轉換 →' : lang === 'zh-CN' ? '在 DLSS5NVIDIA 试用人物风格转换 →' : 'Try character style conversion on DLSS5NVIDIA →')
+    : gpu.series === 'rtx40'
+      ? (lang === 'zh-TW' ? '在 DLSS5NVIDIA 查看影片增強工作流程 →' : lang === 'zh-CN' ? '在 DLSS5NVIDIA 查看视频增强工作流 →' : 'Open the video enhancement workflow on DLSS5NVIDIA →')
+      : (lang === 'zh-TW' ? '在 DLSS5NVIDIA 開啟影像品質增強器 →' : lang === 'zh-CN' ? '在 DLSS5NVIDIA 打开图像质量增强器 →' : 'Open the image quality enhancer on DLSS5NVIDIA →');
   return (
     <main className="pt-32 px-6 pb-24 max-w-5xl mx-auto text-white">
       <Helmet>
@@ -53,6 +59,7 @@ export default function GpuDetail() {
         <Link className="text-primary underline" to={`/${lang}`}>← {copy.back}</Link>
         <Link className="text-primary underline" to={`/${lang}/studio`}>{copy.studioLink}</Link>
         <Link className="text-primary underline" to={`/${lang}/blog`}>{copy.guidesLink}</Link>
+        <a className="text-primary underline" href={`https://www.dlss5nvidia.com${toolHref}`}>{toolLabel}</a>
       </div>
     </main>
   );

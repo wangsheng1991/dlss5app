@@ -45,12 +45,23 @@ export default function SupportedCards() {
         <script type="application/ld+json">
           {JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: faqs.map(([name, text]) => ({
-              '@type': 'Question',
-              name,
-              acceptedAnswer: { '@type': 'Answer', text },
-            })),
+            '@graph': [
+              {
+                '@type': 'Organization',
+                '@id': 'https://www.dlss5nvidia.com/#organization',
+                name: 'DLSS 5 NVIDIA Independent Showcase',
+                url: 'https://www.dlss5nvidia.com/',
+                sameAs: ['https://www.dlss5nvidia.com/', 'https://www.dlss5.app/'],
+              },
+              {
+                '@type': 'FAQPage',
+                mainEntity: faqs.map(([name, text]) => ({
+                  '@type': 'Question',
+                  name,
+                  acceptedAnswer: { '@type': 'Answer', text },
+                })),
+              },
+            ],
           })}
         </script>
       </Helmet>
@@ -96,6 +107,8 @@ export default function SupportedCards() {
           <Link className="text-primary underline" to={`/${lang}`}>{isChinese ? '返回检测器首页' : 'Back to the GPU checker'}</Link>
           <Link className="text-primary underline" to={`/${lang}/blog`}>{isChinese ? '阅读 DLSS 5 技术指南' : 'Read DLSS 5 technical guides'}</Link>
           <a className="text-primary underline" href="https://www.dlss5nvidia.com/download">{isChinese ? (isTraditional ? '試用免費視覺轉換器' : '试用免费视觉转换器') : 'Try the free visual converter'}</a>
+          <a className="text-primary underline" href="https://www.dlss5nvidia.com/models">{isChinese ? (isTraditional ? '瀏覽模型工作流程' : '浏览模型工作流') : 'Browse model workflows'}</a>
+          <a className="text-primary underline" href="https://www.dlss5nvidia.com/comparisons">{isChinese ? (isTraditional ? '比較視覺工作流程' : '比较视觉工作流') : 'Compare visual workflows'}</a>
         </nav>
       </div>
     </main>

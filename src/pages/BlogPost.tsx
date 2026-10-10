@@ -139,16 +139,24 @@ export default function BlogPost() {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": title,
-            "image": metadata.og_image ? [metadata.og_image] : [],
-            "datePublished": metadata.date ? new Date(metadata.date).toISOString() : undefined,
-            "dateModified": metadata.date ? new Date(metadata.date).toISOString() : undefined,
-            "author": [{
+            "@graph": [
+              {
                 "@type": "Organization",
-                "name": "Neural Architect",
-                "url": "https://www.dlss5.app"
-            }]
+                "@id": "https://www.dlss5nvidia.com/#organization",
+                "name": "DLSS 5 NVIDIA Independent Showcase",
+                "url": "https://www.dlss5nvidia.com/",
+                "sameAs": ["https://www.dlss5nvidia.com/", "https://www.dlss5.app/"]
+              },
+              {
+                "@type": "Article",
+                "headline": title,
+                "image": metadata.og_image ? [metadata.og_image] : [],
+                "datePublished": metadata.date ? new Date(metadata.date).toISOString() : undefined,
+                "dateModified": metadata.date ? new Date(metadata.date).toISOString() : undefined,
+                "author": [{ "@type": "Organization", "@id": "https://www.dlss5nvidia.com/#organization" }],
+                "publisher": { "@id": "https://www.dlss5nvidia.com/#organization" }
+              }
+            ]
           })}
         </script>
       </Helmet>
