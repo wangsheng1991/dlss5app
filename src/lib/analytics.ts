@@ -8,7 +8,7 @@ const recentPageViews = new Map<string, number>();
 
 declare global {
   interface Window {
-    dataLayer?: unknown[];
+    gtag?: (command: 'event', eventName: string, parameters: Record<string, AnalyticsValue>) => void;
   }
 }
 
@@ -22,11 +22,13 @@ export function trackPageView(path: string, language: string) {
   if (previous && now - previous < 1500) return;
   recentPageViews.set(key, now);
 
-  window.dataLayer ??= [];
-  window.dataLayer.push(['event', 'page_view', {
+  // The inline bootstrap in index.html defines gtag before React runs. Calling it
+  // queues an Arguments object that gtag.js understands, even if the script has
+  // not loaded yet. A plain array pushed to dataLayer is not a gtag command.
+  window.gtag?.('event', 'page_view', {
     page_path: path,
-    page_location: window.location.href,
+    page_location: `${window.location.origin}${path}`,
     page_title: document.title,
     language,
-  } satisfies Record<string, AnalyticsValue>]);
+  });
 }
