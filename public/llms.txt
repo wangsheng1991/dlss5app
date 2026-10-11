@@ -41,7 +41,7 @@
 - [About this site](https://www.dlss5.app/en/about): Who publishes the DLSS 5 GPU evidence checker, what it does and does not claim, and how it relates to dlss5nvidia.com.
 - [Editorial policy](https://www.dlss5.app/en/editorial-policy): What counts as a source, what this site refuses to publish, and how page and sitemap review dates stay in step.
 - [Contact](https://www.dlss5.app/en/contact): The public mailbox for corrections and source suggestions, and what this site cannot answer.
-- [Privacy](https://www.dlss5.app/en/privacy): No accounts, no uploads, no scanning script, no analytics or ads; the external services the site actually uses.
+- [Privacy](https://www.dlss5.app/en/privacy): No accounts, no uploads, no hardware scanning; Google Analytics 4 measures aggregated route traffic and events, with no advertising.
 
 ## Key Facts
 - Site: Neural Architect at https://www.dlss5.app; independent and not affiliated with NVIDIA.

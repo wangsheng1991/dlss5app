@@ -28,6 +28,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      // GA4 is queued before the React bundle and loaded after the page load event so analytics
+      // cannot block the first render. Only anonymous route/language events are sent.
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-2H65VD73K0', { send_page_view: false });
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=G-2H65VD73K0';
+          document.head.appendChild(script);
+        }, 0);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

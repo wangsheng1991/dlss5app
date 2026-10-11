@@ -18,11 +18,13 @@ import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 import SiteInfo from './pages/SiteInfo';
 import Updates from './pages/Updates';
+import { trackPageView } from './lib/analytics';
 
 export default function App() {
   return (
     <HelmetProvider>
       <Router>
+        <AnalyticsBridge />
         <Routes>
           <Route path="/:lang" element={<Layout />}>
             <Route index element={<Home />} />
@@ -43,6 +45,17 @@ export default function App() {
       </Router>
     </HelmetProvider>
   );
+}
+
+function AnalyticsBridge() {
+  const location = useLocation();
+  const pathLanguage = location.pathname.split('/')[1] || 'en';
+
+  useEffect(() => {
+    trackPageView(location.pathname, pathLanguage);
+  }, [location.pathname, pathLanguage]);
+
+  return null;
 }
 
 function LanguageRedirect() {

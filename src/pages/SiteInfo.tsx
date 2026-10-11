@@ -211,10 +211,10 @@ function copyFor(slug: TrustSlug, lang: string): SiteInfoCopy {
   return {
     title: isEnglish ? 'Privacy: what dlss5.app collects' : isTraditional ? '隱私：dlss5.app 收集什麼、不收集什麼' : '隐私：dlss5.app 收集什么、不收集什么',
     description: isEnglish
-      ? `No accounts, no uploads, no scanning script, no third-party analytics or ads. The two external services this site does rely on, and what they see. Reviewed ${REVIEWED_DATE}.`
+      ? `No accounts, no uploads, no scanning script, and no advertising. Google Analytics 4 measures aggregated route traffic and events. The external services this site relies on, and what they see. Reviewed ${REVIEWED_DATE}.`
       : isTraditional
-        ? `不要求註冊、不收上傳、不跑掃描腳本、沒有第三方分析或廣告。本站唯一依賴的兩個外部服務，以及它們能看到什麼。複審日期 ${REVIEWED_DATE}。`
-        : `不要求注册、不收上传、不跑扫描脚本、没有第三方分析或广告。本站唯一依赖的两个外部服务，以及它们能看到什么。复审日期 ${REVIEWED_DATE}。`,
+        ? `不要求註冊、不收上傳、不跑掃描腳本，也沒有廣告。Google Analytics 4 只量測彙總的路由流量與事件。本站依賴的外部服務，以及它們能看到什麼。複審日期 ${REVIEWED_DATE}。`
+        : `不要求注册、不收上传、不跑扫描脚本，也没有广告。Google Analytics 4 只量测汇总的路由流量与事件。本站依赖的外部服务，以及它们能看到什么。复审日期 ${REVIEWED_DATE}。`,
     eyebrow: 'NEURAL ARCHITECT',
     sections: isEnglish
       ? [
@@ -228,7 +228,7 @@ function copyFor(slug: TrustSlug, lang: string): SiteInfoCopy {
             'Article pages with a share image load that image from the Unsplash CDN (images.unsplash.com).',
           ] },
           { heading: 'Third-party analytics and ads', paragraphs: [
-            'This site runs no analytics script and no advertising script — first-party or third-party. We do not build a profile of you and there is nothing here to sell it to anyone.',
+            'Google Analytics 4 is loaded after the page load event to measure aggregated route traffic and product events. We send the page path, language and event name; we do not send GPU queries, files, account details or advertising identifiers. This site runs no advertising script.',
           ] },
           { heading: 'Payments', paragraphs: [
             <>Nothing is sold on this site and no payment details are collected here. The paid product lives on <a className="text-primary underline" href="https://www.dlss5nvidia.com/">dlss5nvidia.com</a>, and its own privacy, refund and terms pages govern that transaction.</>,
@@ -260,8 +260,8 @@ function copyFor(slug: TrustSlug, lang: string): SiteInfoCopy {
           ] },
           { heading: isTraditional ? '第三方分析與廣告' : '第三方分析与广告', paragraphs: [
             isTraditional
-              ? '本站不執行任何分析腳本，也不執行任何廣告腳本——自家的或第三方的都沒有。我們不會為你建立畫像，也沒有東西可以賣給別人。'
-              : '本站不执行任何分析脚本，也不执行任何广告脚本——自家的或第三方的都没有。我们不会为你建立画像，也没有东西可以卖给别人。',
+              ? 'Google Analytics 4 會在頁面載入後載入，用來量測彙總的路由流量與產品事件。我們只送出頁面路徑、語言與事件名稱，不送出 GPU 查詢、檔案、帳號資料或廣告識別碼。本站不執行廣告腳本。'
+              : 'Google Analytics 4 会在页面加载后加载，用来量测汇总的路由流量与产品事件。我们只送出页面路径、语言与事件名称，不送出 GPU 查询、文件、账号资料或广告识别码。本站不执行广告脚本。',
           ] },
           { heading: isTraditional ? '付款' : '付款', paragraphs: [
             isTraditional
