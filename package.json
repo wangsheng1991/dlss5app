@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "check:consistency": "node scripts/check-two-site-gpu-consistency.mjs",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "indexnow:submit": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
