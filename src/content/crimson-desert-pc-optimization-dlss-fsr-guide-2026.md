@@ -39,23 +39,9 @@ The game supports both DLSS 4 and DLSS 4.5. DLSS 4.5 suffers from flickering iss
 
 ---
 
-## Benchmark Targets by GPU
+## Performance notes by GPU
 
-Based on launch-day testing at 4K resolution:
-
-| GPU | Native 4K Ultra (avg fps) | DLSS 4 Quality (avg fps) | DLSS 4 Performance (avg fps) |
-|-----|--------------------------|--------------------------|------------------------------|
-| RTX 5090 | ~95 fps | ~145 fps | ~185 fps |
-| RTX 5080 | ~75 fps | ~115 fps | ~150 fps |
-| RTX 5070 Ti | ~60 fps | ~95 fps | ~130 fps |
-| RTX 4090 | ~65 fps | ~100 fps | ~130 fps |
-| RTX 4080 Super | ~50 fps | ~80 fps | ~105 fps |
-| RTX 4070 Ti Super | ~40 fps | ~65 fps | ~90 fps |
-| RX 9070 XT (FSR 4) | ~55 fps | ~90 fps | ~120 fps |
-
-*Note: 1% lows in Kastone and large-scale combat can be 20–30% lower than averages. Prioritize 1% lows over average fps for a smooth experience.*
-
----
+This guide does not publish a frame-rate table: we do not have a matching local GPU run or a citable first-party result for those numbers. Use the settings guidance below as a starting point, then record your own GPU, driver, resolution, preset and capture date.
 
 ## Recommended Settings for Each Tier
 
@@ -131,19 +117,9 @@ If you're taking screenshots in Crimson Desert — and with Black Space Engine's
 
 ---
 
-## 各 GPU 的帧率参考（4K 分辨率）
+## 各 GPU 的性能说明
 
-| 显卡 | 原生4K超高（平均帧率） | DLSS 4质量模式 | DLSS 4性能模式 |
-|------|---------------------|---------------|---------------|
-| RTX 5090 | ~95 fps | ~145 fps | ~185 fps |
-| RTX 5080 | ~75 fps | ~115 fps | ~150 fps |
-| RTX 5070 Ti | ~60 fps | ~95 fps | ~130 fps |
-| RTX 4090 | ~65 fps | ~100 fps | ~130 fps |
-| RTX 4080 Super | ~50 fps | ~80 fps | ~105 fps |
-| RTX 4070 Ti Super | ~40 fps | ~65 fps | ~90 fps |
-| RX 9070 XT（FSR 4） | ~55 fps | ~90 fps | ~120 fps |
-
-注：卡斯通和大规模战斗中的 1% 最低帧率可能比平均帧率低 20-30%。请优先确保最低帧率而非平均帧率。
+本指南不发布帧率表：我们没有与这些数字匹配的本地显卡实测或可引用的一手结果。请把下面的设置建议作为起点，并记录自己的显卡、驱动、分辨率、画质档和截图日期。
 
 ---
 

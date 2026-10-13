@@ -12,7 +12,7 @@ tags: ["dlss 5 architecture", "neural rendering", "blackwell", "rtx 5090", "tens
      ENGLISH VERSION
      ============================================================ -->
 
-When NVIDIA announced DLSS 5, the gaming and tech communities were stunned by the claim that it represents "the GPT moment for graphics." But what exactly makes the **DLSS 5 architecture** so revolutionary? Why does it require the new RTX 50 series Blackwell GPUs? 
+When NVIDIA announced DLSS 5, it described a neural-rendering direction for future games. What exactly makes the **DLSS 5 architecture** so different? Why does it require the new RTX 50 series Blackwell GPUs? 
 
 In this deep dive, we will explore the underlying **DLSS 5 architecture**, how it differs from previous generations, and why NVIDIA's hardware choices are critical for true neural rendering.
 
@@ -56,7 +56,7 @@ The **DLSS 5 architecture** bypasses this. By using AI to generate the lighting,
 * **Traditional:** Calculate light -> Calculate bounces -> Apply to materials -> Render pixel.
 * **DLSS 5 Architecture:** Analyze raw scene -> AI predicts final photorealistic pixel -> Render pixel.
 
-This is why NVIDIA CEO Jensen Huang referred to it as "the GPT moment." Just as ChatGPT generates text based on patterns rather than understanding grammar rules, the **DLSS 5 architecture** generates lighting based on visual patterns rather than calculating physics.
+The **DLSS 5 architecture** generates lighting from visual patterns rather than calculating every lighting interaction with traditional physics. The distinction is useful, but this page does not attach an unverified quotation to it.
 
 ## Conclusion: The Future of GPU Architecture
 
@@ -68,7 +68,7 @@ For gamers and creators, understanding the **DLSS 5 architecture** is key to und
      CHINESE VERSION (中文版)
      ============================================================ -->
 
-当 NVIDIA 宣布 DLSS 5 时，游戏和科技界都对其被称为“图形领域的 GPT 时刻”这一说法感到震惊。但究竟是什么让 **DLSS 5 架构**如此具有革命性？为什么它必须依赖全新的 RTX 50 系列 Blackwell 显卡？
+NVIDIA 公布 DLSS 5 时，将其描述为面向未来游戏的神经渲染方向。究竟是什么让 **DLSS 5 架构**不同？为什么它需要 RTX 50 系列 Blackwell 显卡？
 
 在这篇深度解析中，我们将探索底层的 **DLSS 5 架构**，它与前几代技术有何不同，以及为什么 NVIDIA 的硬件选择对于实现真正的神经渲染至关重要。
 
@@ -112,7 +112,7 @@ Blackwell 架构引入了第五代 Tensor Core。在处理 DLSS 5 所需的庞�
 * **传统方式：** 计算光线 -> 计算反弹 -> 应用于材质 -> 渲染像素。
 * **DLSS 5 架构：** 分析原始场景 -> AI 预测最终的照片级真实感像素 -> 渲染像素。
 
-这就是为什么 NVIDIA 首席执行官黄仁勋将其称为“GPT 时刻”。正如 ChatGPT 根据模式生成文本而不是理解语法规则一样，**DLSS 5 架构**根据视觉模式生成光照，而不是计算物理规律。
+**DLSS 5 架构**根据视觉模式生成光照，而不是计算每一次光照交互。这个区别有助于理解技术方向，但本页不把未经核实的引语当作来源。
 
 ## 结论：GPU 架构的未来
 

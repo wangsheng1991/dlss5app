@@ -56,10 +56,10 @@ export const gpuData = {
   "faq": [
     { "q": "Does DLSS 5 require a new GPU?", "a": "Yes. DLSS 5 Neural Rendering is confirmed exclusively for RTX 50 series (Blackwell architecture). RTX 40 series support has not been confirmed by NVIDIA." },
     { "q": "When does DLSS 5 launch?", "a": "NVIDIA announced a Fall 2026 release window. No specific date has been given." },
-    { "q": "What is DLSS 5 Neural Rendering?", "a": "DLSS 5 takes each frame's color data and motion vectors as input, then uses an AI model to add photoreal lighting, shadows, and material properties in real time at up to 4K. Jensen Huang called it 'the GPT moment for graphics.'" },
+    { "q": "What is DLSS 5 Neural Rendering?", "a": "DLSS 5 is described as using frame data and an AI model to add lighting, shadows, and material detail; this database keeps the wording at that published level." },
     { "q": "Can RTX 3080 or RTX 4090 use DLSS 5?", "a": "Not confirmed. NVIDIA's DLSS 5 announcements have focused exclusively on RTX 50 series hardware. RTX 40 support is unconfirmed; RTX 30 and older will not support it." },
     { "q": "Is DLSS 5 different from DLSS 4?", "a": "Yes, completely different goals. DLSS 4 is about performance (more frames per second via frame generation). DLSS 5 is about visual fidelity (better lighting and materials). On an RTX 50 series card you can use both simultaneously." },
     { "q": "What games will support DLSS 5?", "a": "15+ games confirmed at launch including Starfield, Hogwarts Legacy, Assassin's Creed Shadows, Resident Evil Requiem, and more. See the full games list above." },
-    { "q": "Why did the DLSS 5 demo require two RTX 5090s?", "a": "The GTC 2026 demo was a preview build, not the shipping version. One GPU ran the game, the other ran the DLSS 5 model. NVIDIA confirmed the shipping version will run on a single GPU." }
+    { "q": "Why did the DLSS 5 demo require two RTX 5090s?", "a": "The GTC 2026 demo was a preview build, not the shipping version. Do not treat its demonstration setup as the shipping hardware requirement." }
   ]
 };
