@@ -54,12 +54,12 @@ export const gpuData = {
     { "label": "FP8 Precision", "rtx50": "yes", "rtx40": "yes", "rtx30": "no" }
   ],
   "faq": [
-    { "q": "Does DLSS 5 require a new GPU?", "a": "Yes. DLSS 5 Neural Rendering is confirmed exclusively for RTX 50 series (Blackwell architecture). RTX 40 series support has not been confirmed by NVIDIA." },
+    { "q": "Does DLSS 5 require a new GPU?", "a": "Yes. DLSS 5 Neural Rendering is confirmed exclusively for RTX 50 series (Blackwell architecture). NVIDIA has said it plans to expand official support to RTX 40 series after RTX 50 performance is more fully tuned; no date has been given. RTX 30 series and older are not in NVIDIA's currently published DLSS 5 scope. Source: https://www.nvidia.com/en-us/geforce/forums/nvidia-app/129/583738/dlss-5-faq-932026/ (checked 2026-10-13)." },
     { "q": "When does DLSS 5 launch?", "a": "NVIDIA announced a Fall 2026 release window. No specific date has been given." },
     { "q": "What is DLSS 5 Neural Rendering?", "a": "DLSS 5 is described as using frame data and an AI model to add lighting, shadows, and material detail; this database keeps the wording at that published level." },
-    { "q": "Can RTX 3080 or RTX 4090 use DLSS 5?", "a": "Not confirmed. NVIDIA's DLSS 5 announcements have focused exclusively on RTX 50 series hardware. RTX 40 support is unconfirmed; RTX 30 and older will not support it." },
+    { "q": "Can RTX 3080 or RTX 4090 use DLSS 5?", "a": "RTX 40 series is described by NVIDIA as planned future expansion with no date; RTX 30 series and older are not in NVIDIA's currently published DLSS 5 scope. Source: https://www.nvidia.com/en-us/geforce/forums/nvidia-app/129/583738/dlss-5-faq-932026/ (checked 2026-10-13)." },
     { "q": "Is DLSS 5 different from DLSS 4?", "a": "Yes, completely different goals. DLSS 4 is about performance (more frames per second via frame generation). DLSS 5 is about visual fidelity (better lighting and materials). On an RTX 50 series card you can use both simultaneously." },
-    { "q": "What games will support DLSS 5?", "a": "15+ games confirmed at launch including Starfield, Hogwarts Legacy, Assassin's Creed Shadows, Resident Evil Requiem, and more. See the full games list above." },
+    { "q": "What games will support DLSS 5?", "a": "The games page tracks announced and launched titles separately, with a source link and date for each row. See the dated tracker at /games." },
     { "q": "Why did the DLSS 5 demo require two RTX 5090s?", "a": "The GTC 2026 demo was a preview build, not the shipping version. Do not treat its demonstration setup as the shipping hardware requirement." }
   ]
 };

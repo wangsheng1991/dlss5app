@@ -41,17 +41,15 @@ The game supports both DLSS 4 and DLSS 4.5. DLSS 4.5 suffers from flickering iss
 
 ## Benchmark Targets by GPU
 
-No numeric frame-rate table is published here: these values have no matching local GPU run or citable first-party result. The table keeps the comparison fields visible so a future measured run can fill them without changing the page structure.
+The table keeps the original comparison position, but replaces unsupported frame-rate claims with settings that a reader can reproduce. We do not publish FPS here because we have no matching local GPU run or citable first-party result.
 
-| GPU | Native 4K Ultra (avg fps) | DLSS 4 Quality (avg fps) | DLSS 4 Performance (avg fps) |
-|-----|----------------------------|--------------------------|------------------------------|
-| RTX 5090 | Not measured here | Not measured here | Not measured here |
-| RTX 5080 | Not measured here | Not measured here | Not measured here |
-| RTX 5070 Ti | Not measured here | Not measured here | Not measured here |
-| RTX 4090 | Not measured here | Not measured here | Not measured here |
-| RTX 4080 Super | Not measured here | Not measured here | Not measured here |
-| RTX 4070 Ti Super | Not measured here | Not measured here | Not measured here |
-| RX 9070 XT (FSR 4) | Not measured here | Not measured here | Not measured here |
+| GPU tier | 4K settings to try | Upscaling / frame-generation combination | FPS source |
+|---|---|---|---|
+| RTX 50 series | Ultra or Cinematic | DLSS 4 Quality; test frame generation separately | Run your own capture with GPU, driver, resolution, preset and date recorded |
+| RTX 4090 / 4080 | Ultra or High | DLSS 4 Quality or Balanced; test frame generation separately | Run your own capture with GPU, driver, resolution, preset and date recorded |
+| RX 9070 XT | Ultra or High | FSR 4 Quality; test frame generation separately | Run your own capture with GPU, driver, resolution, preset and date recorded |
+
+本站不代填 FPS：我们没有与这些数字匹配的实测，请按上面的字段自己跑一次。
 
 ## Recommended Settings for Each Tier
 
@@ -129,17 +127,15 @@ If you're taking screenshots in Crimson Desert — and with Black Space Engine's
 
 ## 各 GPU 的帧率参考（4K 分辨率）
 
-本表保留比较字段，但不填没有本地显卡实测或可引用一手来源的数字；未来有合格测量时可在原位置补录。
+本表保留原有对比位置，但把没有依据的帧率列换成可复现的设置建议。本站没有与这些数字匹配的显卡实测，也不代填 FPS。
 
-| 显卡 | 原生4K超高（平均帧率） | DLSS 4质量模式 | DLSS 4性能模式 |
-|------|---------------------|---------------|---------------|
-| RTX 5090 | 本站未测量 | 本站未测量 | 本站未测量 |
-| RTX 5080 | 本站未测量 | 本站未测量 | 本站未测量 |
-| RTX 5070 Ti | 本站未测量 | 本站未测量 | 本站未测量 |
-| RTX 4090 | 本站未测量 | 本站未测量 | 本站未测量 |
-| RTX 4080 Super | 本站未测量 | 本站未测量 | 本站未测量 |
-| RTX 4070 Ti Super | 本站未测量 | 本站未测量 | 本站未测量 |
-| RX 9070 XT（FSR 4） | 本站未测量 | 本站未测量 | 本站未测量 |
+| 显卡档位 | 4K 画质建议 | 上采样 / 帧生成组合 | 帧率来源 |
+|---|---|---|---|
+| RTX 50 系 | 超高或电影级 | DLSS 4 质量模式；帧生成单独测试 | 自测时记录显卡、驱动、分辨率、画质档和日期 |
+| RTX 4090 / 4080 | 超高或高 | DLSS 4 质量或均衡模式；帧生成单独测试 | 自测时记录显卡、驱动、分辨率、画质档和日期 |
+| RX 9070 XT | 超高或高 | FSR 4 质量模式；帧生成单独测试 | 自测时记录显卡、驱动、分辨率、画质档和日期 |
+
+本站不代填 FPS：我们没有与这些数字匹配的实测，请按上面的字段自己跑一次。
 
 ## 各配置档位推荐设置
 
