@@ -1,0 +1,6 @@
+Input: Site-owned source dlss5main/public/examples/makeup-ref-source.jpg.
+License: own
+Engine: flux-klein via AlphaNet /v1/tasks/alphanet-flux — 2x re-render, prompt "Enhance this photo to 1200 × 800 pixels: restore realistic detail, texture and sharpness while keeping the composition, framing, lighting and colors identical.", 1200 × 800, seed 1001.
+Run: task_R1gtOtjJGHjB9fA37KZ8IjUL4PMHRQ85 (12.2s, 2026-10-17 Asia/Shanghai); no retry.
+Category: makeup close-up / beauty detail
+Claim note: This is model-regenerated detail at a larger pixel size, not pixel-exact reconstruction; composition and fine details may change and identity/text are not guaranteed 100% identical.

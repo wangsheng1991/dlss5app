@@ -1,0 +1,6 @@
+Input: Wikimedia Commons File:Living room in apartment of Condomínio do Edifício Zaher, Le Blond, Rio de Janeiro, Brazil (https://commons.wikimedia.org/wiki/File:Living_room_in_apartment_of_Condom%C3%ADnio_do_Edif%C3%ADcio_Zaher,_Le_Blond,_Rio_de_Janeiro,_Brazil.jpg), photographer Wilfredor.
+License: CC0 (Wikimedia Commons record).
+Engine: flux-klein via AlphaNet /v1/tasks/alphanet-flux — 2x re-render, prompt "Enhance this photo to 1200 × 800 pixels: restore realistic detail, texture and sharpness while keeping the composition, framing, lighting and colors identical.", 1200 × 800, seed 2101.
+Run: task_bHEeZTUJFCW5DVFtJQw02BwZsFLXlyvo (8.7s, 2026-10-17 Asia/Shanghai); no retry.
+Category: 居家实拍 / 室内
+Claim note: This is model-regenerated detail at a larger pixel size, not pixel-exact reconstruction; composition and fine details may change and identity/text are not guaranteed 100% identical.

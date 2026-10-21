@@ -7,6 +7,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { gpuData } from '../data';
+import HomeComparisons from '../components/HomeComparisons';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -83,6 +84,7 @@ export default function Home() {
         </script>
       </Helmet>
       <HeroSection />
+      <HomeComparisons lang={currentLang} />
       <AboutSection />
       <CompatibilitySection />
       <EvolutionMatrix />

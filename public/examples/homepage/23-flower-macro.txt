@@ -1,0 +1,6 @@
+Input: Wikimedia Commons File:Macro flower wallpaper (https://commons.wikimedia.org/wiki/File:Macro_flower_wallpaper.jpg), photographer Free Nature Stock.
+License: CC0 (Wikimedia Commons record).
+Engine: flux-klein via AlphaNet /v1/tasks/alphanet-flux — 2x re-render, prompt "Enhance this photo to 1200 × 800 pixels: restore realistic detail, texture and sharpness while keeping the composition, framing, lighting and colors identical.", 1200 × 800, seed 2100.
+Run: task_qti1efbwgIGd5J0KMSbnek3O4rvGgYie (10.1s, 2026-10-17 Asia/Shanghai); no retry.
+Category: 花卉 / 微距
+Claim note: This is model-regenerated detail at a larger pixel size, not pixel-exact reconstruction; composition and fine details may change and identity/text are not guaranteed 100% identical.
