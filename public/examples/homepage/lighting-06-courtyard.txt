@@ -1,0 +1,25 @@
+Input: Codex built-in image_gen original synthetic CG courtyard; native PNG exec-7e5bdf66-c43f-4ef7-8fa6-cdee0b82c295.png.
+Origin: own / original AI-generated imagery; not a screenshot from an actual game.
+Engine: product flux-klein via AlphaNet; exact prompt and real task ID in run.json.
+Date: 2026-10-21
+Treatment: input kept clear; no deliberate blur, compression damage or exposure manipulation.
+Boundary: independent static image-to-image material/lighting demonstration, NOT NVIDIA DLSS 5 output or a runtime benchmark.
+Review: see ../REVIEW.md; task SUCCESS does not imply visual acceptance.
+
+Exact run record:
+{
+  "model": "flux-klein",
+  "prompt": "Upgrade the LIGHTING AND MATERIAL RENDERING of this clear stylized game courtyard into realistic neural-rendering-style visual treatment. Do not redesign it. Preserve exact camera, door geometry and planks, staircase count, masonry joints, bench position, flowerpot shape and leaves, all objects and their positions. Use natural soft late-afternoon light from upper left, warm indirect bounce on the same stone, credible directional contact shadows under bench and plant pot, realistic diffuse limestone microtexture, subtle wood grain and iron hinge highlights, porous terra-cotta and natural translucent leaves. Keep the same scene palette and moderate exposure. No new objects, people, signs, lamps, vines or background. No sharpening, blur or resolution tricks. Focus on dimensional light, material separation and grounded objects while retaining every original shape.",
+  "width": 1536,
+  "height": 1024,
+  "seed": 2101,
+  "num_inference_steps": 4,
+  "taskId": "task_lqABSLem6dhzQzh9Z25fIatqe0XUafdL",
+  "status": "SUCCESS",
+  "date": "2026-10-21",
+  "outputWidth": 1536,
+  "outputHeight": 1024,
+  "seconds": 26.8
+}
+
+Visual review limitation: Leaves and masonry details may change.
