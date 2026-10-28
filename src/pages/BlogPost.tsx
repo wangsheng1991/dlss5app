@@ -129,7 +129,7 @@ export default function BlogPost() {
   return (
     <article className="pb-32">
       <Helmet>
-        <title>{title} | Neural Architect</title>
+        <title>{`${title} | Neural Architect`}</title>
         {description && <meta name="description" content={description} />}
         <link rel="canonical" href={`https://www.dlss5.app/${currentLang}/blog/${slug}`} />
         

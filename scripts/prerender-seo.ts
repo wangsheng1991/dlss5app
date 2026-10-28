@@ -1,3 +1,4 @@
+import { homeMetadata, gpuMetadata } from '../src/seo/metadata';
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import OpenCC from 'opencc-js';
@@ -71,8 +72,7 @@ const copy: Record<Lang, {
   sourceNote: string;
 }> = {
   en: {
-    title: 'DLSS 5 GPU Evidence Checker | Sources, VRAM & Studio Readiness',
-    description: 'Check 31 NVIDIA GeForce RTX models with source-linked DLSS 5 status, VRAM notes and a separate DLSS 5 Studio readiness guide.',
+    ...homeMetadata('en'),
     h1: 'DLSS 5 GPU evidence checker — every model linked to a source',
     intro: `DLSS 5 is NVIDIA’s neural-rendering path: instead of computing every pixel with traditional lighting maths, it reconstructs lighting, materials and fine detail with a model trained on paired game-engine and photoreal reference images. This checker maps ${gpuEntries.length} GeForce RTX models to the NVIDIA source behind each status — ${statusCounts.confirmed} RTX 50-series Blackwell cards confirmed, ${statusCounts.unconfirmed} RTX 40-series Ada cards unconfirmed, and ${statusCounts.outOfScope} RTX 30/20-series Ampere and Turing cards outside the published scope. Every status is linked to the public evidence used for it, and none of it comes from community claims.`,
     checker: 'DLSS 5 supported cards by GPU series',
@@ -82,8 +82,7 @@ const copy: Record<Lang, {
     sourceNote: 'Independent reference. Hardware status is updated when NVIDIA publishes verifiable information; this site is not affiliated with NVIDIA.',
   },
   'zh-CN': {
-    title: 'DLSS 5 显卡证据检测器｜来源、显存与 Studio 运行条件',
-    description: '查询 31 款 NVIDIA GeForce RTX 显卡的 DLSS 5 状态、显存说明、来源链接，以及 DLSS 5 Studio 运行条件。',
+    ...homeMetadata('zh-CN'),
     h1: 'DLSS 5 显卡证据检测器：每个型号都有来源',
     intro: `DLSS 5 是 NVIDIA 的神经渲染路径：它不再用传统光照数学逐像素计算，而是用模型重建光照、材质与细节，模型由游戏引擎画面与真实照片配对训练。本站把 ${gpuEntries.length} 款 GeForce RTX 型号逐一对应到 NVIDIA 公开来源——${statusCounts.confirmed} 款 RTX 50 系列 Blackwell 已确认，${statusCounts.unconfirmed} 款 RTX 40 系列 Ada 未确认，${statusCounts.outOfScope} 款 RTX 30/20 系列 Ampere 与 Turing 落在已公布范围之外。每条状态都挂上它依据的公开证据，没有一条来自社区说法。`,
     checker: '按 GPU 系列查看 DLSS 5 支持情况',
@@ -93,8 +92,7 @@ const copy: Record<Lang, {
     sourceNote: '独立资料页。NVIDIA 发布可核实信息后我们会更新硬件状态；本站与 NVIDIA 没有隶属关系。',
   },
   'zh-TW': {
-    title: 'DLSS 5 顯示卡證據檢查器｜來源、顯存與 Studio 執行條件',
-    description: '查詢 31 款 NVIDIA GeForce RTX 顯示卡的 DLSS 5 狀態、顯存說明、來源連結，以及 DLSS 5 Studio 執行條件。',
+    ...homeMetadata('zh-TW'),
     h1: 'DLSS 5 顯示卡證據檢查器：每個型號都有來源',
     intro: `DLSS 5 是 NVIDIA 的神經渲染路徑：它不再用傳統光照數學逐像素計算，而是用模型重建光照、材質與細節，模型由遊戲引擎畫面與真實照片配對訓練。本站把 ${gpuEntries.length} 款 GeForce RTX 型號逐一對應到 NVIDIA 公開來源——${statusCounts.confirmed} 款 RTX 50 系列 Blackwell 已確認，${statusCounts.unconfirmed} 款 RTX 40 系列 Ada 尚未確認，${statusCounts.outOfScope} 款 RTX 30/20 系列 Ampere 與 Turing 落在已公佈範圍之外。每條狀態都掛上它依據的公開證據，沒有一條來自社群說法。`,
     checker: '按 GPU 系列查看 DLSS 5 支援情況',
@@ -730,7 +728,7 @@ for (const lang of Object.keys(copy) as Lang[]) {
       { '@type': 'FAQPage', mainEntity: faq[lang].map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })) },
     ],
   };
-  writeRoute(homeRoute, documentFor(homeRoute, lang, c.title, c.description, homeBody(lang), 'website', homeJsonLd));
+  writeRoute(homeRoute, documentFor(homeRoute, lang, c.title, c.description, homeBody(lang), 'website', homeJsonLd, 'index,follow', defaultOgImage, ['en', 'zh-CN', 'zh-TW', 'ja', 'ko']));
   const studioRoute = `${homeRoute}/studio`;
   const studioTitle = lang === 'en' ? 'DLSS 5 Studio local software requirements and measured performance | Neural Architect' : lang === 'zh-TW' ? 'DLSS 5 Studio 本機軟體要求與實測效能 | Neural Architect' : 'DLSS 5 Studio 本地软件要求与实测性能 | Neural Architect';
   const studioDescription = lang === 'en' ? 'DLSS 5 Studio local software requirements, RTX and Windows compatibility, NVENC driver notes and a measured RTX 4090 workflow.' : lang === 'zh-TW' ? 'DLSS 5 Studio 本機軟體要求、RTX 與 Windows 相容性、NVENC 驅動程式說明，以及 RTX 4090 實測工作流程。' : 'DLSS 5 Studio 本地软件要求、RTX 与 Windows 兼容性、NVENC 驱动说明，以及 RTX 4090 实测工作流。';
@@ -743,9 +741,8 @@ for (const lang of Object.keys(copy) as Lang[]) {
   }));
   for (const gpu of gpuEntries) {
     const gpuRoute = `${homeRoute}/gpu/${gpu.id}`;
-    const gpuTitle = lang === 'en' ? `${gpu.name} DLSS 5 support and VRAM evidence | Neural Architect` : lang === 'zh-TW' ? `${gpu.name} DLSS 5 支援與顯存證據 | Neural Architect` : `${gpu.name} DLSS 5 支持与显存证据 | Neural Architect`;
-    const gpuDescription = lang === 'en' ? `${gpu.name}: ${localizedStatus(lang, gpu.dlss5_status)}, ${gpu.vram_gb} GB VRAM, architecture and source-linked evidence.` : lang === 'zh-TW' ? `${gpu.name}：${localizedStatus(lang, gpu.dlss5_status)}、${gpu.vram_gb} GB 顯存、架構與來源證據。` : `${gpu.name}：${localizedStatus(lang, gpu.dlss5_status)}、${gpu.vram_gb} GB 显存、架构与来源证据。`;
     const gpuContent = getGpuDetailContent(lang, gpu, gpuData.gpu_series.find(series => series.id === gpu.series));
+    const { title: gpuTitle, description: gpuDescription } = gpuMetadata(lang, gpu, gpuContent.status);
     const gpuSchema = {
       '@context': 'https://schema.org',
       '@graph': [

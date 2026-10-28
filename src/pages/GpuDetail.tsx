@@ -1,3 +1,4 @@
+import { gpuMetadata } from '../seo/metadata';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { gpuData } from '../data';
@@ -24,6 +25,7 @@ export default function GpuDetail() {
     gpuData.gpus,
     gpuData.spec_sources,
   );
+  const metadata = gpuMetadata(lang, gpu, copy.status);
   const toolHref = gpu.series === 'rtx50' ? '/game-character-style' : gpu.series === 'rtx40' ? '/video-upscaler' : '/image-quality-enhancer';
   const toolLabel = gpu.series === 'rtx50'
     ? (lang === 'zh-TW' ? '在 DLSS5NVIDIA 試用人物風格轉換 →' : lang === 'zh-CN' ? '在 DLSS5NVIDIA 试用人物风格转换 →' : 'Try character style conversion on DLSS5NVIDIA →')
@@ -33,8 +35,8 @@ export default function GpuDetail() {
   return (
     <main className="pt-32 px-6 pb-24 max-w-5xl mx-auto text-white">
       <Helmet>
-        <title>{copy.title} | Neural Architect</title>
-        <meta name="description" content={copy.description} />
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
         <link rel="canonical" href={`https://www.dlss5.app/${lang}/gpu/${gpu.id}`} />
       </Helmet>
       <p className="text-primary text-xs tracking-[0.2em] font-bold">{copy.eyebrow}</p>

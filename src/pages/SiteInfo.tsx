@@ -300,7 +300,7 @@ export default function SiteInfo({ slug }: { slug: TrustSlug }) {
   return (
     <main className="pt-32 px-6 pb-24">
       <Helmet>
-        <title>{content.title} | Neural Architect</title>
+        <title>{`${content.title} | Neural Architect`}</title>
         <meta name="description" content={content.description} />
         <link rel="canonical" href={`${canonicalHost}/${lang}/${slug}`} />
         <meta property="og:title" content={`${content.title} | Neural Architect`} />
